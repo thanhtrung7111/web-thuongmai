@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.show-filter {
+  left: 0 !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  background-color: rgb(233, 233, 233);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #cfcfcf;
+}
+
+.show-small-cart {
+  right: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
