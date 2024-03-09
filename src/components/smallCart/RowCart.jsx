@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import NoImage from "@assets/img/noimage.png";
-const RowCart = ({
-  item,
-  id,
-  name,
-  image,
-  price,
-  amount,
-  handleDelete,
-}) => {
+const RowCart = ({ item, id, name, image, price, amount, handleDelete }) => {
   const [imageState, setImageState] = useState(null);
+  const test = "HELlo";
   useEffect(() => {
     // console.log(image);
     async function fetchImage() {
