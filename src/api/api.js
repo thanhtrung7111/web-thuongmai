@@ -5,14 +5,13 @@ import {
   openAppNotify,
   openEvaluateProduct,
 } from "../redux/reducer/popupReducer";
-import { useNavigate } from "react-router-dom";
 // import store from "../redux/store/store";
 // import
 export let store;
-
 export const injectStore = (_store) => {
   store = _store;
 };
+
 export const api = axios.create({
   baseURL: "https://Api-Dev.firstems.com",
   headers: {
@@ -41,7 +40,7 @@ apiFetchLogin.interceptors.response.use(
       store.dispatch(openAppNotify({ link: "33432" }));
     } else if (error.response?.status === 500) {
       console.log("Hello");
-      // window.history.pushState("", "", "/error");
+      window.history.go("/error");
     }
     return error;
   }
@@ -79,8 +78,7 @@ apiFetchData.interceptors.response.use(
     if (error.response.status === 401) {
       store.dispatch(openAppNotify({ link: "33432" }));
     } else if (error.response?.status === 500) {
-      console.log("Hello");
-      // window.history.pushState("", "",   "/error");
+      window.location.href = "http://localhost:5173/error";
     }
     return error;
   }

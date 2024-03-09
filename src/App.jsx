@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  Router,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "@pages/Home";
 import Footer from "@components/Footer";
 import ProductDetail from "@pages/ProductDetail";
@@ -29,7 +23,6 @@ function App() {
   const { currentUser } = useSelector((state) => state.user);
   const { showManify, showEvaluateProduct, showDetailOrder, showAppNotify } =
     useSelector((state) => state.popup);
-
   useEffect(() => {
     if (
       showEvaluateProduct.open ||
