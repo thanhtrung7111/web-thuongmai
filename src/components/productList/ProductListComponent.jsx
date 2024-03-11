@@ -15,7 +15,10 @@ const ProductListComponent = ({ search }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const { products, lstQUOM } = useSelector((state) => state.common);
   const [productList, setProductList] = useState([]);
-  const [listSearch, setListSearch] = useState({ lstQUOMSearch: [] });
+  const [listSearch, setListSearch] = useState({
+    nameSearch: "",
+    lstQUOMSearch: [],
+  });
   const showMenu = () => {
     document.getElementById("filter-menu").classList.add("show-filter");
     document.getElementById("overlay").style.display = "block";
@@ -48,11 +51,18 @@ const ProductListComponent = ({ search }) => {
     }
     console.log(listSearch);
   };
+
+  const searchNameProduct = (e) => {
+    setListSearch({ ...listSearch, nameSearch: e.target.value });
+  };
   useEffect(() => {
     if (listSearch.lstQUOMSearch.length > 0) {
       setProductList(
         products?.filter((item) => {
-          return listSearch.lstQUOMSearch.includes(item.QUOMCODE + "");
+          return (
+            listSearch.lstQUOMSearch.includes(item.QUOMCODE + "") &&
+            item?.PRDCNAME?.contains(listSearch.nameSearch)
+          );
         })
       );
     } else {
@@ -92,6 +102,20 @@ const ProductListComponent = ({ search }) => {
               >
                 <i class="ri-arrow-left-double-line text-2xl text-gray-dark block cursor-pointer px-2 hover:-translate-x-2 transition-transform duration-200"></i>
               </div>
+
+              <div className="flex gap-x-2 items-center">
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  className="outline-none border w-full text-sm px-2 py-1"
+                  placeholder="Tìm kiếm..."
+                  onChange={(e) => searchNameProduct(e)}
+                />
+                <div className="transform hover:rotate-180 transition duration-500 ease-in-out cursor-pointer">
+                  <i className="ri-refresh-line text-xl text-gray-dark"></i>
+                </div>
+              </div>
               {/* THƯƠNG HIỆU  */}
               <CheckBoxList
                 title={"Đơn vị tính"}
@@ -104,7 +128,7 @@ const ProductListComponent = ({ search }) => {
               <div className="pb-5 border-b">
                 <div className="flex items-center justify-between mb-1">
                   <h5 className="text-gray-dark font-medium">Khoảng giá</h5>
-                  <i className="ri-arrow-down-s-line"></i>
+                  {/* <i className="ri-arrow-down-s-line"></i> */}
                 </div>
                 <div className="flex gap-y-2 flex-col">
                   <input
