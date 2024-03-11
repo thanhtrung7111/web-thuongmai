@@ -180,3 +180,21 @@ export const loadinpCustOdMtPayMthd2 = createAsyncThunk(
     }
   }
 );
+export const loadLstQUOM = createAsyncThunk(
+  "common/lstQUOM",
+  async (data, { rejectWithValue }) => {
+    try {
+      const result = await fetchCategoryList({
+        LISTCODE: "lstQUOM ",
+      }).then((res) => res?.data?.RETNDATA);
+      console.log(result);
+      if (result) {
+        return result;
+      } else {
+        rejectWithValue(result);
+      }
+    } catch (e) {
+      rejectWithValue(e);
+    }
+  }
+);

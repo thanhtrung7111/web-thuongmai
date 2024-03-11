@@ -16,6 +16,7 @@ import {
   loadTimeType,
   loadWareHouse,
   loadinpCustOdMtPayMthd2,
+  loadLstQUOM,
 } from "../actions/commonAction";
 
 const commonSlice = createSlice({
@@ -34,6 +35,7 @@ const commonSlice = createSlice({
     lstDlvrMthd: [],
     lstListHour: [],
     lstinpCustOdMtPayMthd2: [],
+    lstQUOM: [],
   },
 
   reducers: {},
@@ -70,6 +72,9 @@ const commonSlice = createSlice({
     });
     builder.addCase(loadinpCustOdMtPayMthd2.fulfilled, (state, action) => {
       state.lstinpCustOdMtPayMthd2 = action.payload;
+    });
+    builder.addCase(loadLstQUOM.fulfilled, (state, action) => {
+      state.lstQUOM = action.payload;
     });
 
     builder.addMatcher(isPending, (state) => {

@@ -13,6 +13,7 @@ const ProductCard = ({
   saleOff,
   discount,
   reviews,
+  unit,
   stars,
   sold,
 }) => {
@@ -30,6 +31,7 @@ const ProductCard = ({
   const [imageState, setImageState] = useState(null);
   useEffect(() => {
     // console.log(image);
+    setIsLoading(true);
     async function fetchImage() {
       await fetch(item[image], {
         method: "GET",
@@ -44,19 +46,12 @@ const ProductCard = ({
         .then((blob) => {
           const imageUrl = URL.createObjectURL(blob);
           setImageState(imageUrl);
-          console.log(imageUrl);
+
+          setIsLoading(false);
         });
     }
     fetchImage();
-  }, [image]);
-
-  useEffect(() => {
-    if (imageState != null) {
-      setIsLoading(false);
-    } else {
-      setIsLoading(true);
-    }
-  }, [imageState]);
+  }, [item[image]]);
 
   return (
     <div
@@ -65,6 +60,10 @@ const ProductCard = ({
       } group/product bg-white shadow-md w-full border-t border-b border-gray-100 flex flex-col items-center`}
     >
       <div className="relative w-full h-40 mb-3">
+        <div className="text-xs absolute top-2 left-2 bg-slate-500 px-2 py-1 text-white z-10">
+          {item[unit]}
+        </div>
+
         <div className="invisible group-hover/product:visible absolute top-0 right-0 h-full w-full bg-black bg-opacity-20 flex items-center justify-center">
           <NavLink
             to={`/products/${item[id]}`}
@@ -113,6 +112,7 @@ const ProductCard = ({
               </span>{" "}
               <span className="font-thin text-xs">({item[reviews]})</span>
             </p>
+
             <p className="text-xs font-medium text-gray-dark flex items-center gap-x-1">
               Đã bán:{" "}
               <span className="font-thin text-xs">

@@ -22,6 +22,7 @@ const ProductSlider = ({
   image,
   price,
   saleOff,
+  unit,
   discount,
   stars,
   reviews,
@@ -95,6 +96,7 @@ const ProductSlider = ({
                 id={id}
                 name={name}
                 image={image}
+                unit={unit}
                 price={price}
                 saleOff={saleOff}
                 reviews={reviews}

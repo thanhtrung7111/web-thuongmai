@@ -7,13 +7,15 @@ import TagList from "@components/TagList";
 import Panigation from "@components/panigation/Panigation";
 import InfoPage from "@components/InfoPage";
 import { useSelector } from "react-redux";
+import CheckBoxList from "../CheckBoxList";
 
 let pageSize = 20;
 
 const ProductListComponent = ({ search }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { products } = useSelector((state) => state.common);
+  const { products, lstQUOM } = useSelector((state) => state.common);
   const [productList, setProductList] = useState([]);
+  const [listSearch, setListSearch] = useState({ lstQUOMSearch: [] });
   const showMenu = () => {
     document.getElementById("filter-menu").classList.add("show-filter");
     document.getElementById("overlay").style.display = "block";
@@ -30,6 +32,34 @@ const ProductListComponent = ({ search }) => {
     setProductList(products);
   }, [products, search != ""]);
 
+  const onchangeQUOM = (item) => {
+    if (!listSearch.lstQUOMSearch.includes(item.ITEM_KEY)) {
+      setListSearch({
+        ...listSearch,
+        lstQUOMSearch: [...listSearch.lstQUOMSearch, item.ITEM_KEY],
+      });
+    } else {
+      setListSearch({
+        ...listSearch,
+        lstQUOMSearch: listSearch?.lstQUOMSearch?.filter((itemFind) => {
+          return itemFind != item.ITEM_KEY;
+        }),
+      });
+    }
+    console.log(listSearch);
+  };
+  useEffect(() => {
+    if (listSearch.lstQUOMSearch.length > 0) {
+      setProductList(
+        products?.filter((item) => {
+          return listSearch.lstQUOMSearch.includes(item.QUOMCODE + "");
+        })
+      );
+    } else {
+      setProductList(products);
+    }
+    setCurrentPage(1);
+  }, [listSearch]);
   return (
     <div className="product-list">
       <InfoPage data={["Danh mục sản phẩm"]} />
@@ -63,37 +93,13 @@ const ProductListComponent = ({ search }) => {
                 <i class="ri-arrow-left-double-line text-2xl text-gray-dark block cursor-pointer px-2 hover:-translate-x-2 transition-transform duration-200"></i>
               </div>
               {/* THƯƠNG HIỆU  */}
-              <div className="pb-3 border-b">
-                <div className="flex items-center justify-between mb-1">
-                  <h5 className="text-gray-dark font-medium">
-                    Lap top theo thương hiệu
-                  </h5>
-                  <i className="ri-arrow-down-s-line"></i>
-                </div>
-                <ul className="pl-3 flex flex-col gap-y-1">
-                  <li className="text-sm text-gray-dark hover:text-second">
-                    Asus
-                  </li>
-                  <li className="text-sm text-gray-dark hover:text-second">
-                    Intel
-                  </li>
-                  <li className="text-sm text-gray-dark hover:text-second">
-                    Lenovo
-                  </li>
-                  <li className="text-sm text-gray-dark hover:text-second">
-                    Dell
-                  </li>
-                  <li className="text-sm text-gray-dark hover:text-second">
-                    ThinkPad
-                  </li>
-                  <li className="text-sm text-gray-dark hover:text-second">
-                    Gaming
-                  </li>
-                  <li className="text-sm text-gray-dark hover:text-second">
-                    HP
-                  </li>
-                </ul>
-              </div>
+              <CheckBoxList
+                title={"Đơn vị tính"}
+                data={lstQUOM}
+                itemName={"ITEMNAME"}
+                itemKey={"ITEM_KEY"}
+                onChange={onchangeQUOM}
+              ></CheckBoxList>
               {/* KHOẢNG GIÁ  */}
               <div className="pb-5 border-b">
                 <div className="flex items-center justify-between mb-1">
@@ -118,144 +124,10 @@ const ProductListComponent = ({ search }) => {
               </div>
 
               {/* NHU CẦU  */}
-              <div className="pb-5 border-b">
-                <div className="flex items-center justify-between mb-1">
-                  <h5 className="text-gray-dark font-medium">Nhu cầu</h5>
-                  <i className="ri-arrow-down-s-line"></i>
-                </div>
-                <div className="pl-3 flex flex-col gap-y-2 mb-2">
-                  <div className="text-gray-dark text-sm   flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    Doanh nghiệp
-                  </div>
-                  <div className="text-gray-dark text-sm flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    Doanh nhân
-                  </div>
-                  <div className="text-gray-dark text-sm flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    Gaming
-                  </div>
-                  <div className="text-gray-dark text-sm flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    Gia đình
-                  </div>
-                  <div className="text-gray-dark text-sm flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    Học sinh - sinh viên
-                  </div>
-                  <div className="text-gray-dark text-sm flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    Văn phòng
-                  </div>
-                  <div className="text-gray-dark text-sm flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    Đồ họa - kĩ thuật
-                  </div>
-                </div>
-                <span className="text-second text-xs">Xem thêm...</span>
-              </div>
 
               {/* Màn hình */}
-              <div className="pb-5 border-b">
-                <div className="flex items-center justify-between mb-1">
-                  <h5 className="text-gray-dark font-medium">Màn hình</h5>
-                  <i className="ri-arrow-down-s-line"></i>
-                </div>
-
-                <div className="pl-3 grid grid-cols-2 flex-wrap gap-y-1 mb-2">
-                  <div className="text-gray-dark text-sm  flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    14"
-                  </div>
-                  <div className="text-gray-dark text-sm  flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    18"
-                  </div>
-                  <div className="text-gray-dark text-sm  flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    15.9"
-                  </div>
-                  <div className="text-gray-dark text-sm  flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    19"
-                  </div>
-                  <div className="text-gray-dark text-sm  flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    24"
-                  </div>
-                </div>
-
-                <span className="text-second text-xs">Xem thêm...</span>
-              </div>
 
               {/* Thời gian phản hồi  */}
-              <div className="pb-5 border-b">
-                <div className="flex items-center justify-between mb-1">
-                  <h5 className="text-gray-dark font-medium">Cấu hình</h5>
-                  <i className="ri-arrow-down-s-line"></i>
-                </div>
-                <div className="pl-3 flex flex-col gap-y-2 mb-2">
-                  <div className="text-gray-dark text-sm   flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    Core i5
-                  </div>
-                  <div className="text-gray-dark text-sm flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    Core i7
-                  </div>
-                  <div className="text-gray-dark text-sm flex items-center gap-x-2">
-                    <input
-                      type="checkbox"
-                      className="accent-first checked:text-white"
-                    />{" "}
-                    Core i3
-                  </div>
-                </div>
-                <span className="text-second text-xs">Xem thêm...</span>
-              </div>
             </div>
           </Wrapper>
           {/* DANH MỤC  */}
@@ -297,6 +169,7 @@ const ProductListComponent = ({ search }) => {
                       return (
                         <ProductCard
                           item={item}
+                          unit={"QUOMNAME"}
                           id={"PRDCCODE"}
                           name={"PRDCNAME"}
                           // reviews={""}
@@ -338,6 +211,7 @@ const ProductListComponent = ({ search }) => {
               data={productList?.slice(0, 10)}
               id={"PRDCCODE"}
               name={"PRDCNAME"}
+              unit={"QUOMNAME"}
               image={"PRDCIMGE"}
               price={"PRCEDSCN"}
               reviews={"rating"}

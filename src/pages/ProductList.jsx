@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadProduct } from "@redux/actions/commonAction";
 import ProductListComponent from "@components/productList/ProductListComponent";
 import { useSearchParams } from "react-router-dom";
+import { loadLstQUOM } from "../redux/actions/commonAction";
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const ProductList = () => {
         CUSTCODE: "%",
       })
     );
+    dispatch(loadLstQUOM());
   }, []);
 
   return <ProductListComponent search={value}></ProductListComponent>;

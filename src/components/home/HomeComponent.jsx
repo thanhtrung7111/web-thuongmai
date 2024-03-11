@@ -93,6 +93,7 @@ const HomeComponent = () => {
                 id={"PRDCCODE"}
                 name={"PRDCNAME"}
                 image={"PRDCIMGE"}
+                unit={"QUOMNAME"}
                 discount={"DSCNRATE"}
                 price={"PRCEDSCN"}
                 reviews={"rating"}
@@ -144,6 +145,7 @@ const HomeComponent = () => {
                 id={"PRDCCODE"}
                 name={"PRDCNAME"}
                 image={"PRDCIMGE"}
+                unit={"QUOMNAME"}
                 discount={"DSCNRATE"}
                 price={"PRCEDSCN"}
                 reviews={"rating"}
@@ -172,6 +174,7 @@ const HomeComponent = () => {
                 data={products?.slice(15, 30)}
                 id={"PRDCCODE"}
                 name={"PRDCNAME"}
+                unit={"QUOMNAME"}
                 image={"PRDCIMGE"}
                 discount={"DSCNRATE"}
                 price={"PRCEDSCN"}
