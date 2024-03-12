@@ -101,11 +101,25 @@ const PayDetailComponent = () => {
   const handlePlus = (id) => {
     formik.values.DETAIL.find((item) => item.PRDCCODE == id).PRDCQTTY += 1;
     formik.setFieldValue("DETAIL", formik.values.DETAIL);
+    formik.setFieldValue(
+      "SMPRQTTY",
+      formik.values.DETAIL.filter((item) => item.checked == true).reduce(
+        (value, currentValue) => value + currentValue.PRDCQTTY,
+        0
+      )
+    );
   };
 
   const handleSubstract = (id) => {
     formik.values.DETAIL.find((item) => item.PRDCCODE == id).PRDCQTTY -= 1;
     formik.setFieldValue("DETAIL", formik.values.DETAIL);
+    formik.setFieldValue(
+      "SMPRQTTY",
+      formik.values.DETAIL.filter((item) => item.checked == true).reduce(
+        (value, currentValue) => value + currentValue.PRDCQTTY,
+        0
+      )
+    );
   };
 
   const handleChangeChoose = (id) => {
@@ -193,7 +207,7 @@ const PayDetailComponent = () => {
         .filter((item) => item.checked == true)
         .reduce((value, currentValue) => value + currentValue.MNEYCRAM, 0)
     );
-  }, [productCarts, formik.values.DETAIL.length == 0]);
+  }, [formik.values.DETAIL.length == 0]);
 
   // console.log(formik.values);
 
@@ -264,23 +278,23 @@ const PayDetailComponent = () => {
                               </td>
                               <td class="px-6 py-4">
                                 <div className="flex items-center w-fit gap-x-1">
-                                  <button
+                                  <div
                                     onClick={() =>
                                       handleSubstract(item["PRDCCODE"])
                                     }
-                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark"
+                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark cursor-pointer"
                                   >
                                     -
-                                  </button>
+                                  </div>
                                   <div className="border rounded-md w-6 h-6 flex items-center justify-center text-xs text-gray-dark">
                                     {item["PRDCQTTY"]}
                                   </div>
-                                  <button
+                                  <div
                                     onClick={() => handlePlus(item["PRDCCODE"])}
-                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark"
+                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark cursor-pointer"
                                   >
                                     +
-                                  </button>
+                                  </div>
                                 </div>
                               </td>
                               <td class="px-6 py-4">
