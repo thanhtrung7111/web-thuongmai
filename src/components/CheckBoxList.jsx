@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-const CheckBoxList = ({ title, data, itemKey, itemName, onChange }) => {
+const CheckBoxList = ({
+  title,
+  data,
+  itemKey,
+  itemName,
+  onChange,
+  onRefresh,
+}) => {
   const [dataList, setDataList] = useState([]);
   const [amount, setAmount] = useState(10);
   const [extend, setExtend] = useState(true);
@@ -9,15 +16,21 @@ const CheckBoxList = ({ title, data, itemKey, itemName, onChange }) => {
     setDataList(data?.slice(0, amount));
   }, [amount, data]);
 
+  useEffect(() => {
+    const elementInput = document.querySelectorAll("input[type=checkbox]");
+    elementInput.forEach((item) => {
+      item.checked = false;
+    });
+  }, [onRefresh]);
   return (
     <div className="pb-3 border-b">
       <div className="flex items-center justify-between mb-2">
         <h5 className="text-gray-dark font-medium">{title}</h5>
         <div
-          className="hover:text-second cursor-pointer"
+          className={`hover:text-second transform transition duration-500 ease-in-out cursor-pointer ${!extend && "rotate-180"}`}
           onClick={() => setExtend(!extend)}
         >
-          <i className="ri-arrow-down-s-line"></i>
+          <i className={`ri-arrow-down-s-line`}></i>
         </div>
       </div>
       <ul

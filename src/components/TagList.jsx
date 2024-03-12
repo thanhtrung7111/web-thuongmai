@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const TagList = ({ data, tagName, tagID, onChange }) => {
   const [selected, setSelected] = useState(data[0][tagID]);
   const onclickTag = (value) => {
-    setSelected(value);
+    setSelected(value[tagID]);
     onChange(value);
   };
   return (
@@ -20,7 +20,7 @@ const TagList = ({ data, tagName, tagID, onChange }) => {
           ) : (
             <div
               className="relative text-xs text-gray-dark px-4 py-1 border w-fit rounded-sm cursor-pointer"
-              onClick={() => onclickTag(item[tagID])}
+              onClick={() => onclickTag(item)}
             >
               {item[tagName]}
             </div>

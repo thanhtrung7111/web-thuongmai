@@ -1,30 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import NoImage from "@assets/img/noimage.png";
+import ImageFetch from "../ImageFetch";
 const RowCart = ({ item, id, name, image, price, amount, handleDelete }) => {
   const [imageState, setImageState] = useState(null);
-  const test = "HELlo";
-  useEffect(() => {
-    // console.log(image);
-    async function fetchImage() {
-      await fetch(item[image], {
-        method: "GET",
-        headers: {
-          TOKEN: localStorage.getItem("tokenUser"),
-        },
-      })
-        .then((response) => {
-          // console.log(response);
-          return response.blob();
-        })
-        .then((blob) => {
-          const imageUrl = URL.createObjectURL(blob);
-          setImageState(imageUrl);
-          console.log(imageUrl);
-        });
-    }
-    fetchImage();
-  }, [image]);
   return (
     <div className="group/product grid grid-cols-[1fr_4fr] gap-x-2 text-gray-dark py-2">
       <div className="border border-gray-100 flex items-center justify-center relative overflow-hidden size-20">
@@ -36,11 +15,7 @@ const RowCart = ({ item, id, name, image, price, amount, handleDelete }) => {
             Xem chi tiết
           </NavLink>
         </div> */}
-        <img
-          src={imageState ? imageState : NoImage}
-          alt=""
-          className="object-cover object-center w-full h-full"
-        />
+        <ImageFetch url={item[image]} className={"!size-20"} />
       </div>
       <div className="flex flex-auto gap-x-10">
         <div className="flex-auto text-start flex flex-col gap-y-1">

@@ -10,7 +10,20 @@ import { useSelector } from "react-redux";
 import CheckBoxList from "../CheckBoxList";
 
 let pageSize = 20;
-
+const tagsSort = [
+  {
+    id: 0,
+    name: "Tất cả",
+  },
+  {
+    id: 1,
+    name: "Sắp xếp theo tên",
+  },
+  {
+    id: 2,
+    name: "Sắp xếp theo giá",
+  },
+];
 const ProductListComponent = ({ search }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const { products, lstQUOM } = useSelector((state) => state.common);
@@ -19,6 +32,7 @@ const ProductListComponent = ({ search }) => {
     nameSearch: "",
     lstQUOMSearch: [],
   });
+  const [refresh, setRefresh] = useState(false);
   const showMenu = () => {
     document.getElementById("filter-menu").classList.add("show-filter");
     document.getElementById("overlay").style.display = "block";
@@ -56,20 +70,44 @@ const ProductListComponent = ({ search }) => {
     setListSearch({ ...listSearch, nameSearch: e.target.value });
   };
   useEffect(() => {
+    let productSearch = products;
     if (listSearch.lstQUOMSearch.length > 0) {
-      setProductList(
-        products?.filter((item) => {
-          return (
-            listSearch.lstQUOMSearch.includes(item.QUOMCODE + "") &&
-            item?.PRDCNAME?.contains(listSearch.nameSearch)
-          );
-        })
-      );
-    } else {
-      setProductList(products);
+      productSearch = productSearch?.filter((item) => {
+        return listSearch.lstQUOMSearch.includes(item.QUOMCODE + "");
+      });
     }
+    productSearch = productSearch?.filter((item) =>
+      item?.PRDCNAME.toLowerCase().includes(listSearch.nameSearch.toLowerCase())
+    );
+    setProductList(productSearch);
     setCurrentPage(1);
   }, [listSearch]);
+
+  const handleRefresh = () => {
+    setRefresh(!refresh);
+    setListSearch({
+      nameSearch: "",
+      lstQUOMSearch: [],
+    });
+  };
+
+  const onChangeTag = (value) => {
+    console.log(value);
+    // switch (value.id) {
+    //   case 1:
+    //     setProductList([
+    //       ...productList.sort((a, b) =>
+    //         a.PRDCNAME.toLowerCase().localeCompare(b.PRDCNAME.toLowerCase())
+    //       ),
+    //     ]);
+    //     break;
+    //   case 2:
+    //     setProductList([
+    //       ...productList.sort((a, b) => a.PRCEDSCN - b.PRCEDSCN),
+    //     ]);
+    //     break;
+    // }
+  };
   return (
     <div className="product-list">
       <InfoPage data={["Danh mục sản phẩm"]} />
@@ -108,16 +146,22 @@ const ProductListComponent = ({ search }) => {
                   type="text"
                   name=""
                   id=""
-                  className="outline-none border w-full text-sm px-2 py-1"
+                  className="outline-none border w-full text-sm px-2 py-1 text-gray-dark"
                   placeholder="Tìm kiếm..."
+                  value={listSearch.nameSearch}
                   onChange={(e) => searchNameProduct(e)}
                 />
-                <div className="transform hover:rotate-180 transition duration-500 ease-in-out cursor-pointer">
+                <div
+                  className="transform hover:rotate-180 transition duration-500 ease-in-out cursor-pointer"
+                  onClick={handleRefresh}
+                  title="Làm mới bộ lọc"
+                >
                   <i className="ri-refresh-line text-xl text-gray-dark"></i>
                 </div>
               </div>
               {/* THƯƠNG HIỆU  */}
               <CheckBoxList
+                onRefresh={refresh}
                 title={"Đơn vị tính"}
                 data={lstQUOM}
                 itemName={"ITEMNAME"}
@@ -162,10 +206,10 @@ const ProductListComponent = ({ search }) => {
                   <div className="flex items-center gap-x-3 flex-wrap">
                     <span className="text-gray-dark">Sắp xếp:</span>
                     <TagList
-                      data={tagsRam}
-                      tagName={"tagName"}
-                      tagID={"tagId"}
-                      onChange={""}
+                      data={tagsSort}
+                      tagName={"name"}
+                      tagID={"id"}
+                      onChange={onChangeTag}
                     ></TagList>
                   </div>
 

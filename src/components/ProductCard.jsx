@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import { addToCart } from "@redux/actions/cartAction.js";
 import { useDispatch } from "react-redux";
 import NoImage from "@assets/img/noimage.png";
+import ImageFetch from "./ImageFetch";
 const ProductCard = ({
   item,
   id,
@@ -17,49 +18,21 @@ const ProductCard = ({
   stars,
   sold,
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const handleAddProductToCart = (e) => {
     e.preventDefault();
-    if (isLoading) return;
     dispatch(
       addToCart({
         ...item,
       })
     );
   };
-  const [imageState, setImageState] = useState(null);
-  useEffect(() => {
-    // console.log(image);
-    setIsLoading(true);
-    async function fetchImage() {
-      await fetch(item[image], {
-        method: "GET",
-        headers: {
-          TOKEN: localStorage.getItem("tokenUser"),
-        },
-      })
-        .then((response) => {
-          // console.log(response);
-          return response.blob();
-        })
-        .then((blob) => {
-          const imageUrl = URL.createObjectURL(blob);
-          setImageState(imageUrl);
-
-          setIsLoading(false);
-        });
-    }
-    fetchImage();
-  }, [item[image]]);
 
   return (
     <div
-      className={`${
-        isLoading ? "animate-pulse" : ""
-      } group/product bg-white shadow-md w-full border-t border-b border-gray-100 flex flex-col items-center`}
+      className={`group/product bg-white shadow-md w-full border-t border-b border-gray-100 flex flex-col items-center`}
     >
-      <div className="relative w-full h-40 mb-3">
+      <div className="relative w-full h-40 mb-3 overflow-hidden">
         <div className="text-xs absolute top-2 left-2 bg-slate-500 px-2 py-1 text-white z-10">
           {item[unit]}
         </div>
@@ -72,12 +45,10 @@ const ProductCard = ({
             Xem chi tiết
           </NavLink>
         </div>
-        <img
-          loading="lazy"
-          src={imageState ? imageState : NoImage}
-          alt=""
-          className="w-full h-full block object-top object-cover mb-3"
-        />
+        <ImageFetch
+          url={item[image]}
+          className={"!w-full !h-full"}
+        ></ImageFetch>
         {item[discount] > 0 && (
           <div className="absolute top-0 right-0 text-xs p-1 bg-red-700 text-white">
             -{item[discount]}%

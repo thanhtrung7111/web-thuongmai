@@ -26,6 +26,7 @@ import {
 } from "formik";
 import * as Yup from "yup";
 import { postOrder } from "../../redux/actions/orderActions";
+import ImageFetch from "../ImageFetch";
 const PayDetailComponent = () => {
   const dispatch = useDispatch();
   const [chooseAll, setChooseAll] = useState(false);
@@ -42,7 +43,7 @@ const PayDetailComponent = () => {
     lstinpCustOdMtPayMthd2,
     lstTimeType,
   } = useSelector((state) => state.common);
-  console.log(productCarts);
+  // console.log(productCarts);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -98,36 +99,35 @@ const PayDetailComponent = () => {
   });
 
   const handlePlus = (id) => {
-    console.log(id);
-    dispatch(increamentAmountProduct({ id: id }));
+    formik.values.DETAIL.find((item) => item.PRDCCODE == id).PRDCQTTY += 1;
+    formik.setFieldValue("DETAIL", formik.values.DETAIL);
   };
 
   const handleSubstract = (id) => {
-    dispatch(decreamentAmountProduct({ id: id }));
+    formik.values.DETAIL.find((item) => item.PRDCCODE == id).PRDCQTTY -= 1;
+    formik.setFieldValue("DETAIL", formik.values.DETAIL);
   };
 
   const handleChangeChoose = (id) => {
-    dispatch(chooseProduct({ id: id }));
-    const productFind = productCarts.find((item) => item.PRDCCODE == id);
-    console.log(productFind);
-    if (!productFind.choose) {
-      formik.setFieldValue("DETAIL", [...formik.values.DETAIL, productFind]);
-    } else {
-      formik.setFieldValue(
-        "DETAIL",
-        formik.values.DETAIL.filter((item) => item.PRDCCODE != id)
-      );
-    }
+    formik.values.DETAIL.find((item) => item.PRDCCODE == id).checked =
+      !formik.values.DETAIL.find((item) => item.PRDCCODE == id).checked;
+    formik.setFieldValue("DETAIL", formik.values.DETAIL);
   };
 
   const handleClickAllProduct = () => {
-    dispatch(chooseAllProduct(!chooseAll));
     setChooseAll(!chooseAll);
     if (!chooseAll) {
-      formik.setFieldValue("DETAIL", productCarts);
+      formik.values.DETAIL = formik.values.DETAIL.map((item) => ({
+        ...item,
+        checked: true,
+      }));
     } else {
-      formik.setFieldValue("DETAIL", []);
+      formik.values.DETAIL = formik.values.DETAIL.map((item) => ({
+        ...item,
+        checked: false,
+      }));
     }
+    formik.setFieldValue("DETAIL", formik.values.DETAIL);
   };
 
   const handleDeleteProduct = (id) => {
@@ -135,6 +135,13 @@ const PayDetailComponent = () => {
   };
 
   const changeForm = () => {
+    formik.setFieldValue(
+      "SMPRQTTY",
+      formik.values.DETAIL.filter((item) => item.checked == true).reduce(
+        (value, currentValue) => value + currentValue.PRDCQTTY,
+        0
+      )
+    );
     formik.setFieldValue(
       "RDTNCRAM",
       formik.values.SUM_CRAM * formik.values.RDTNRATE
@@ -153,37 +160,43 @@ const PayDetailComponent = () => {
   };
 
   useEffect(() => {
-    const detail = productCarts
-      .filter((item) => item.choose == true)
-      .map((item) => {
-        return {
-          PRDCCODE: item.PRDCCODE, //Mã sản phẩm
-          ORGNCODE: "1", //Nguồn sản phẩm
-          SORTCODE: "1", //Phân loại sản phẩm
-          QUOMCODE: item.QUOMCODE, //Đơn vị tính
-          QUOMQTTY: item.quantity, //Số lượng
-          CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
-          MNEYCRAM: item.PRCEDSCN * item.quantity, //Thành tiền
-          DISCRATE: 0, //%Chiết khấu
-          DCPRCRAM: 0, //Tiền giảm CK
-          PRDCQTTY: item.quantity, //Số lượng qui đổi
-          SALEPRCE: item.PRCEDSCN, //Đơn giá qui đổi
-          MNEYAMNT: item.PRCEDSCN * item.quantity, //Thành tiền qui đổi
-          DCPRAMNT: 0, //Tiền giảm CK qui đổi
-        };
-      });
+    const detail = productCarts.map((item) => {
+      return {
+        checked: false,
+        PRDCCODE: item.PRDCCODE, //Mã sản phẩm
+        PRDCNAME: item.PRDCNAME,
+        ORGNCODE: "1", //Nguồn sản phẩm
+        SORTCODE: "1", //Phân loại sản phẩm
+        QUOMCODE: item.QUOMCODE, //Đơn vị tính
+        QUOMQTTY: 1, //Số lượng
+        CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
+        MNEYCRAM: item.PRCEDSCN, //Thành tiền
+        PRDCIMGE: item.PRDCIMGE,
+        DISCRATE: 0, //%Chiết khấu
+        DCPRCRAM: 0, //Tiền giảm CK
+        PRDCQTTY: 1, //Số lượng qui đổi
+        SALEPRCE: item.PRCEDSCN, //Đơn giá qui đổi
+        MNEYAMNT: item.PRCEDSCN * item.quantity, //Thành tiền qui đổi
+        DCPRAMNT: 0, //Tiền giảm CK qui đổi
+      };
+    });
     formik.setFieldValue("DETAIL", detail);
     formik.setFieldValue(
       "SMPRQTTY",
-      detail.reduce((value, currentValue) => value + currentValue.PRDCQTTY, 0)
+      detail
+        .filter((item) => item.checked == true)
+        .reduce((value, currentValue) => value + currentValue.PRDCQTTY, 0)
     );
     formik.setFieldValue(
       "SUM_CRAM",
-      detail.reduce((value, currentValue) => value + currentValue.MNEYCRAM, 0)
+      detail
+        .filter((item) => item.checked == true)
+        .reduce((value, currentValue) => value + currentValue.MNEYCRAM, 0)
     );
-  }, [productCarts, chooseAll]);
+  }, [productCarts, formik.values.DETAIL.length == 0]);
 
-  console.log(formik.values);
+  // console.log(formik.values);
+
   return isLoadingCommon ? (
     <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
       <LoadingView></LoadingView>
@@ -191,160 +204,123 @@ const PayDetailComponent = () => {
   ) : (
     <div className="product-detail">
       <InfoPage data={["Giỏ hàng", "Thanh toán và đặt hàng"]} />
-
-      <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
-        <div
-          style={{ marginBottom: "10px" }}
-          className="shadow-md border-t border-gray-200 h-[500px] overflow-y-scroll"
+      <FormikProvider value={formik}>
+        <Form
+          onSubmit={formik.handleSubmit}
+          onChange={() => {
+            changeForm();
+          }}
         >
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-600 bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
-              <th class="px-6 py-3 uppercase">
-                <input
-                  type="checkbox"
-                  className="accent-first border-gray-light"
-                  onClick={handleClickAllProduct}
-                  value={chooseAll}
-                />{" "}
-                Tất cả
-              </th>
+          <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
+            <div
+              style={{ marginBottom: "10px" }}
+              className="shadow-md border-t border-gray-200 h-[500px]"
+            >
+              <div className="overflow-y-scroll h-full">
+                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                  <thead class="text-xs text-gray-600 bg-gray-50 dark:text-gray-400 sticky top-0">
+                    <th class="px-6 py-3 uppercase text-gray-dark">
+                      <input
+                        type="checkbox"
+                        className="accent-first border-gray-light"
+                        onClick={handleClickAllProduct}
+                        value={chooseAll}
+                      />{" "}
+                      Tất cả
+                    </th>
 
-              <th class="px-6 py-3 uppercase">Số lượng</th>
-              <th class="px-6 py-3 uppercase">Đơn giá</th>
-              <th class="px-6 py-3 uppercase">Thành tiền</th>
-              <th class="px-6 py-3 w-fit uppercase">Xóa tất cả</th>
-            </thead>
+                    <th class="px-6 py-3 uppercase">Số lượng</th>
+                    <th class="px-6 py-3 uppercase">Đơn giá</th>
+                    <th class="px-6 py-3 uppercase">Thành tiền</th>
+                    <th class="px-6 py-3 w-fit uppercase">Xóa tất cả</th>
+                  </thead>
 
-            <tbody>
-              {productCarts?.length >= 1
-                ? productCarts.map((item) => {
-                    // const [imageState, setImageState] = useState(null);
-                    // async function fetchImage() {
-                    //   await fetch(item["PRDCIMGE"], {
-                    //     method: "GET",
-                    //     headers: {
-                    //       TOKEN: localStorage.getItem("tokenUser"),
-                    //     },
-                    //   })
-                    //     .then((response) => {
-                    //       // console.log(response);
-                    //       return response.blob();
-                    //     })
-                    //     .then((blob) => {
-                    //       setImageState(URL.createObjectURL(blob));
-                    //     });
-                    // }
-                    // fetchImage();
-                    // console.log(imageState);
-                    return (
-                      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                        <td
-                          scope="row"
-                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                          <div className="flex items-center gap-x-2 w-fit">
-                            <input
-                              type="checkbox"
-                              className="accent-first border-gray-light"
-                              checked={item.choose}
-                              onClick={() =>
-                                handleChangeChoose(item["PRDCCODE"])
-                              }
-                            />
-                            <img
-                              src={""}
-                              alt=""
-                              className="w-20 h-16 object-cover object-center border p-[1px]"
-                            />
-                            <span className="text-gray-dark text-wrap lg:w-60 line-clamp-2 w-0">
-                              {item["PRDCNAME"]}
-                            </span>
-                          </div>
-                        </td>
-                        <td class="px-6 py-4">
-                          <div className="flex items-center w-fit gap-x-1">
-                            <button
-                              onClick={() => handleSubstract(item["PRDCCODE"])}
-                              className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark"
-                            >
-                              -
-                            </button>
-                            <div className="border rounded-md w-6 h-6 flex items-center justify-center text-xs text-gray-dark">
-                              {item["quantity"]}
-                            </div>
-                            <button
-                              onClick={() => handlePlus(item["PRDCCODE"])}
-                              className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark"
-                            >
-                              +
-                            </button>
-                          </div>
-                        </td>
-                        <td class="px-6 py-4">
-                          <div className="font-semibold">
-                            {item["PRCEDSCN"]}{" "}
-                            <span className="text-xs">đ</span>
-                          </div>
-                        </td>
-                        <td class="px-6 py-4">
-                          <div className="font-semibold">
-                            {item["PRCEDSCN"] * item["quantity"]}{" "}
-                            <span className="text-xs">đ</span>
-                          </div>
-                        </td>
-                        <td class="px-6 py-4">
-                          <div
-                            className="text-white bg-red-500 w-fit px-2 py-1 rounded-md text-xs cursor-pointer"
-                            onClick={() =>
-                              handleDeleteProduct(item["PRDCCODE"])
-                            }
-                          >
-                            Xóa
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                : "Bạn chưa có sản phẩm nào trong giỏ hàng"}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="">
-          <div
-            className="bg-white shadow-md border-gray-100"
-            style={{ marginBottom: "7px" }}
-          >
-            <div className="px-5 py-3 flex items-center justify-between">
-              <div className="text-sm text-gray-dark font-semibold">
-                Khuyến mãi:
+                  <tbody>
+                    {formik.values.DETAIL?.length >= 1
+                      ? formik.values.DETAIL.map((item) => {
+                          return (
+                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                              <td
+                                scope="row"
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                              >
+                                <div className="flex items-center gap-x-2 w-fit">
+                                  <input
+                                    type="checkbox"
+                                    className="accent-first border-gray-light"
+                                    checked={item["checked"]}
+                                    onClick={() =>
+                                      handleChangeChoose(item["PRDCCODE"])
+                                    }
+                                  />
+                                  <ImageFetch
+                                    url={item["PRDCIMGE"]}
+                                    className={"!size-20"}
+                                  ></ImageFetch>
+                                  <span className="text-gray-dark text-wrap lg:w-60 line-clamp-2 w-0">
+                                    {item["PRDCNAME"]}
+                                  </span>
+                                </div>
+                              </td>
+                              <td class="px-6 py-4">
+                                <div className="flex items-center w-fit gap-x-1">
+                                  <button
+                                    onClick={() =>
+                                      handleSubstract(item["PRDCCODE"])
+                                    }
+                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark"
+                                  >
+                                    -
+                                  </button>
+                                  <div className="border rounded-md w-6 h-6 flex items-center justify-center text-xs text-gray-dark">
+                                    {item["PRDCQTTY"]}
+                                  </div>
+                                  <button
+                                    onClick={() => handlePlus(item["PRDCCODE"])}
+                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark"
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </td>
+                              <td class="px-6 py-4">
+                                <div className="font-semibold">
+                                  {item["SALEPRCE"]}{" "}
+                                  <span className="text-xs">đ</span>
+                                </div>
+                              </td>
+                              <td class="px-6 py-4">
+                                <div className="font-semibold">
+                                  {item["SALEPRCE"] * item["PRDCQTTY"]}{" "}
+                                  <span className="text-xs">đ</span>
+                                </div>
+                              </td>
+                              <td class="px-6 py-4">
+                                <div
+                                  className="text-white bg-red-500 w-fit px-2 py-1 rounded-md text-xs cursor-pointer"
+                                  onClick={() =>
+                                    handleDeleteProduct(item["PRDCCODE"])
+                                  }
+                                >
+                                  Xóa
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      : "Bạn chưa có sản phẩm nào trong giỏ hàng"}
+                  </tbody>
+                </table>
               </div>
-              <select
-                name=""
-                id=""
-                className="outline-none border px-2 py-1 text-sm text-gray-dark"
-              >
-                <option value="" className="">
-                  Khuyến mãi 100%
-                </option>
-                <option value="">Khuyến mãi 80%</option>
-                <option value="">Khuyến mãi 70%</option>
-              </select>
             </div>
-          </div>
 
-          <div className="bg-white shadow-md border-t border-gray-100">
-            <div className="px-3 py-5">
-              <h5 className="font-medium text-gray-dark mb-3">
-                Thông tin đơn hàng
-              </h5>
-              <FormikProvider value={formik}>
-                <Form
-                  onSubmit={formik.handleSubmit}
-                  onChange={() => {
-                    changeForm;
-                  }}
-                >
+            <div className="grid grid-cols-[3fr_1fr] gap-x-4">
+              <Wrapper>
+                <div className="px-3 py-5">
+                  <h5 className="font-medium text-gray-dark mb-3">
+                    Thông tin đơn hàng
+                  </h5>
+
                   <div className="grid grid-cols-3 gap-3 mb-5 px-5">
                     <div className="flex flex-col gap-y-3">
                       {/* TÊn người dùng  */}
@@ -385,20 +361,6 @@ const PayDetailComponent = () => {
                         value={formik.values.DCMNSBCD}
                       ></Combobox>
 
-                      {/* Tổng tiền  */}
-                      <Input
-                        name="SUM_CRAM"
-                        title={"Tổng tiền"}
-                        value={formik.values.SUM_CRAM}
-                      ></Input>
-
-                      {/* Tổng số lượng  */}
-                      <Input
-                        name="SMPRQTTY"
-                        title={"Tổng số lượng"}
-                        value={formik.values.SMPRQTTY}
-                      ></Input>
-
                       {/* %Chiết khấu  */}
                       <Input
                         value={formik.values.RDTNRATE}
@@ -406,16 +368,6 @@ const PayDetailComponent = () => {
                         title={"%Chiết khấu"}
                         type="number"
                       ></Input>
-
-                      {/* Tiền chiết khấu */}
-                      <Input
-                        value={formik.values.RDTNCRAM}
-                        name="RDTNCRAM"
-                        title={"Tiền chiết khấu"}
-                        // type={"number"}
-                      ></Input>
-                    </div>
-                    <div className="flex flex-col gap-y-3">
                       {/* Huê hồng khách hàng */}
                       <Input
                         value={formik.values.CSCMRATE}
@@ -423,7 +375,8 @@ const PayDetailComponent = () => {
                         title={"Huê hồng khách hàng"}
                         // type={"number"}
                       ></Input>
-
+                    </div>
+                    <div className="flex flex-col gap-y-3">
                       {/* Mã số thuế */}
                       <Input
                         value={formik.values.TAX_CODE}
@@ -437,14 +390,6 @@ const PayDetailComponent = () => {
                         value={formik.values.VAT_RATE}
                         name="VAT_RATE"
                         title={"Thuế xuất"}
-                        // type={"number"}
-                      ></Input>
-
-                      {/* Tiền thuế */}
-                      <Input
-                        value={formik.values.VAT_CRAM}
-                        name="VAT_CRAM"
-                        title={"Tiền thuế"}
                         // type={"number"}
                       ></Input>
 
@@ -484,7 +429,6 @@ const PayDetailComponent = () => {
                         itemName={"ITEMNAME"}
                         title="Giờ giao hàng"
                       ></Combobox>
-
                       {/* Nơi giao hàng */}
                       <Input
                         value={formik.values.DLVRPLCE}
@@ -515,34 +459,6 @@ const PayDetailComponent = () => {
                         value={formik.values.RCVR_TEL}
                         name="RCVR_TEL"
                         title={"Số điện thoại người nhận"}
-                        // type={"number"}
-                      ></Input>
-
-                      {/* Phương thức thanh toán  */}
-                      <Combobox
-                        data={lstinpCustOdMtPayMthd2}
-                        value={formik.values.PAY_MTHD}
-                        itemKey={"ITEMCODE"}
-                        itemName={"ITEMNAME"}
-                        name="PAY_MTHD"
-                        title="Phương thức thanh toán"
-                      ></Combobox>
-
-                      {/*Chu kì thanh toán  */}
-                      <Combobox
-                        data={lstTimeType}
-                        value={formik.values.PYMNPERD}
-                        itemKey={"ITEMCODE"}
-                        itemName={"ITEMNAME"}
-                        name="PYMNPERD"
-                        title="Chu kì thanh toán"
-                      ></Combobox>
-
-                      {/* Thời hạn thanh toán*/}
-                      <Input
-                        value={formik.values.PYMNNUMB}
-                        name="PYMNNUMB"
-                        title={"Thời hạn thanh toán"}
                         // type={"number"}
                       ></Input>
 
@@ -601,6 +517,70 @@ const PayDetailComponent = () => {
                       </div>
                     </div>
                   </div> */}
+                </div>
+              </Wrapper>
+              <Wrapper>
+                <div className="p-5">
+                  <h5 className="font-medium text-gray-dark mb-3">
+                    Thanh toán
+                  </h5>
+                  <div className="flex flex-col gap-y-3 mb-3">
+                    {/* Tổng số lượng  */}
+                    <Input
+                      name="SMPRQTTY"
+                      title={"Tổng số lượng"}
+                      value={formik.values.SMPRQTTY}
+                    ></Input>
+                    {/* Tổng tiền  */}
+                    <Input
+                      name="SUM_CRAM"
+                      title={"Tổng tiền"}
+                      value={formik.values.SUM_CRAM}
+                    ></Input>
+
+                    {/* Tiền chiết khấu */}
+                    <Input
+                      value={formik.values.RDTNCRAM}
+                      name="RDTNCRAM"
+                      title={"Tiền chiết khấu"}
+                      // type={"number"}
+                    ></Input>
+
+                    {/* Tiền thuế */}
+                    <Input
+                      value={formik.values.VAT_CRAM}
+                      name="VAT_CRAM"
+                      title={"Tiền thuế"}
+                      // type={"number"}
+                    ></Input>
+                    {/* Phương thức thanh toán  */}
+                    <Combobox
+                      data={lstinpCustOdMtPayMthd2}
+                      value={formik.values.PAY_MTHD}
+                      itemKey={"ITEMCODE"}
+                      itemName={"ITEMNAME"}
+                      name="PAY_MTHD"
+                      title="Phương thức thanh toán"
+                    ></Combobox>
+
+                    {/*Chu kì thanh toán  */}
+                    <Combobox
+                      data={lstTimeType}
+                      value={formik.values.PYMNPERD}
+                      itemKey={"ITEMCODE"}
+                      itemName={"ITEMNAME"}
+                      name="PYMNPERD"
+                      title="Chu kì thanh toán"
+                    ></Combobox>
+
+                    {/* Thời hạn thanh toán*/}
+                    <Input
+                      value={formik.values.PYMNNUMB}
+                      name="PYMNNUMB"
+                      title={"Thời hạn thanh toán"}
+                      // type={"number"}
+                    ></Input>
+                  </div>
                   <div className="flex items-center gap-x-2 justify-end">
                     <button
                       type="submit"
@@ -612,25 +592,23 @@ const PayDetailComponent = () => {
                       Thanh toán
                     </button>
                   </div>
-                </Form>
-              </FormikProvider>
+                </div>
+              </Wrapper>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
-        <Wrapper>
-          <div className="p-5">
-            <div className="flex items-center justify-between mb-5">
-              <h4 className="font-semibold text-2xl text-first">
-                Sản phẩm bán chạy
-              </h4>
-              <a href="#" className="text-gray-light">
-                Xem thêm <i className="ri-arrow-right-s-line"></i>
-              </a>
-            </div>
-            {/* <ProductSlider
+          <div className="mx-5 xl:container xl:mx-auto mb-5">
+            <Wrapper>
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-5">
+                  <h4 className="font-semibold text-2xl text-first">
+                    Sản phẩm bán chạy
+                  </h4>
+                  <a href="#" className="text-gray-light">
+                    Xem thêm <i className="ri-arrow-right-s-line"></i>
+                  </a>
+                </div>
+                {/* <ProductSlider
               data={products?.slice(5, 30)}
               id="PRDCCODE"
               name={"PRDCNAME"}
@@ -641,9 +619,11 @@ const PayDetailComponent = () => {
               saleOff={""}
               sold={""}
             ></ProductSlider> */}
+              </div>
+            </Wrapper>
           </div>
-        </Wrapper>
-      </div>
+        </Form>
+      </FormikProvider>
     </div>
   );
 };
