@@ -3,14 +3,45 @@ import { useDispatch, useSelector } from "react-redux";
 import { closeDetailOrder } from "../../redux/reducer/popupReducer";
 import LoadingView from "@components/LoadingView";
 import Asus from "@assets/img/asus.jpg";
+import {
+  loadCUOM,
+  loadDcmnSbCd,
+  loadDlvrMthd,
+  loadDlvrType,
+  loadListHour,
+  loadTimeType,
+  loadinpCustOdMtPayMthd2,
+} from "../../redux/actions/commonAction";
+import moment from "moment";
 const DetailOrder = () => {
   const dispatch = useDispatch();
   const [detailOrderData, setDetailOrderData] = useState(null);
   const { showDetailOrder } = useSelector((state) => state.popup);
   const { orderDetail, isLoadingOrder } = useSelector((state) => state.order);
+  const {
+    lstCUOM,
+    lstTimeType,
+    lstDlvrType,
+    lstDlvrMthd,
+    lstListHour,
+    lstinpCustOdMtPayMthd2,
+    lstDcmnSbCd,
+  } = useSelector((state) => state.common);
+  const { currentUser } = useSelector((state) => state.user);
   const closeScreen = () => {
     dispatch(closeDetailOrder());
   };
+  useEffect(() => {
+    if (currentUser) {
+      dispatch(loadDlvrType());
+      dispatch(loadCUOM());
+      dispatch(loadTimeType());
+      dispatch(loadDlvrMthd());
+      dispatch(loadListHour());
+      dispatch(loadinpCustOdMtPayMthd2());
+      dispatch(loadDcmnSbCd());
+    }
+  }, [showDetailOrder.open == true]);
   return (
     <div
       className={`${
@@ -22,7 +53,7 @@ const DetailOrder = () => {
         onClick={closeScreen}
       ></div>
       <div
-        className={`w-[800px] bg-white rounded-md shadow-sm z-50 mt-20 -translate-y-[120%] ${
+        className={`w-[800px] bg-white rounded-md shadow-sm z-50 mt-10 -translate-y-[120%] ${
           showDetailOrder.open && "!translate-y-0"
         } transition-transform duration-300 h-fit overflow-hidden`}
       >
@@ -32,7 +63,7 @@ const DetailOrder = () => {
             #{isLoadingOrder ? "..." : orderDetail?.ODERCODE}
           </span>
         </h5>
-        <div className="p-5 min-h-36 max-h-[600px] overflow-y-scroll">
+        <div className="p-5 min-h-36 max-h-[750px] overflow-y-scroll">
           {isLoadingOrder ? (
             <LoadingView></LoadingView>
           ) : (
@@ -100,6 +131,117 @@ const DetailOrder = () => {
               <div className="px-2 mb-3">
                 <h5 className="text-gray-dark text-base font-medium mb-1">
                   {" "}
+                  <i class="ri-file-info-line text-base"></i> Thông tin đơn
+                  hàng:
+                </h5>
+                <div className="grid grid-cols-2 text-gray-dark text-sm gap-x-2 ml-10">
+                  <div className="flex flex-col gap-y-2">
+                    <p>
+                      <span>Tên khách hàng: </span>
+                      {orderDetail?.MCUSTNME}
+                    </p>
+                    <p>
+                      <span>Loại tiền tệ: </span>
+                      {
+                        lstCUOM?.find(
+                          (item) => item.ITEMCODE == orderDetail?.CUOMCODE
+                        )?.ITEMNAME
+                      }
+                    </p>
+                    <p>
+                      <span>Tỉ giá: </span>
+                      {orderDetail?.CUOMRATE}
+                    </p>
+                    <p>
+                      <span>Phương thức vận chuyển: </span>
+                      {
+                        lstDlvrType?.find(
+                          (item) => item.ITEMCODE == orderDetail?.DLVRTYPE
+                        )?.ITEMNAME
+                      }
+                    </p>
+                    <p>
+                      <span>Ngày giao hàng: </span>
+                      {moment(orderDetail?.DLVRDATE).format("DD/MM/yyyy")}
+                    </p>
+                    <p>
+                      <span>Nơi giao hàng: </span>
+                      {orderDetail?.DLVRPLCE}
+                    </p>{" "}
+                    <p>
+                      <span>Chu kì thanh toán: </span>
+                      {
+                        lstTimeType?.find(
+                          (item) => item.ITEMCODE == orderDetail?.PYMNPERD
+                        )?.ITEMNAME
+                      }
+                    </p>
+                    <p>
+                      <span>Thời hạn thanh toán: </span>
+                      {orderDetail?.PYMNNUMB}
+                    </p>
+                    <p>
+                      <span>Phương thức giao hàng: </span>
+                      {
+                        lstDlvrMthd?.find(
+                          (item) => item.ITEMCODE == orderDetail?.DLVRMTHD
+                        )?.ITEMNAME
+                      }
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-y-2">
+                    <p>
+                      <span>Mã số thuế: </span>
+                      {orderDetail?.TAX_CODE}
+                    </p>
+                    <p>
+                      <span>Người nhận hàng: </span>
+                      {orderDetail?.RCVREMPL}
+                    </p>
+
+                    <p>
+                      <span>Giờ giao: </span>
+                      {
+                        lstListHour?.find(
+                          (item) => item.ITEMCODE == orderDetail?.DLVRHOUR
+                        )?.ITEMNAME
+                      }
+                      h
+                    </p>
+                    <p>
+                      <span>Phương thức thanh toán: </span>
+                      {
+                        lstinpCustOdMtPayMthd2?.find(
+                          (item) => item.ITEMCODE == orderDetail?.PAY_MTHD
+                        )?.ITEMNAME
+                      }
+                    </p>
+                    <p>
+                      <span>Loại bán hàng: </span>
+                      {
+                        lstDcmnSbCd?.find(
+                          (item) => item.ITEMCODE == orderDetail?.DCMNSBCD
+                        )?.ITEMNAME
+                      }
+                    </p>
+                    <p>
+                      <span>Địa chỉ khách hàng: </span>
+                      {orderDetail?.CUSTADDR}
+                    </p>
+                    <p>
+                      <span>%Huê hồng: </span>
+                      {orderDetail?.CSCMRATE}%
+                    </p>
+                    <p>
+                      <span>%Chiết khấu: </span>
+                      {orderDetail?.RDTNRATE}%
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="px-2 mb-3">
+                <h5 className="text-gray-dark text-base font-medium mb-1">
+                  {" "}
                   <i class="ri-map-pin-line text-base"></i> Địa chỉ giao hàng:
                 </h5>
                 <div className="flex text-gray-dark text-sm gap-x-2 ml-10">
@@ -158,7 +300,6 @@ const DetailOrder = () => {
                       <i class="ri-money-dollar-circle-line"></i> Thuế(VAT):
                     </span>
                     <span className="text-second">
-                      +
                       {orderDetail?.VAT_CRAM?.toLocaleString("vi", {
                         style: "currency",
                         currency: "VND",
@@ -170,7 +311,6 @@ const DetailOrder = () => {
                       <i class="ri-money-dollar-circle-line"></i> Giao hàng:
                     </span>
                     <span className="text-second">
-                      +
                       {orderDetail?.SUM_AMNT?.toLocaleString("vi", {
                         style: "currency",
                         currency: "VND",
@@ -183,7 +323,6 @@ const DetailOrder = () => {
                       voucher:
                     </span>
                     <span className="text-second">
-                      -
                       {orderDetail?.SUM_AMNT?.toLocaleString("vi", {
                         style: "currency",
                         currency: "VND",

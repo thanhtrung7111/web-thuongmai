@@ -78,7 +78,6 @@ apiFetchData.interceptors.response.use(
     if (error.response.status === 401) {
       store.dispatch(openAppNotify({ link: "33432" }));
     } else if (error.response?.status === 500) {
-      console.log("Hello");
       window.location.href = "http://localhost:5173/error";
     }
     return error;

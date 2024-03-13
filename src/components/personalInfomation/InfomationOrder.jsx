@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { openDetailOrder } from "../../redux/reducer/popupReducer";
 import { getAllOrder, getOrderDetail } from "../../redux/actions/orderActions";
 import LoadingView from "@components/LoadingView";
+import { loadCUOM, loadTimeType } from "../../redux/actions/commonAction";
 const menu = [
   { tabId: 1, nameTab: "Tất cả" },
   { tabId: 2, nameTab: "Chờ xác nhận" },
@@ -75,6 +76,7 @@ const InfomationOrder = () => {
         KEY_CODE: id,
       })
     );
+
     dispatch(openDetailOrder());
   };
   const [isLoading, setIsLoading] = useState(true);

@@ -63,14 +63,13 @@ const RowOrder = ({
         DCMNCODE: "DDHKH",
         KEY_CODE: id,
       };
-      const result = await fetchDataDetail(body)
+      await fetchDataDetail(body)
         .then((res) => {
-          return res?.data?.RETNDATA[0];
+          setDetailOrder(res?.data?.RETNDATA[0]);
         })
         .catch((e) => {
           console.log(e);
         });
-      setDetailOrder(result);
     }
     fetchDetail();
   }, [id]);

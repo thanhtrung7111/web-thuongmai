@@ -42,9 +42,9 @@ function App() {
   ]);
   return (
     <div className={`font-sans`}>
-      <DetailOrder></DetailOrder>
-      <EvaluateProduct></EvaluateProduct>
       <BrowserRouter>
+        <DetailOrder></DetailOrder>
+        <EvaluateProduct></EvaluateProduct>
         <AppNotifycation></AppNotifycation>
         <Routes>
           <Route element={<AppLogin></AppLogin>}>
