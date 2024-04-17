@@ -3,7 +3,6 @@ import Wrapper from "@components/Wrapper";
 import Asus from "@assets/img/asus.jpg";
 import ProductSlider from "@components/ProductSlider";
 import InfoPage from "@components/InfoPage";
-import LoadingView from "@components/LoadingView";
 import { useDispatch, useSelector } from "react-redux";
 import {
   decreamentAmountProduct,
@@ -27,11 +26,21 @@ import {
 import * as Yup from "yup";
 import { postOrder } from "../../redux/actions/orderActions";
 import ImageFetch from "../ImageFetch";
+import { useNavigate } from "react-router-dom";
+import hmacSHA512 from "crypto-js/hmac-sha512";
+import Base64 from "crypto-js/enc-hex";
+import LoadingView from "../../pages/LoadingView";
+import axios from "axios";
+import { HmacSHA256 } from "crypto-js";
 const PayDetailComponent = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [stateButton, setStateButton] = useState("order");
   const [chooseAll, setChooseAll] = useState(false);
   const { productCarts } = useSelector((state) => state.cart);
   const { currentUser } = useSelector((state) => state.user);
+  const { showAlert } = useSelector((state) => state.popup);
   const {
     isLoadingCommon,
     products,
@@ -43,6 +52,7 @@ const PayDetailComponent = () => {
     lstinpCustOdMtPayMthd2,
     lstTimeType,
   } = useSelector((state) => state.common);
+  const [loading, setLoading] = useState(true);
   // console.log(productCarts);
   const formik = useFormik({
     enableReinitialize: true,
@@ -92,11 +102,112 @@ const PayDetailComponent = () => {
       DLVRMTHD: Yup.string().required("Không để trống phân loại"),
     }),
     onSubmit: (value) => {
-      const body = { ...value };
-      console.log(body);
-      dispatch(postOrder({ DCMNCODE: "DDHKH", HEADER: [body] }));
+      console.log(value);
+      switch (stateButton) {
+        case "payment":
+          console.log("payment");
+          handlePayment();
+          break;
+        case "order":
+          console.log("order");
+          // const body = { ...value };
+          // console.log(body);
+          // dispatch(postOrder({ DCMNCODE: "DDHKH", HEADER: [body] }));
+          break;
+        case "vietqr":
+          console.log("order");
+          handleQR();
+          break;
+        default:
+          break;
+      }
     },
   });
+
+  const handleQR = async () => {
+    // const body = {
+    //   orderCode: new Date(Date.now()).getTime(),
+    //   amount: 10000,
+    //   description: "VQRIO" + new Date(Date.now()).getTime(),
+    //   buyerAddress: "số nhà, đường, phường, tỉnh hoặc thành phố",
+    //   items: [],
+    //   cancelUrl: "http://localhost:5173/promotion",
+    //   returnUrl: "http://localhost:5173/promotion",
+    //   expiredAt: Math.floor(
+    //     (new Date(Date.now()).getTime() + 15 * 60000 + 7 * 3600 * 1000) / 1000
+    //   ),
+    //   template: "compact",
+    // };
+    // const query = `amount=${body.amount}&cancelUrl=${body.cancelUrl}&description=${body.description}&orderCode=${body.orderCode}&returnUrl=${body.returnUrl}`;
+    // const hmac = Base64.stringify(
+    //   HmacSHA256(
+    //     query,
+    //     "dff2b663051b6bc4d07668b7c4e7a4f7f7365540fb8db84055b26156739a56e6"
+    //   )
+    // );
+    // const data = await axios
+    //   .post(
+    //     "https://api-merchant.payos.vn/v2/payment-requests",
+    //     { ...body, signature: hmac },
+    //     {
+    //       headers: {
+    //         "x-client-id": "b8a76f89-11ab-4065-b0d8-bb3df22a7f58",
+    //         "x-api-key": "57420532-9fb3-4c6f-89f9-d009a4859076",
+    //       },
+    //     }
+    //   )
+    //   .then((resp) => resp.data)
+    //   .catch((e) => console.log(e));
+    // console.log(data);
+  };
+
+  const handlePayment = async () => {
+    // let i = crypto
+    //   .createHmac("sha512", "KLGVGJQNZFBFRMFLTDAFTOHKUDKGZIQU")
+    //   .update(new Buffer(signData, "utf-8").digest("hex"));
+    const vnp_SecureHash = "KLGVGJQNZFBFRMFLTDAFTOHKUDKGZIQU";
+
+    const ip = await fetch("https://api.ipify.org?format=json")
+      .then((response) => response.json())
+      .then((data) => data.ip)
+      .catch((error) => console.log(error));
+
+    const objecVNP = {
+      vnp_Amount: "1806000",
+      vnp_BankCode: "ncb",
+      vnp_Command: "pay",
+      vnp_CreateDate: moment(new Date()).format("yyyyMMDDHHmmss"),
+      vnp_CurrCode: "VND",
+      vnp_IpAddr: ip,
+      vnp_Locale: "vn",
+      vnp_OrderInfo: encodeURIComponent("Thanh toan hoa don").replaceAll(
+        "%20",
+        "+"
+      ),
+      vnp_OrderType: "other",
+      vnp_ReturnUrl: encodeURIComponent("http://localhost:5173/pay-success"),
+      vnp_TmnCode: "PH24SM6K",
+      vnp_TxnRef: "1211",
+      vnp_Version: "2.1.0",
+    };
+
+    let resultArray = [];
+    Object.keys(objecVNP).forEach((item) => {
+      resultArray.push(item + "=" + objecVNP[item]);
+    });
+    const query = resultArray.join("&");
+    console.log(query);
+    const hmac = Base64.stringify(hmacSHA512(query, vnp_SecureHash));
+    console.log(hmac);
+    let url =
+      "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?" +
+      query +
+      "&vnp_SecureHash=" +
+      hmac;
+    window.open(url, "_blank");
+    console.log("hello");
+    navigate("/");
+  };
 
   const handlePlus = (id) => {
     formik.values.DETAIL.find((item) => item.PRDCCODE == id).PRDCQTTY += 1;
@@ -145,6 +256,8 @@ const PayDetailComponent = () => {
   };
 
   const handleDeleteProduct = (id) => {
+    const result = formik.values.DETAIL.filter((item) => item.PRDCCODE != id);
+    formik.setFieldValue("DETAIL", result);
     dispatch(deleteProductFromCart({ id: id }));
   };
 
@@ -210,13 +323,16 @@ const PayDetailComponent = () => {
   }, [formik.values.DETAIL.length == 0]);
 
   // console.log(formik.values);
-
-  return isLoadingCommon ? (
+  useEffect(() => {
+    setLoading(isLoadingCommon);
+  }, [isLoadingCommon]);
+  return loading ? (
     <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
       <LoadingView></LoadingView>
     </div>
   ) : (
     <div className="product-detail">
+      <img src="" alt="" />
       <InfoPage data={["Giỏ hàng", "Thanh toán và đặt hàng"]} />
       <FormikProvider value={formik}>
         <Form
@@ -228,25 +344,27 @@ const PayDetailComponent = () => {
           <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
             <div
               style={{ marginBottom: "10px" }}
-              className="shadow-md border-t border-gray-200 h-[500px]"
+              className="shadow-md border-t border-gray-200 h-[500px]  rounded-lg overflow-hidden border"
             >
               <div className="overflow-y-scroll h-full">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                   <thead class="text-xs text-gray-600 bg-gray-50 dark:text-gray-400 sticky top-0">
-                    <th class="px-6 py-3 uppercase text-gray-dark">
+                    <th class="px-6 py-3 uppercase text-gray-dark flex gap-x-2">
                       <input
                         type="checkbox"
                         className="accent-first border-gray-light"
                         onClick={handleClickAllProduct}
                         value={chooseAll}
-                      />{" "}
-                      Tất cả
+                      />
+                      <span> Tất cả</span>
                     </th>
 
-                    <th class="px-6 py-3 uppercase">Số lượng</th>
-                    <th class="px-6 py-3 uppercase">Đơn giá</th>
-                    <th class="px-6 py-3 uppercase">Thành tiền</th>
-                    <th class="px-6 py-3 w-fit uppercase">Xóa tất cả</th>
+                    <th class="px-6 py-3 uppercase text-gray-dark">Số lượng</th>
+                    <th class="px-6 py-3 uppercase text-gray-dark">Đơn giá</th>
+                    <th class="px-6 py-3 uppercase text-gray-dark">
+                      Thành tiền
+                    </th>
+                    <th class="px-6 py-3 w-fit uppercase text-gray-dark"></th>
                   </thead>
 
                   <tbody>
@@ -311,7 +429,7 @@ const PayDetailComponent = () => {
                               </td>
                               <td class="px-6 py-4">
                                 <div
-                                  className="text-white bg-red-500 w-fit px-2 py-1 rounded-md text-xs cursor-pointer"
+                                  className="text-white bg-red-400 w-fit px-7 py-2 rounded-md text-xs cursor-pointer"
                                   onClick={() =>
                                     handleDeleteProduct(item["PRDCCODE"])
                                   }
@@ -328,14 +446,14 @@ const PayDetailComponent = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-[3fr_1fr] gap-x-4">
+            <div className="grid lg:grid-cols-[3fr_2fr] xl:grid-cols-[3fr_1fr]  gap-4">
               <Wrapper>
                 <div className="px-3 py-5">
                   <h5 className="font-medium text-gray-dark mb-3">
                     Thông tin đơn hàng
                   </h5>
 
-                  <div className="grid grid-cols-3 gap-3 mb-5 px-5">
+                  <div className="grid xl:grid-cols-3 grid-cols-2 gap-3 mb-5 px-5">
                     <div className="flex flex-col gap-y-3">
                       {/* TÊn người dùng  */}
                       <Input
@@ -595,15 +713,27 @@ const PayDetailComponent = () => {
                       // type={"number"}
                     ></Input>
                   </div>
-                  <div className="flex items-center gap-x-2 justify-end">
+                  <div className="flex flex-wrap gap-y-3 items-center gap-x-2 justify-end">
                     <button
                       type="submit"
-                      className="text-second bg-white px-3 py-2 border border-second hover:bg-second hover:text-white text-sm"
+                      onClick={() => setStateButton("order")}
+                      className="bg-second text-white rounded-md shadow-none px-5 py-2 border hover:text-white text-sm"
                     >
                       Đặt hàng
                     </button>
-                    <button className="text-second bg-white px-3 py-2 border border-second hover:bg-second hover:text-white text-sm">
+                    <button
+                      type="submit"
+                      onClick={() => setStateButton("payment")}
+                      className="bg-second text-white rounded-md shadow-none px-5 py-2 border hover:text-white text-sm"
+                    >
                       Thanh toán
+                    </button>
+                    <button
+                      type="submit"
+                      onClick={() => setStateButton("vietqr")}
+                      className="bg-second text-white rounded-md shadow-none px-5 py-2 border hover:text-white text-sm"
+                    >
+                      Thanh toán VIETQR
                     </button>
                   </div>
                 </div>

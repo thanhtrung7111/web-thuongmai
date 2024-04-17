@@ -5,6 +5,7 @@ import {
   openAppNotify,
   openEvaluateProduct,
 } from "../redux/reducer/popupReducer";
+import { logout } from "../redux/reducer/userReducer";
 // import store from "../redux/store/store";
 // import
 export let store;
@@ -25,8 +26,8 @@ const apiFetchLogin = axios.create({
   timeout: 5000,
 });
 apiFetchLogin.interceptors.request.use((req) => {
-  if (localStorage.getItem("tokenInitial")) {
-    req.headers["TOKEN"] = localStorage.getItem("tokenInitial");
+  if (sessionStorage.getItem("tokenInitial")) {
+    req.headers["TOKEN"] = sessionStorage.getItem("tokenInitial");
   }
   return req;
 });
@@ -40,6 +41,7 @@ apiFetchLogin.interceptors.response.use(
       store.dispatch(openAppNotify({ link: "33432" }));
     } else if (error.response?.status === 500) {
       console.log("Hello");
+      store.dispatch(logout());
       window.history.go("/error");
     }
     return error;
@@ -63,8 +65,8 @@ const apiFetchData = axios.create({
   timeout: 5000,
 });
 apiFetchData.interceptors.request.use((req) => {
-  if (localStorage.getItem("tokenUser")) {
-    req.headers["TOKEN"] = localStorage.getItem("tokenUser");
+  if (sessionStorage.getItem("tokenUser")) {
+    req.headers["TOKEN"] = sessionStorage.getItem("tokenUser");
   }
   // console.log(localStorage.getItem("tokenUser"));
   return req;

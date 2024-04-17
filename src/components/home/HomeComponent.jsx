@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Banner3 from "@assets/img/banner3.png";
 import Banner1 from "@assets/img/banner1.jpg";
 import Banner2 from "@assets/img/banner2.jpg";
@@ -10,13 +10,21 @@ import ProductSlider from "@components/ProductSlider";
 import Wrapper from "@components/Wrapper";
 import CategorySlider from "@components/CategorySlider";
 import { useSelector } from "react-redux";
-import LoadingView from "../LoadingView";
+import LoadingView from "../../pages/LoadingView";
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomeComponent = () => {
   const { products, isLoadingCommon } = useSelector((state) => state.common);
-
-  console.log("PRODUCTS", products);
-  return (
+  const [loading, setLoading] = useState(true);
+  const [lstProduct, setLstProduct] = useState([]);
+  useEffect(() => {
+    setLoading(isLoadingCommon);
+  }, [isLoadingCommon]);
+  useEffect(() => {
+    setLstProduct(products);
+  }, [products]);
+  return loading ? (
+    <LoadingView></LoadingView>
+  ) : (
     <>
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper padding={0}>
@@ -85,23 +93,19 @@ const HomeComponent = () => {
                 Xem thêm <i className="ri-arrow-right-s-line"></i>
               </a>
             </div>
-            {isLoadingCommon ? (
-              <LoadingView></LoadingView>
-            ) : (
-              <ProductSlider
-                data={products?.slice(0, 15)}
-                id={"PRDCCODE"}
-                name={"PRDCNAME"}
-                image={"PRDCIMGE"}
-                unit={"QUOMNAME"}
-                discount={"DSCNRATE"}
-                price={"PRCEDSCN"}
-                reviews={"rating"}
-                stars={"rating"}
-                saleOff={"PRCESALE"}
-                sold={""}
-              ></ProductSlider>
-            )}
+            <ProductSlider
+              data={lstProduct?.slice(0, 15)}
+              id={"PRDCCODE"}
+              name={"PRDCNAME"}
+              image={"PRDCIMGE"}
+              unit={"QUOMNAME"}
+              discount={"DSCNRATE"}
+              price={"PRCEDSCN"}
+              reviews={"rating"}
+              stars={"rating"}
+              saleOff={"PRCESALE"}
+              sold={""}
+            ></ProductSlider>
           </div>
         </Wrapper>
       </div>
@@ -137,23 +141,20 @@ const HomeComponent = () => {
                 Xem thêm <i className="ri-arrow-right-s-line"></i>
               </a>
             </div>
-            {isLoadingCommon ? (
-              <LoadingView></LoadingView>
-            ) : (
-              <ProductSlider
-                data={products?.slice(0, 15)}
-                id={"PRDCCODE"}
-                name={"PRDCNAME"}
-                image={"PRDCIMGE"}
-                unit={"QUOMNAME"}
-                discount={"DSCNRATE"}
-                price={"PRCEDSCN"}
-                reviews={"rating"}
-                stars={"rating"}
-                saleOff={"PRCESALE"}
-                sold={""}
-              ></ProductSlider>
-            )}
+
+            <ProductSlider
+              data={lstProduct?.slice(0, 15)}
+              id={"PRDCCODE"}
+              name={"PRDCNAME"}
+              image={"PRDCIMGE"}
+              unit={"QUOMNAME"}
+              discount={"DSCNRATE"}
+              price={"PRCEDSCN"}
+              reviews={"rating"}
+              stars={"rating"}
+              saleOff={"PRCESALE"}
+              sold={""}
+            ></ProductSlider>
           </div>
         </Wrapper>
       </div>
@@ -167,23 +168,18 @@ const HomeComponent = () => {
                 Xem thêm <i className="ri-arrow-right-s-line"></i>
               </a>
             </div>
-            {isLoadingCommon ? (
-              <LoadingView></LoadingView>
-            ) : (
-              <ProductSlider
-                data={products?.slice(15, 30)}
-                id={"PRDCCODE"}
-                name={"PRDCNAME"}
-                unit={"QUOMNAME"}
-                image={"PRDCIMGE"}
-                discount={"DSCNRATE"}
-                price={"PRCEDSCN"}
-                reviews={"rating"}
-                stars={"rating"}
-                saleOff={"PRCESALE"}
-                sold={""}
-              ></ProductSlider>
-            )}
+            <ProductSlider
+              data={lstProduct?.slice(0, 10)}
+              id={"PRDCCODE"}
+              name={"PRDCNAME"}
+              unit={"QUOMNAME"}
+              image={"PRDCIMGE"}
+              price={"PRCEDSCN"}
+              reviews={"rating"}
+              stars={"rating"}
+              saleOff={"PRCESALE"}
+              sold={""}
+            ></ProductSlider>
           </div>
         </Wrapper>
       </div>

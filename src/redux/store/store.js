@@ -21,11 +21,12 @@ import {
   REHYDRATE,
 } from "redux-persist";
 import { orderReducer } from "@redux/reducer/orderReducer";
+import sessionStorage from "redux-persist/es/storage/session";
 // import { GetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 
 const rootPersistConfig = {
   key: "root",
-  storage: localStorage,
+  storage: sessionStorage ,
   whitelist: ["user", "cart"],
   // stateReconciler: autoMergeLevel2, // ADDED
 };

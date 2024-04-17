@@ -27,7 +27,9 @@ const CheckBoxList = ({
       <div className="flex items-center justify-between mb-2">
         <h5 className="text-gray-dark font-medium">{title}</h5>
         <div
-          className={`hover:text-second transform transition duration-500 ease-in-out cursor-pointer ${!extend && "rotate-180"}`}
+          className={`hover:text-second transform transition duration-500 ease-in-out cursor-pointer ${
+            !extend && "rotate-180"
+          }`}
           onClick={() => setExtend(!extend)}
         >
           <i className={`ri-arrow-down-s-line`}></i>
@@ -41,7 +43,7 @@ const CheckBoxList = ({
         {dataList?.map(
           (item) =>
             item[itemName] !== "" && (
-              <li className="text-sm text-gray-dark hover:text-second flex gap-x-2">
+              <li className="text-sm text-gray-dark flex gap-x-2">
                 <input
                   type="checkbox"
                   className="accent-first checked:text-white"

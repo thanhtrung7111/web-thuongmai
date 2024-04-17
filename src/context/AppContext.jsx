@@ -18,7 +18,7 @@ export const AppProvider = ({ children }) => {
       )
       .then((res) => {
         setToken(res.data.RETNDATA.TOKEN);
-        localStorage.setItem("tokenInitial", res.data.RETNDATA.TOKEN);
+        sessionStorage.setItem("tokenInitial", res.data.RETNDATA.TOKEN);
       })
       .catch((e) => console.log(e));
   }, []);

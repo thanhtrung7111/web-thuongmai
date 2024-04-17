@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import NoImage from "@assets/img/noimage.png";
-import ImageFetch from "../ImageFetch";
+import ImageFetch from "./ImageFetch";
 const RowCart = ({ item, id, name, image, price, amount, handleDelete }) => {
   const [imageState, setImageState] = useState(null);
   return (
@@ -55,12 +55,6 @@ const RowCart = ({ item, id, name, image, price, amount, handleDelete }) => {
               })}
             </span>
           </div>
-        </div>
-        <div
-          className="pr-2 cursor-pointer"
-          onClick={() => handleDelete(item[id])}
-        >
-          <i class="ri-delete-bin-line text-gray-dark leading-none"></i>
         </div>
       </div>
     </div>

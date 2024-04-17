@@ -5,6 +5,7 @@ import { addToCart } from "@redux/actions/cartAction.js";
 import { useDispatch } from "react-redux";
 import NoImage from "@assets/img/noimage.png";
 import ImageFetch from "./ImageFetch";
+import { toast } from "react-toastify";
 const ProductCard = ({
   item,
   id,
@@ -26,23 +27,27 @@ const ProductCard = ({
         ...item,
       })
     );
+    toast.success("Thêm sản phẩm thành công", {
+      position: "top-center",
+      autoClose: 2000,
+    });
   };
 
   return (
     <div
-      className={`group/product bg-white shadow-md w-full border-t border-b border-gray-100 flex flex-col items-center`}
+      className={`group/product bg-white shadow-sm w-full rounded-lg border overflow-hidden border-gray-200 flex flex-col items-center`}
     >
       <div className="relative w-full h-40 mb-3 overflow-hidden">
-        <div className="text-xs absolute top-2 left-2 bg-slate-500 px-2 py-1 text-white z-10">
+        <div className="text-xs absolute top-2 left-2 bg-slate-500 px-2 py-1 text-white z-10 rounded-md">
           {item[unit]}
         </div>
 
-        <div className="invisible group-hover/product:visible absolute top-0 right-0 h-full w-full bg-black bg-opacity-20 flex items-center justify-center">
+        <div className="opacity-0 group-hover/product:opacity-100 transition-opacity duration-300 absolute top-0 right-0 h-full w-full bg-black bg-opacity-20 flex items-center justify-center">
           <NavLink
             to={`/products/${item[id]}`}
-            className="text-xs text-white bg-black bg-opacity-90 py-2 px-5 rounded-sm hover:opacity-85"
+            className="text-xs text-white bg-first bg-opacity-95 py-2 px-5 rounded-sm hover:opacity-85"
           >
-            Xem chi tiết
+            <i class="ri-error-warning-line font-thin"></i> Xem chi tiết
           </NavLink>
         </div>
         <ImageFetch
@@ -73,15 +78,16 @@ const ProductCard = ({
             })}
           </span>
         </div>
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-end justify-between w-full">
           <div className="flex flex-col gap-y-1">
             <p className="text-xs font-medium text-gray-dark flex items-center gap-x-1">
               Đánh giá:{" "}
               <span className="rounded-md px-1 py-[1px] flex items-center justify-between text-white bg-second text-[10px] gap-x-[1px]">
-                {item[stars]}
-                <i class="ri-star-fill"></i>
+                {item[stars] ? item[stars] : 0} <i class="ri-star-fill"></i>
               </span>{" "}
-              <span className="font-thin text-xs">({item[reviews]})</span>
+              <span className="font-thin text-xs">
+                ({item[reviews] ? item[reviews] : 0})
+              </span>
             </p>
 
             <p className="text-xs font-medium text-gray-dark flex items-center gap-x-1">
@@ -91,11 +97,13 @@ const ProductCard = ({
               </span>
             </p>
           </div>
-          <div
-            onClick={(e) => handleAddProductToCart(e)}
-            className="w-8 h-8 rounded-full bg-second flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity duration-200"
-          >
-            <i class="ri-shopping-cart-fill text-white text-xs"></i>
+          <div>
+            <div
+              onClick={(e) => handleAddProductToCart(e)}
+              className="w-8 h-8 rounded-full bg-second flex items-center justify-center cursor-pointer hover:scale-125 transition-transform duration-200"
+            >
+              <i class="ri-shopping-cart-line text-white"></i>
+            </div>
           </div>
         </div>
       </div>

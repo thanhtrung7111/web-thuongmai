@@ -19,7 +19,51 @@
 .show-small-cart {
   right: 0;
 }
+.show-list-item {
+  height: fit-content !important;
+}
+.show-men-child {
+  left: 0 !important;
+}
 
 html {
   scroll-behavior: smooth;
+}
+
+.item:hover > .item-list {
+  visibility: visible !important;
+}
+
+@media screen and (min-width: 968px) {
+  .p-left-1 {
+    padding-left: 10px !important;
+  }
+
+  .p-left-2 {
+    padding-left: 10px !important;
+  }
+
+  .p-left-3 {
+    padding-left: 10px !important;
+  }
+
+  .p-left-4 {
+    padding-left: 10px !important;
+  }
+}
+
+.p-left-1 {
+  padding-left: 10px;
+}
+
+.p-left-2 {
+  padding-left: 20px;
+}
+
+.p-left-3 {
+  padding-left: 30px;
+}
+
+.p-left-4 {
+  padding-left: 40px;
 }

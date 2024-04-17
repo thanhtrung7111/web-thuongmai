@@ -75,16 +75,14 @@ const SearchMenu = () => {
       <i className="ri-search-line cursor-pointer text-gray-dark"></i>
       <div
         className={`${
-          (keyWord != "" || productSearchs?.length > 0) &&
-          focus &&
-          "h-56 overflow-y-scroll"
+          (keyWord != "" || productSearchs?.length > 0) && focus && "h-56"
         } h-0 overflow-hidden transition-[height] ease-in-out duration-200 delay-100  absolute w-full bg-white top-[110%] left-0 shadow-md rounded-md `}
       >
         {(keyWord != "" || productSearchs?.length) > 0 ? (
           <div>
             {productSearchs?.length > 0 && keyWord == "" && (
               <div>
-                <h5 className="text-sm px-2 py-1 sticky top-0 bg-white">
+                <h5 className="text-sm font-medium px-2 py-1 sticky top-0 bg-white">
                   Lịch sử tìm kiếm
                 </h5>
                 <div className="flex flex-col">

@@ -21,7 +21,7 @@ const BannerSlider = ({ data }) => {
     <Swiper
       // install Swiper modules
       modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
-      spaceBetween={50}
+      // spaceBetween={50}
       slidesPerView={1}
       autoplay={{
         delay: 1000,

@@ -8,7 +8,7 @@ const ImageFetch = ({ url, className }) => {
       await fetch(url, {
         method: "GET",
         headers: {
-          TOKEN: localStorage.getItem("tokenUser"),
+          TOKEN: sessionStorage.getItem("tokenUser"),
         },
       })
         .then((response) => {

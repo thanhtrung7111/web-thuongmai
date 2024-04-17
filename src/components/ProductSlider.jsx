@@ -14,7 +14,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import ProductCard from "./ProductCard";
-import LoadingView from "@components/LoadingView";
 const ProductSlider = ({
   data,
   id,
@@ -43,6 +42,7 @@ const ProductSlider = ({
       }}
       watchSlidesProgress={true}
       preventClicks={true}
+      resistance={true}
       noSwipingSelector="a"
       a11y={false}
       onMouseDown={(e) => e.preventDefault()}

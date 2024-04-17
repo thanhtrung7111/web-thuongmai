@@ -4,9 +4,9 @@ import Menu from "@components/menu/Menu";
 
 const AppLayout = () => {
   return (
-    <div>
+    <div className="h-full">
       <Menu></Menu>
-      <div className="py-3 bg-gray-50">
+      <div className="py-3 bg-[#ffffff]">
         <Outlet></Outlet>
       </div>
     </div>

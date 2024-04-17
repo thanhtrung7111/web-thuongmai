@@ -3,7 +3,7 @@ import Asus from "@assets/img/asus.jpg";
 import Wrapper from "@components/Wrapper";
 const PromotionCard = () => {
   return (
-    <div className="group/promotion cursor-pointer">
+    <div className="group/promotion cursor-pointer shadow-md rounded-md overflow-hidden">
       <Wrapper>
         <div className="flex">
           <div className="h-60 w-96 overflow-hidden">

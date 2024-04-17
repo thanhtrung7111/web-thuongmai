@@ -57,32 +57,31 @@ const RowOrder = ({
     }
   }, [status]);
 
-  useEffect(() => {
-    async function fetchDetail() {
-      const body = {
-        DCMNCODE: "DDHKH",
-        KEY_CODE: id,
-      };
-      await fetchDataDetail(body)
-        .then((res) => {
-          setDetailOrder(res?.data?.RETNDATA[0]);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
-    fetchDetail();
-  }, [id]);
+  // useEffect(() => {
+  //   async function fetchDetail() {
+  //     const body = {
+  //       DCMNCODE: "DDHKH",
+  //       KEY_CODE: id,
+  //     };
+  //     await fetchDataDetail(body)
+  //       .then((res) => {
+  //         setDetailOrder(res?.data?.RETNDATA[0]);
+  //       })
+  //       .catch((e) => {
+  //         console.log(e);
+  //       });
+  //   }
+  //   fetchDetail();
+  // }, [id, maincode]);
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, [detailOrder != null]);
-  console.log(detailOrder);
+  // useEffect(() => {
+  //   setIsLoading(false);
+  // }, [detailOrder != null]);
+  // console.log(detailOrder);
   return (
     <div
-      className={`relative rounded-sm ${
-        isLoading && "animate-pulse"
-      } border rounded-lg overflow-hidden`}
+      className={`relative 
+       border rounded-lg overflow-hidden`}
     >
       {elementStatus}
       <div className="flex items-center gap-x-2 mb-2 bg-slate-100 p-2">
@@ -100,7 +99,7 @@ const RowOrder = ({
           <i class="ri-error-warning-line"></i> Chi tiết
         </div>
       </div>
-      <div>
+      {/* <div>
         {detailOrder?.DETAIL?.map((item) => {
           return (
             <div className="flex gap-x-2 px-2 py-2 border-gray-100">
@@ -133,8 +132,8 @@ const RowOrder = ({
             </div>
           );
         })}
-      </div>
-      <div className="p-3 flex items-end justify-between">
+      </div> */}
+      {/* <div className="p-3 flex items-end justify-between">
         <div></div>
         <div>
           <div>
@@ -168,7 +167,7 @@ const RowOrder = ({
           Sản phẩm hư hỏng hoặc không đúng mô tả xin vui lòng liên hệ với cửa
           hàng!
         </span>
-      </div>
+      </div> */}
     </div>
   );
 };

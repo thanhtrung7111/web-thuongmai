@@ -7,6 +7,8 @@ const manifySlice = createSlice({
     showEvaluateProduct: { open: false, productID: "" },
     showDetailOrder: { open: false, orderDetail: null },
     showAppNotify: { open: false, link: "" },
+    showAlert: { open: false, content: "" },
+    block: false,
   },
 
   reducers: {
@@ -44,6 +46,15 @@ const manifySlice = createSlice({
       state.showAppNotify.open = false;
       state.showAppNotify.link = "";
     },
+
+    openBlock: (state, action) => {
+      console.log("hello");
+      state.block = true;
+    },
+
+    closeBlock: (state, action) => {
+      state.block = false;
+    },
   },
 });
 
@@ -57,4 +68,6 @@ export const {
   closeDetailOrder,
   openAppNotify,
   closeAppNotify,
+  openBlock,
+  closeBlock,
 } = manifySlice.actions;

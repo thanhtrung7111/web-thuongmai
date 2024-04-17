@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { closeDetailOrder } from "../../redux/reducer/popupReducer";
-import LoadingView from "@components/LoadingView";
 import Asus from "@assets/img/asus.jpg";
 import {
   loadCUOM,
@@ -13,6 +12,7 @@ import {
   loadinpCustOdMtPayMthd2,
 } from "../../redux/actions/commonAction";
 import moment from "moment";
+import LoadingView from "../../pages/LoadingView";
 const DetailOrder = () => {
   const dispatch = useDispatch();
   const [detailOrderData, setDetailOrderData] = useState(null);
