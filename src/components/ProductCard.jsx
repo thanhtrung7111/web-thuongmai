@@ -28,7 +28,6 @@ const ProductCard = ({
       })
     );
     toast.success("Thêm sản phẩm thành công", {
-      position: "top-center",
       autoClose: 2000,
     });
   };

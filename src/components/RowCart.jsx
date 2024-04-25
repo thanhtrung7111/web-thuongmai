@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Navigate, useNavigate } from "react-router-dom";
 import NoImage from "@assets/img/noimage.png";
 import ImageFetch from "./ImageFetch";
 const RowCart = ({ item, id, name, image, price, amount, handleDelete }) => {
   const [imageState, setImageState] = useState(null);
+  const navigate = useNavigate();
+  const handleClickDetail = () => {
+    navigate("/products/" + item[id]);
+  };
   return (
     <div className="group/product grid grid-cols-[1fr_4fr] gap-x-2 text-gray-dark py-2">
-      <div className="border border-gray-100 flex items-center justify-center relative overflow-hidden size-20">
+      <div
+        onClick={handleClickDetail}
+        className="border border-gray-200 shadow-lg rounded-xl flex items-center justify-center relative overflow-hidden size-20 cursor-pointer"
+      >
         {/* <div className="invisible group-hover/product:visible absolute top-0 right-0 w-full h-full bg-black bg-opacity-40 flex items-center justify-center">
           <NavLink
             to={`/products/${item[id]}`}

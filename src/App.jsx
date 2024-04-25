@@ -22,6 +22,7 @@ import LoadingView from "./pages/LoadingView";
 import { closeBlock } from "./redux/reducer/popupReducer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { PaySuccessVietQR } from "./pages/PaySuccessVietQR";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -98,9 +99,13 @@ function App() {
               element={<PersonalInfomation></PersonalInfomation>}
             ></Route>
             <Route path="/promotion" element={<Promotion></Promotion>}></Route>
+            <Route
+              path="/status_payvietQR"
+              element={<PaySuccessVietQR></PaySuccessVietQR>}
+            ></Route>
             {/* <Route path="/*" element={<Navigate to="/" />}></Route> */}
           </Route>
-          <Route path="/test" element={<LoadingView></LoadingView>}></Route>
+          <Route path="/test" element={<Test></Test>}></Route>
           <Route path="/error" element={<ErrorServer></ErrorServer>}></Route>
         </Routes>
 

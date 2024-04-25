@@ -38,9 +38,10 @@ apiFetchLogin.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      store.dispatch(openAppNotify({ link: "33432" }));
+      // store.dispatch(openAppNotify({ link: "33432" }));
     } else if (error.response?.status === 500) {
       console.log("Hello");
+      console.log(error);
       store.dispatch(logout());
       window.history.go("/error");
     }
@@ -77,10 +78,12 @@ apiFetchData.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response.status === 401) {
+    if (error.response?.status === 401) {
       store.dispatch(openAppNotify({ link: "33432" }));
     } else if (error.response?.status === 500) {
-      window.location.href = "http://localhost:5173/error";
+      console.log(error);
+      store.dispatch(logout());
+      // window.location.href = "http://localhost:5173/error";
     }
     return error;
   }
@@ -152,6 +155,18 @@ export const fetchDataDetail = (body) => {
   try {
     const result = apiFetchData.post(
       "/Api/data/runApi_Data?run_Code=DTA005",
+      body
+    );
+    return result;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const postImage = (body) => {
+  try {
+    const result = apiFetchData.post(
+      "/Api/data/runApi_Data?run_Code=DTA021",
       body
     );
     return result;

@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ErrorServer = () => {
+  const navigate = useNavigate();
   return (
     <div className="p-60">
       <div className="flex">
@@ -11,6 +13,12 @@ const ErrorServer = () => {
       <p className="text-gray-dark">
         Chúng tôi sẽ sớm khắc phục. Xin lỗi vì sự bất tiện này!
       </p>
+      <button
+        className="border-none rounded-lg py-1 px-3"
+        onClick={() => navigate("/login")}
+      >
+        Đăng nhập
+      </button>
     </div>
   );
 };

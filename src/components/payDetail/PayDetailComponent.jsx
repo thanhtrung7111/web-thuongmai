@@ -32,15 +32,24 @@ import Base64 from "crypto-js/enc-hex";
 import LoadingView from "../../pages/LoadingView";
 import axios from "axios";
 import { HmacSHA256 } from "crypto-js";
+import VietQRComponent from "./VietQRComponent";
+import VNPay from "@assets/img/vnpay.png";
+import VietQR from "@assets/img/vietqr.png";
+import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
+import { toast } from "react-toastify";
+import { info } from "autoprefixer";
+import { base64StringToBlob } from "blob-util";
 const PayDetailComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [stateButton, setStateButton] = useState("order");
+  const [stateButton, setStateButton] = useState("");
   const [chooseAll, setChooseAll] = useState(false);
   const { productCarts } = useSelector((state) => state.cart);
   const { currentUser } = useSelector((state) => state.user);
   const { showAlert } = useSelector((state) => state.popup);
+  const [openVietQR, setOpenVietQR] = useState(false);
+  const [infoVietQR, setInfoVietQR] = useState(null);
   const {
     isLoadingCommon,
     products,
@@ -103,8 +112,14 @@ const PayDetailComponent = () => {
     }),
     onSubmit: (value) => {
       console.log(value);
+      if (stateButton == "") {
+        toast.warning("Bạn chưa chọn ngân hàng để thanh toán", {
+          autoClose: 1500,
+        });
+        return;
+      }
       switch (stateButton) {
-        case "payment":
+        case "vnpay":
           console.log("payment");
           handlePayment();
           break;
@@ -115,7 +130,6 @@ const PayDetailComponent = () => {
           // dispatch(postOrder({ DCMNCODE: "DDHKH", HEADER: [body] }));
           break;
         case "vietqr":
-          console.log("order");
           handleQR();
           break;
         default:
@@ -124,42 +138,93 @@ const PayDetailComponent = () => {
     },
   });
 
-  const handleQR = async () => {
-    // const body = {
-    //   orderCode: new Date(Date.now()).getTime(),
-    //   amount: 10000,
-    //   description: "VQRIO" + new Date(Date.now()).getTime(),
-    //   buyerAddress: "số nhà, đường, phường, tỉnh hoặc thành phố",
-    //   items: [],
-    //   cancelUrl: "http://localhost:5173/promotion",
-    //   returnUrl: "http://localhost:5173/promotion",
-    //   expiredAt: Math.floor(
-    //     (new Date(Date.now()).getTime() + 15 * 60000 + 7 * 3600 * 1000) / 1000
-    //   ),
-    //   template: "compact",
-    // };
-    // const query = `amount=${body.amount}&cancelUrl=${body.cancelUrl}&description=${body.description}&orderCode=${body.orderCode}&returnUrl=${body.returnUrl}`;
-    // const hmac = Base64.stringify(
-    //   HmacSHA256(
-    //     query,
-    //     "dff2b663051b6bc4d07668b7c4e7a4f7f7365540fb8db84055b26156739a56e6"
-    //   )
-    // );
-    // const data = await axios
-    //   .post(
-    //     "https://api-merchant.payos.vn/v2/payment-requests",
-    //     { ...body, signature: hmac },
-    //     {
-    //       headers: {
-    //         "x-client-id": "b8a76f89-11ab-4065-b0d8-bb3df22a7f58",
-    //         "x-api-key": "57420532-9fb3-4c6f-89f9-d009a4859076",
-    //       },
-    //     }
-    //   )
-    //   .then((resp) => resp.data)
-    //   .catch((e) => console.log(e));
-    // console.log(data);
+  const handleQR = async function () {
+    if (infoVietQR == null) {
+      const id = toast.loading("Đang tạo VietQR");
+      const body = {
+        orderCode: new Date(Date.now()).getTime(),
+        amount: 10000,
+        description: "Thanh toan HD",
+        buyerAddress: "số nhà, đường, phường, tỉnh hoặc thành phố",
+        items: [],
+        cancelUrl: "http://localhost:5173/promotion",
+        returnUrl: "http://localhost:5173/promotion",
+        expiredAt: Math.floor(
+          (new Date(Date.now()).getTime() + 15 * 60000) / 1000
+        ),
+        template: "compact",
+      };
+      const query = `amount=${body.amount}&cancelUrl=${body.cancelUrl}&description=${body.description}&orderCode=${body.orderCode}&returnUrl=${body.returnUrl}`;
+      const hmac = Base64.stringify(
+        HmacSHA256(
+          query,
+          "dff2b663051b6bc4d07668b7c4e7a4f7f7365540fb8db84055b26156739a56e6"
+        )
+      );
+      const data = await axios
+        .post(
+          "https://api-merchant.payos.vn/v2/payment-requests",
+          { ...body, signature: hmac },
+          {
+            headers: {
+              "x-client-id": "b8a76f89-11ab-4065-b0d8-bb3df22a7f58",
+              "x-api-key": "57420532-9fb3-4c6f-89f9-d009a4859076",
+            },
+          }
+        )
+        .then((resp) => {
+          setInfoVietQR({ ...resp.data.data });
+          return resp.data.data;
+        })
+        .catch((e) => console.log(e));
+      const data2 = await axios
+        .post(
+          "https://api.vietqr.io/v2/generate",
+          {
+            accountNo: data?.accountNumber,
+            accountName: data?.accountName,
+            acqId: data?.bin,
+            amount: data?.amount,
+            addInfo: data?.description,
+            format: "text",
+            template: "qr_only",
+          },
+          {
+            headers: {
+              "x-client-id": "b8a76f89-11ab-4065-b0d8-bb3df22a7f58",
+              "x-api-key": "57420532-9fb3-4c6f-89f9-d009a4859076",
+            },
+          }
+        )
+        .then((resp) => {
+          // setInfoVietQR({ ...resp.data.data });
+          setInfoVietQR({ ...data, ...resp.data.data });
+
+          toast.update(id, {
+            render: "Tạo VietQR hoàn tất",
+            type: "success",
+            isLoading: false,
+            autoClose: 1500,
+          });
+          const contentType = "image/png";
+          const b64Data = resp.data.data.qrDataURL.replace(
+            "data:image/png;base64,",
+            ""
+          );
+
+          const blob = base64StringToBlob(b64Data, contentType);
+          console.log(URL.createObjectURL(blob));
+        })
+        .catch((e) => console.log(e));
+    }
+
+    setOpenVietQR(true);
+    dispatch(openBlock());
   };
+
+  useEffect(() => {
+    console.log(infoVietQR);
+  }, [infoVietQR]);
 
   const handlePayment = async () => {
     // let i = crypto
@@ -326,12 +391,22 @@ const PayDetailComponent = () => {
   useEffect(() => {
     setLoading(isLoadingCommon);
   }, [isLoadingCommon]);
+
+  console.log();
   return loading ? (
     <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
       <LoadingView></LoadingView>
     </div>
   ) : (
     <div className="product-detail">
+      <VietQRComponent
+        open={openVietQR}
+        value={infoVietQR}
+        handleClose={() => {
+          setOpenVietQR(false);
+          dispatch(closeBlock());
+        }}
+      ></VietQRComponent>
       <img src="" alt="" />
       <InfoPage data={["Giỏ hàng", "Thanh toán và đặt hàng"]} />
       <FormikProvider value={formik}>
@@ -385,10 +460,12 @@ const PayDetailComponent = () => {
                                       handleChangeChoose(item["PRDCCODE"])
                                     }
                                   />
-                                  <ImageFetch
-                                    url={item["PRDCIMGE"]}
-                                    className={"!size-20"}
-                                  ></ImageFetch>
+                                  <div className="border rounded-xl overflow-hidden shadow-lg">
+                                    <ImageFetch
+                                      url={item["PRDCIMGE"]}
+                                      className={"!size-20"}
+                                    ></ImageFetch>
+                                  </div>
                                   <span className="text-gray-dark text-wrap lg:w-60 line-clamp-2 w-0">
                                     {item["PRDCNAME"]}
                                   </span>
@@ -445,8 +522,7 @@ const PayDetailComponent = () => {
                 </table>
               </div>
             </div>
-
-            <div className="grid lg:grid-cols-[3fr_2fr] xl:grid-cols-[3fr_1fr]  gap-4">
+            <div className="mb-5">
               <Wrapper>
                 <div className="px-3 py-5">
                   <h5 className="font-medium text-gray-dark mb-3">
@@ -593,7 +669,33 @@ const PayDetailComponent = () => {
                         title={"Số điện thoại người nhận"}
                         // type={"number"}
                       ></Input>
+                      {/* Phương thức thanh toán  */}
+                      <Combobox
+                        data={lstinpCustOdMtPayMthd2}
+                        value={formik.values.PAY_MTHD}
+                        itemKey={"ITEMCODE"}
+                        itemName={"ITEMNAME"}
+                        name="PAY_MTHD"
+                        title="Phương thức thanh toán"
+                      ></Combobox>
 
+                      {/*Chu kì thanh toán  */}
+                      <Combobox
+                        data={lstTimeType}
+                        value={formik.values.PYMNPERD}
+                        itemKey={"ITEMCODE"}
+                        itemName={"ITEMNAME"}
+                        name="PYMNPERD"
+                        title="Chu kì thanh toán"
+                      ></Combobox>
+
+                      {/* Thời hạn thanh toán*/}
+                      <Input
+                        value={formik.values.PYMNNUMB}
+                        name="PYMNNUMB"
+                        title={"Thời hạn thanh toán"}
+                        // type={"number"}
+                      ></Input>
                       {/* Diễn giải  */}
                       <TextArea
                         value={formik.values.NOTETEXT}
@@ -651,108 +753,101 @@ const PayDetailComponent = () => {
                   </div> */}
                 </div>
               </Wrapper>
-              <Wrapper>
-                <div className="p-5">
-                  <h5 className="font-medium text-gray-dark mb-3">
-                    Thanh toán
-                  </h5>
-                  <div className="flex flex-col gap-y-3 mb-3">
-                    {/* Tổng số lượng  */}
-                    <Input
-                      name="SMPRQTTY"
-                      title={"Tổng số lượng"}
-                      value={formik.values.SMPRQTTY}
-                    ></Input>
-                    {/* Tổng tiền  */}
-                    <Input
-                      name="SUM_CRAM"
-                      title={"Tổng tiền"}
-                      value={formik.values.SUM_CRAM}
-                    ></Input>
-
-                    {/* Tiền chiết khấu */}
-                    <Input
-                      value={formik.values.RDTNCRAM}
-                      name="RDTNCRAM"
-                      title={"Tiền chiết khấu"}
-                      // type={"number"}
-                    ></Input>
-
-                    {/* Tiền thuế */}
-                    <Input
-                      value={formik.values.VAT_CRAM}
-                      name="VAT_CRAM"
-                      title={"Tiền thuế"}
-                      // type={"number"}
-                    ></Input>
-                    {/* Phương thức thanh toán  */}
-                    <Combobox
-                      data={lstinpCustOdMtPayMthd2}
-                      value={formik.values.PAY_MTHD}
-                      itemKey={"ITEMCODE"}
-                      itemName={"ITEMNAME"}
-                      name="PAY_MTHD"
-                      title="Phương thức thanh toán"
-                    ></Combobox>
-
-                    {/*Chu kì thanh toán  */}
-                    <Combobox
-                      data={lstTimeType}
-                      value={formik.values.PYMNPERD}
-                      itemKey={"ITEMCODE"}
-                      itemName={"ITEMNAME"}
-                      name="PYMNPERD"
-                      title="Chu kì thanh toán"
-                    ></Combobox>
-
-                    {/* Thời hạn thanh toán*/}
-                    <Input
-                      value={formik.values.PYMNNUMB}
-                      name="PYMNNUMB"
-                      title={"Thời hạn thanh toán"}
-                      // type={"number"}
-                    ></Input>
-                  </div>
-                  <div className="flex flex-wrap gap-y-3 items-center gap-x-2 justify-end">
-                    <button
-                      type="submit"
-                      onClick={() => setStateButton("order")}
-                      className="bg-second text-white rounded-md shadow-none px-5 py-2 border hover:text-white text-sm"
-                    >
-                      Đặt hàng
-                    </button>
-                    <button
-                      type="submit"
-                      onClick={() => setStateButton("payment")}
-                      className="bg-second text-white rounded-md shadow-none px-5 py-2 border hover:text-white text-sm"
-                    >
-                      Thanh toán
-                    </button>
-                    <button
-                      type="submit"
-                      onClick={() => setStateButton("vietqr")}
-                      className="bg-second text-white rounded-md shadow-none px-5 py-2 border hover:text-white text-sm"
-                    >
-                      Thanh toán VIETQR
-                    </button>
-                  </div>
-                </div>
-              </Wrapper>
             </div>
-          </div>
-
-          <div className="mx-5 xl:container xl:mx-auto mb-5">
             <Wrapper>
               <div className="p-5">
-                <div className="flex items-center justify-between mb-5">
-                  <h4 className="font-semibold text-2xl text-first">
-                    Sản phẩm bán chạy
-                  </h4>
-                  <a href="#" className="text-gray-light">
-                    Xem thêm <i className="ri-arrow-right-s-line"></i>
-                  </a>
+                <h5 className="font-medium text-gray-dark mb-3">
+                  Phương thức thanh toán
+                </h5>
+                <div className="flex gap-x-5 gap-y-3 mb-3">
+                  <div
+                    className={`border  ${
+                      stateButton == "vnpay"
+                        ? "border-second shadow-sm shadow-second"
+                        : "border-gray-300 shadow-lg"
+                    } rounded-xl border-gray-300 h-28 w-28 p-3 cursor-pointe transition-colors duration-300`}
+                    onClick={() => setStateButton("vnpay")}
+                  >
+                    <img
+                      src={VNPay}
+                      alt=""
+                      className="w-full object-cover h-full"
+                    />
+                  </div>
+                  <div
+                    className={`border ${
+                      stateButton == "vietqr"
+                        ? "border-second shadow-sm shadow-second"
+                        : "border-gray-300 shadow-lg"
+                    } rounded-xl w-28 h-28 p-3 cursor-pointer  transition-colors duration-300`}
+                    onClick={() => setStateButton("vietqr")}
+                  >
+                    <img
+                      src={VietQR}
+                      alt=""
+                      className={`w-full object-contain h-full object-center`}
+                    />
+                  </div>
                 </div>
-                {/* <ProductSlider
+                <div className="border-t pt-2 mt-2  border-gray-100 flex items-end flex-col mb-10 gap-y-3">
+                  <div className="flex">
+                    <span className="text-gray-dark font-medium">
+                      Tổng số lượng:
+                    </span>
+                    <div className="w-64 text-end text-gray-dark">
+                      {formik.values.SMPRQTTY}
+                    </div>
+                  </div>
+                  <div className="flex">
+                    <span className="text-gray-dark font-medium">
+                      Tổng tiền:
+                    </span>
+                    <div className="w-64 text-end text-gray-dark">
+                      {formik.values.SUM_CRAM}
+                    </div>
+                  </div>
+                  <div className="flex">
+                    <span className="text-gray-dark font-medium">
+                      Tiền chiết khấu:
+                    </span>
+                    <div className="w-64 text-end text-gray-dark">
+                      {formik.values.RDTNCRAM}
+                    </div>
+                  </div>
+                  <div className="flex">
+                    <span className="text-gray-dark font-medium">
+                      Tiền thuế:
+                    </span>
+                    <div className="w-64 text-end text-gray-dark">
+                      {formik.values.VAT_CRAM}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-y-3 items-center gap-x-2 justify-end">
+                  <button
+                    type="submit"
+                    className="bg-second text-white rounded-md shadow-none px-5 py-2 border hover:text-white text-sm cursor-pointer"
+                  >
+                    Đặt hàng
+                  </button>
+                </div>
+              </div>
+            </Wrapper>
+          </div>
+        </Form>
+      </FormikProvider>
+      <div className="mx-5 xl:container xl:mx-auto mb-5">
+        <Wrapper>
+          <div className="p-5">
+            <div className="flex items-center justify-between mb-5">
+              <h4 className="font-semibold text-2xl text-first">
+                Sản phẩm bán chạy
+              </h4>
+              <a href="#" className="text-gray-light">
+                Xem thêm <i className="ri-arrow-right-s-line"></i>
+              </a>
+            </div>
+            {/* <ProductSlider
               data={products?.slice(5, 30)}
               id="PRDCCODE"
               name={"PRDCNAME"}
@@ -763,11 +858,9 @@ const PayDetailComponent = () => {
               saleOff={""}
               sold={""}
             ></ProductSlider> */}
-              </div>
-            </Wrapper>
           </div>
-        </Form>
-      </FormikProvider>
+        </Wrapper>
+      </div>
     </div>
   );
 };

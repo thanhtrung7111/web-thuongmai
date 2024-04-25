@@ -1,4 +1,4 @@
-import React from "react"; // import Asus from "@assets/img/asus.jpg";
+import React, { useEffect } from "react"; // import Asus from "@assets/img/asus.jpg";
 import ImageMagnifier from "../components/ImageMagnifier";
 
 import Column from "../components/grid/Column";
@@ -11,25 +11,35 @@ const ElementBody = (...props) => {
   return <p>{"hello"}</p>;
 };
 const Test = () => {
+  useEffect(() => {
+    const timeValue = 1713517256 - Math.floor(new Date().getTime() / 1000);
+    let timeRemain = 1713517256 - Math.floor(new Date().getTime() / 1000);
+    if (timeRemain >= 0) {
+      const intervalTime = setInterval(() => {
+        document.getElementById("timeTranfer").textContent =
+          Math.floor(timeRemain / 60) +
+          ":" +
+          (Math.floor(timeRemain % 60) >= 10
+            ? Math.floor(timeRemain % 60)
+            : "0" + Math.floor(timeRemain % 60));
+        document.getElementById("progressTime").style.width =
+          100 - ((timeValue - timeRemain) / timeValue) * 100 + "%";
+        --timeRemain;
+        if (timeRemain == -1) {
+          clearInterval(intervalTime);
+          document.getElementById("timeTranfer").textContent =
+            "Hết hạn thanh toán";
+        }
+      }, 1000);
+    }
+  }, []);
   return (
-    <GridComponent>
-      <Column
-        title="Cột tên"
-        type="checkbox"
-        headerElement={<ElemetHead></ElemetHead>}
-        bodyElement={<ElementBody></ElementBody>}
-        width={"100px"}
-      ></Column>
-      <Column title="Cột tên" name="name" sort="true" width={"200px"}></Column>
-      <Column title="Cột id" name="id" sort="true" width={"100px"}></Column>
-      <Column
-        title="Cột id"
-        name="price"
-        sort="true"
-        type="number"
-        width={"100px"}
-      ></Column>
-    </GridComponent>
+    <div className="p-11">
+      <div id="timeTranfer"></div>
+      <div className="w-96 h-1 bg-slate-300">
+        <div className="h-full bg-red-600" id="progressTime"></div>
+      </div>
+    </div>
   );
 };
 

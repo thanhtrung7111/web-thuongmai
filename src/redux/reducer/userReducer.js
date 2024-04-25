@@ -37,7 +37,7 @@ const userSlice = createSlice({
     builder.addCase(login.fulfilled, (state, action) => {
       const { TOKEN, COMPLIST, USERLGIN } = action.payload;
       sessionStorage.setItem("tokenUser", TOKEN);
-      state.locations = COMPLIST[0];
+      state.locations = COMPLIST;
       state.currentUser = { TOKEN, ...USERLGIN };
       state.isLoadingUser = false;
     });

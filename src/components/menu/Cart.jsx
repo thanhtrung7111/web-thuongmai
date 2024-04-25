@@ -112,7 +112,7 @@ const Cart = () => {
 
           {productCarts?.length != 0 && (
             <div className="flex items-center justify-between mt-3 text-gray-dark text-sm">
-              <span>Tổng số lượng sản phẩm: {productCarts.length}</span>
+              <span>Tổng sản phẩm: {productCarts.length}</span>
               <button
                 type="button"
                 onClick={handlePayment}
