@@ -132,7 +132,9 @@ const RowPayDetail = ({
             Xóa
           </button>
 
-          <ProductSuggestion></ProductSuggestion>
+          <ProductSuggestion
+            keyword={item[name]?.substring(0, 10)}
+          ></ProductSuggestion>
         </div>
       </td>
     </tr>

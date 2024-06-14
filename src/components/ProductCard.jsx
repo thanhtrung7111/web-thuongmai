@@ -66,7 +66,11 @@ const ProductCard = ({
   }, [disableAction === true]);
   return (
     <div
-      className={`group/product  bg-white shadow-sm w-full rounded-lg border overflow-hidden border-gray-200 flex flex-col items-center`}
+      onClick={() => {
+        window.scroll(0, 0);
+        navigate(`/products/${item[id]}`);
+      }}
+      className={`group/product cursor-pointer relative bg-white shadow-sm w-full rounded-lg border overflow-hidden border-gray-200 flex flex-col items-center`}
     >
       <div className="relative w-full h-40 mb-3 overflow-hidden">
         <div className="text-xs absolute top-2 left-2 bg-slate-500 px-2 py-1 text-white z-10 rounded-md">
@@ -76,10 +80,6 @@ const ProductCard = ({
         <div className="opacity-0 group-hover/product:opacity-100 transition-opacity duration-300 absolute top-0 right-0 h-full w-full bg-black bg-opacity-20 flex items-center justify-center">
           <button
             type="button"
-            onClick={() => {
-              window.scroll(0, 0);
-              navigate(`/products/${item[id]}`);
-            }}
             className="text-xs text-white bg-first bg-opacity-95 py-2 px-5 rounded-sm hover:opacity-85"
           >
             <i class="ri-error-warning-line font-thin"></i> Xem chi tiết
@@ -118,12 +118,11 @@ const ProductCard = ({
           </span>
         </div>
         <div className="flex items-end justify-between w-full">
-          <div className="flex flex-col gap-y-1">
+          <div className="flex flex-col gap-y-1 curso">
             <p className="text-xs font-medium text-gray-dark flex items-center gap-x-1">
               Đánh giá:{" "}
               <span className="rounded-md px-1 py-[1px] flex items-center justify-between text-white bg-second text-[10px] gap-x-[1px]">
-                {item[stars] ? item[stars] : Math.round(Math.random() * 5)}{" "}
-                <i class="ri-star-fill"></i>
+                {item[stars] ? item[stars] : 5} <i class="ri-star-fill"></i>
               </span>{" "}
               <span className="font-thin text-xs">
                 (
@@ -141,20 +140,21 @@ const ProductCard = ({
               </span>
             </p>
           </div>
-          <div>
-            <button
-              type="button"
-              title="Thêm vào giỏ hàng"
-              disabled={disableAction}
-              onClick={(e) => handleAddProductToCart(e)}
-              className={`w-10 h-8 rounded-md bg-second disabled:bg-gray-300
-               flex items-center justify-center cursor-pointer hover:scale-125 transition-transform duration-200`}
-            >
-              <i class="ri-shopping-cart-line text-white"></i>
-            </button>
-          </div>
         </div>
       </div>
+      <button
+        type="button"
+        title="Thêm vào giỏ hàng"
+        disabled={disableAction}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleAddProductToCart(e);
+        }}
+        className={`absolute  bottom-3 right-3 w-10 h-8 rounded-md bg-second disabled:bg-gray-300
+               flex items-center justify-center cursor-pointer hover:scale-125 transition-transform duration-200`}
+      >
+        <i class="ri-shopping-cart-line text-white"></i>
+      </button>
     </div>
   );
 };

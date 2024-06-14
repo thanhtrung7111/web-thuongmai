@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Wrapper from "@components/Wrapper";
 import ProductCard from "@components/ProductCard";
 import ProductSlider from "@components/ProductSlider";
@@ -29,6 +29,8 @@ const tagsSort = [
 ];
 const ProductListComponent = ({ search }) => {
   const dispatch = useDispatch();
+  const minPrice = useRef();
+  const maxPrice = useRef();
   const [currentPage, setCurrentPage] = useState(1);
   const { products, lstQUOM, isLoadingCommon } = useSelector(
     (state) => state.common
@@ -116,6 +118,29 @@ const ProductListComponent = ({ search }) => {
         ]);
         break;
     }
+  };
+
+  const filterPrice = () => {
+    if (minPrice.current.value && maxPrice.current.value == null) {
+      products.filter((item) => item.PRCEDSCN >= minPrice.current.value);
+      return;
+    }
+
+    if (minPrice.current.value == null && maxPrice.current.value) {
+      products.filter((item) => item.PRCEDSCN <= maxPrice.current.value);
+      return;
+    }
+    if (minPrice.current.value > maxPrice.current.value) {
+      return;
+    }
+
+    setProductList(
+      products.filter(
+        (item) =>
+          item.PRCEDSCN >= minPrice.current.value &&
+          item.PRCEDSCN <= maxPrice.current.value
+      )
+    );
   };
 
   useEffect(() => {
@@ -227,16 +252,24 @@ const ProductListComponent = ({ search }) => {
                   </div>
                   <div className="flex gap-y-2 flex-col">
                     <input
-                      type="text"
+                      type="number"
+                      ref={minPrice}
+                      min={100000}
                       placeholder="Từ: 100.000VNĐ"
                       className="border px-3 py-2 w-full outline-none text-gray-dark text-sm rounded-md"
                     />
                     <input
-                      type="text"
-                      placeholder="Đến: 300.000VNĐ"
+                      type="number"
+                      min={100000}
+                      ref={maxPrice}
+                      p
+                      placeholder="Đến: 10.000.000VNĐ"
                       className="border px-3 py-2 w-full outline-none text-gray-dark text-sm rounded-md"
                     />
-                    <button className="py-2 px-1 text-white bg-second rounded-md">
+                    <button
+                      onClick={filterPrice}
+                      className="py-2 px-1 text-white bg-second rounded-md"
+                    >
                       Lọc
                     </button>
                   </div>
@@ -316,7 +349,7 @@ const ProductListComponent = ({ search }) => {
                         })}
                     </div>
                   )}
-                  {productList?.length > 0 && (
+                  {productList?.length > 20 && (
                     <Panigation
                       currentPage={currentPage}
                       totalCount={
@@ -345,7 +378,7 @@ const ProductListComponent = ({ search }) => {
                 </a>
               </div>
               <ProductSlider
-                data={productList?.slice(0, 10)}
+                data={products?.slice(0, 10)}
                 id={"PRDCCODE"}
                 name={"PRDCNAME"}
                 unit={"QUOMNAME"}

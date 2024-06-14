@@ -5,7 +5,7 @@ import Panigation from "@components/panigation/Panigation";
 import { loadProduct } from "../../redux/actions/commonAction";
 import LoadingView from "../../pages/LoadingView";
 let pageSize = 4;
-const ProductSuggestion = ({}) => {
+const ProductSuggestion = ({ keyword }) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const { products, isLoadingCommon } = useSelector((state) => state.common);
@@ -13,8 +13,10 @@ const ProductSuggestion = ({}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    setLstProduct(products);
-  }, [products.length]);
+    setLstProduct(
+      products.filter((item) => item.PRDCNAME.indexOf(keyword) >= 0)
+    );
+  }, [products.length, keyword]);
 
   useEffect(() => {
     dispatch(
@@ -96,7 +98,7 @@ const ProductSuggestion = ({}) => {
                     })}
                 </div>
               )}
-              {lstProduct?.length > 0 && (
+              {lstProduct?.length > 5 && (
                 <Panigation
                   currentPage={currentPage}
                   totalCount={lstProduct?.length > 0 ? lstProduct.length : 0}
