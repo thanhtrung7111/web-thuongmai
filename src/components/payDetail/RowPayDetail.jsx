@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ImageFetch from "../ImageFetch";
+import ProductSuggestion from "../productsuggestion/ProductSuggestion";
 
 const RowPayDetail = ({
   item,
@@ -129,9 +130,8 @@ const RowPayDetail = ({
           >
             Xóa
           </button>
-          <span className="w-32 text-center hover:text-second transition-colors duration-100 text-xs cursor-pointer">
-            Tìm các sản phẩm liên quan ?{" "}
-          </span>
+        
+          <ProductSuggestion></ProductSuggestion>
         </div>
       </td>
     </tr>

@@ -523,7 +523,7 @@ const PayDetailComponent = () => {
     formik.setValues({
       DETAIL: detail,
     });
-  }, [formik.values.DETAIL.length == 0]);
+  }, [formik.values.DETAIL?.length == 0]);
 
   useEffect(() => {
     setTimeout(() => {
