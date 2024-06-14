@@ -54,11 +54,10 @@ function App() {
     showAppNotify.open,
     block,
   ]);
-
   return (
     <div>
       <ToastContainer></ToastContainer>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <DetailOrder></DetailOrder>
         <EvaluateProduct></EvaluateProduct>
         <AppNotifycation></AppNotifycation>

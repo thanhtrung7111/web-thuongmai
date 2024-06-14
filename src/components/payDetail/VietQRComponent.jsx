@@ -261,10 +261,11 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
       for (var i = 1; i < 10000; i++) window.clearInterval(i);
     }
   }, [open]);
+  console.log(open);
   return (
     <div
       className={`${
-        open ? "opacity-100 z-50 invisible" : "opacity-0 -z-20 visible"
+        open ? "opacity-100 z-50 visible" : "opacity-0 -z-20 invisibleS"
       } fixed h-screen w-screen top-0 right-0 flex items-center justify-center transition-opacityVisibility duration-200 ease-in-out`}
     >
       <div

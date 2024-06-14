@@ -238,6 +238,10 @@ const PayDetailComponent = () => {
     dispatch(openBlock());
   };
 
+  useEffect(() => {
+    setInfoVietQR(null);
+  }, [formik.values.SUM_AMNT]);
+
   // useEffect(() => {
   // console.log(infoVietQR);
   // }, [infoVietQR]);
