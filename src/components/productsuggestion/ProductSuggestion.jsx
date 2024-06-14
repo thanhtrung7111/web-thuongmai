@@ -45,23 +45,24 @@ const ProductSuggestion = ({}) => {
       >
         Tìm các sản phẩm liên quan ?{" "}
       </span>
-      {isLoading ? (
-        <LoadingView></LoadingView>
-      ) : (
-        <div
-          className={`${
-            open ? "visible opacity-100 z-10" : "invisible opacity-0"
-          } absolute top-full right-0 w-[1000px] h-fit rounded-lg bg-white border shadow-2xl`}
-        >
-          <div className="flex items-center justify-between px-4 py-3">
-            <span className="font-semibold text-second text-xl">
-              Sản phẩm liên quan
-            </span>
-            <i
-              class="ri-close-line cursor-pointer text-xl"
-              onClick={() => setOpen(false)}
-            ></i>
-          </div>
+
+      <div
+        className={`${
+          open ? "visible opacity-100 z-10" : "invisible opacity-0"
+        } absolute top-full right-0 w-[1000px] h-fit rounded-lg bg-white border shadow-2xl`}
+      >
+        <div className="flex items-center justify-between px-4 py-3">
+          <span className="font-semibold text-second text-xl">
+            Sản phẩm liên quan
+          </span>
+          <i
+            class="ri-close-line cursor-pointer text-xl"
+            onClick={() => setOpen(false)}
+          ></i>
+        </div>
+        {isLoading ? (
+          <LoadingView></LoadingView>
+        ) : (
           <div>
             <div className="p-5 pt-1 min-h-96">
               {lstProduct?.length <= 0 ? (
@@ -106,8 +107,8 @@ const ProductSuggestion = ({}) => {
               )}
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 };

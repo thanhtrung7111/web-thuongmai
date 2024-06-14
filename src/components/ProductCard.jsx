@@ -75,6 +75,7 @@ const ProductCard = ({
 
         <div className="opacity-0 group-hover/product:opacity-100 transition-opacity duration-300 absolute top-0 right-0 h-full w-full bg-black bg-opacity-20 flex items-center justify-center">
           <button
+            type="button"
             onClick={() => {
               window.scroll(0, 0);
               navigate(`/products/${item[id]}`);
@@ -142,6 +143,7 @@ const ProductCard = ({
           </div>
           <div>
             <button
+              type="button"
               title="Thêm vào giỏ hàng"
               disabled={disableAction}
               onClick={(e) => handleAddProductToCart(e)}
