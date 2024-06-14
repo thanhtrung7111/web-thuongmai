@@ -6,7 +6,7 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/web-thuongmai/",
+  // base: "/web-thuongmai/",
   resolve: {
     alias: {
       "@actions": "/src/actions",
