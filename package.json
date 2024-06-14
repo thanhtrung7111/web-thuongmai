@@ -1,13 +1,14 @@
 {
   "name": "web-thuongmai",
-  "homepage": "https://github.com/thanhtrung7111/web-thuongmai/",
+  "homepage": "https://github.com/thanhtrung7111/web-thuongmai/login",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "deploy": "git push origin :gh-pages && git subtree push --prefix dist origin gh-pages",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
