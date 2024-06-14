@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "@pages/Home";
 import Footer from "@components/Footer";
 import ProductDetail from "@pages/ProductDetail";
@@ -56,7 +56,7 @@ function App() {
   ]);
 
   return (
-    <div className={`font-sans`}>
+    <div>
       <ToastContainer></ToastContainer>
       <BrowserRouter>
         <DetailOrder></DetailOrder>
@@ -89,19 +89,46 @@ function App() {
               path="/products"
               element={<ProductList></ProductList>}
             ></Route>
-            <Route path="/pay" element={<PayDetail></PayDetail>}></Route>
+            <Route
+              path="/pay"
+              element={
+                currentUser ? (
+                  <PayDetail></PayDetail>
+                ) : (
+                  <Navigate to={"/login"} />
+                )
+              }
+            ></Route>
             <Route
               path="/pay-success"
-              element={<PaymentSuccess></PaymentSuccess>}
+              element={
+                currentUser ? (
+                  <PaymentSuccess></PaymentSuccess>
+                ) : (
+                  <Navigate to={"/login"} />
+                )
+              }
             ></Route>
             <Route
               path="/personal"
-              element={<PersonalInfomation></PersonalInfomation>}
+              element={
+                currentUser ? (
+                  <PersonalInfomation></PersonalInfomation>
+                ) : (
+                  <Navigate to={"/login"} />
+                )
+              }
             ></Route>
             <Route path="/promotion" element={<Promotion></Promotion>}></Route>
             <Route
               path="/status_payvietQR"
-              element={<PaySuccessVietQR></PaySuccessVietQR>}
+              element={
+                currentUser ? (
+                  <PaySuccessVietQR></PaySuccessVietQR>
+                ) : (
+                  <Navigate to={"/login"} />
+                )
+              }
             ></Route>
             {/* <Route path="/*" element={<Navigate to="/" />}></Route> */}
           </Route>

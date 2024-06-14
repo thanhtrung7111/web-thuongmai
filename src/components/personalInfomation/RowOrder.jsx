@@ -5,6 +5,7 @@ import moment from "moment";
 import { fetchDataDetail } from "../../api/api";
 import LoadingView from "@components/LoadingView";
 const RowOrder = ({
+  item,
   status,
   onClickDetail,
   order,
@@ -78,23 +79,24 @@ const RowOrder = ({
   //   setIsLoading(false);
   // }, [detailOrder != null]);
   // console.log(detailOrder);
+  console.log(item);
   return (
     <div
       className={`relative 
        border rounded-lg overflow-hidden`}
     >
       {elementStatus}
-      <div className="flex items-center gap-x-2 mb-2 bg-slate-100 p-2">
+      <div className="flex items-center gap-x-2 bg-slate-100 p-2">
         <h5 className="text-gray-dark text-xl font-light">
-          <span className="font-medium">Đơn hàng:</span> #{maincode}
+          <span className="font-medium">Đơn hàng:</span> #{item[maincode]}
         </h5>
         <span className="text-xs text-gray-light italic">
-          ( {moment(detailOrder?.ODERDATE).format("DD/MM/yyyy")} )
+          ( {moment(item[date]).format("DD/MM/yyyy")} )
         </span>
 
         <div
           className="text-sm text-gray-dark hover:text-second cursor-pointer pl-2 border-l border-gray-300"
-          onClick={() => onClickDetail(id)}
+          onClick={() => onClickDetail(item[id])}
         >
           <i class="ri-error-warning-line"></i> Chi tiết
         </div>

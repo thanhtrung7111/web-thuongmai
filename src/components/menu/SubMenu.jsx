@@ -26,7 +26,7 @@ const SubMenu = ({
       navigate(link);
       handleCloseMenu();
     }
-    console.log(window.innerWidth);
+    // console.log(window.innerWidth);
   };
 
   return (
@@ -71,11 +71,12 @@ const SubMenu = ({
    } lg:!h-[400px] lg:before:absolute lg:overflow-visible lg:invisible lg:before:w-full lg:before:h-5 lg:before:-top-5 lg:before:left-0 lg:before:bg-transparent z-50`}
           style={{
             left: `${level >= 2 && "100%"}`,
-            top: `${level >= 2 && "0"}`,
+            top: `${level >= 2 && "-1%"}`,
           }}
         >
           {listItem?.map((item) => (
             <SubMenu
+              key={item[name]}
               handleCloseMenu={handleCloseMenu}
               name={item.name}
               listItem={item.listItem}

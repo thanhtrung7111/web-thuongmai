@@ -1,27 +1,32 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 import { users } from "../../data";
 import { login, loginLCTN } from "../actions/userAction";
+import storage from "redux-persist/lib/storage";
+import session from "redux-persist/lib/storage/session";
+
+let stateUser = {
+  isLoadingUser: false,
+  errorMessageUser: "",
+  currentUser: null,
+  locations: {},
+  productSearchs: [],
+};
 
 const userSlice = createSlice({
   name: "user",
 
-  initialState: {
-    isLoadingUser: false,
-    errorMessageUser: "",
-    currentUser: null,
-    locations: {},
-    productSearchs: [],
-  },
+  initialState: stateUser,
 
   reducers: {
-    logout: (state) => {
-      state.currentUser = null;
-      state.errorMessageUser = "";
-      state.isLoadingUser = false;
+    logout: (state, action) => {
+      console.log(state);
+      console.log(current(state));
+      return stateUser;
     },
 
     saveSearch: (state, action) => {
       state.productSearchs.push(action.payload);
+      return state;
     },
 
     clearSearch: (state, action) => {
@@ -31,6 +36,8 @@ const userSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(login.pending, (state) => {
+      console.log(state);
+      console.log(current(state));
       state.isLoadingUser = true;
     });
 
@@ -41,8 +48,8 @@ const userSlice = createSlice({
       state.currentUser = { TOKEN, ...USERLGIN };
       state.isLoadingUser = false;
     });
+
     builder.addCase(loginLCTN.fulfilled, (state, action) => {
-      console.log(action.payload);
       const { TOKEN, COMPLIST, USERLGIN } = action.payload;
       sessionStorage.setItem("tokenUser", TOKEN);
       state.locations = COMPLIST[0];

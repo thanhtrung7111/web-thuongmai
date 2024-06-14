@@ -94,6 +94,7 @@ const InfomationNotify = () => {
           .map((item) => {
             return (
               <RowNotify
+                key={item.title}
                 title={item.title}
                 desc={item.description}
                 date={item.date}

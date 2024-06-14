@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Navigate, useNavigate } from "react-router-dom";
 import NoImage from "@assets/img/noimage.png";
-import ImageFetch from "./ImageFetch";
-const RowCart = ({ item, id, name, image, price, amount, handleDelete }) => {
+import ImageFetch from "../ImageFetch";
+const RowCart = ({
+  item,
+  id,
+  name,
+  image,
+  price,
+  amount,
+  unit,
+  saleoff,
+  handleDelete,
+}) => {
   const [imageState, setImageState] = useState(null);
   const navigate = useNavigate();
   const handleClickDetail = () => {
@@ -56,12 +66,21 @@ const RowCart = ({ item, id, name, image, price, amount, handleDelete }) => {
           <div className="flex items-baseline gap-x-2">
             <span className="text-xs">Giá sản phẩm: </span>
             <span className="font-semibold text-second flex items-start text-base">
-              {(item[price] * item[amount])?.toLocaleString("vi", {
+              {(
+                item[price] -
+                (item[price] * item[saleoff]) / 100
+              )?.toLocaleString("vi", {
                 style: "currency",
                 currency: "VND",
               })}
             </span>
           </div>
+          {/* <div className="flex items-baseline gap-x-2">
+            <span className="text-xs">Đơn vị tính: </span>
+            <span className="font-semibold text-second flex items-start text-base">
+              {item[unit]}
+            </span>
+          </div> */}
         </div>
       </div>
     </div>

@@ -57,12 +57,17 @@ const DetailOrder = () => {
           showDetailOrder.open && "!translate-y-0"
         } transition-transform duration-300 h-fit overflow-hidden`}
       >
-        <h5 className="text-xl font-medium py-2 px-5 bg-second text-white border-b border-gray-100">
-          Chi tiết đơn hàng{" "}
-          <span className="font-light">
-            #{isLoadingOrder ? "..." : orderDetail?.ODERCODE}
-          </span>
-        </h5>
+        <div className="bg-first text-white flex items-center justify-between py-2 px-5 border-b border-gray-100">
+          <h5 className="text-xl font-medium">
+            Chi tiết đơn hàng{" "}
+            <span className="font-light">
+              #{isLoadingOrder ? "..." : orderDetail?.ODERCODE}
+            </span>
+          </h5>
+          <div className="cursor-pointer" onClick={closeScreen}>
+            <i class="ri-close-fill text-xl"></i>
+          </div>
+        </div>
         <div className="p-5 min-h-36 max-h-[750px] overflow-y-scroll">
           {isLoadingOrder ? (
             <LoadingView></LoadingView>

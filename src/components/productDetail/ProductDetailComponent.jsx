@@ -294,15 +294,17 @@ const ProductDetailComponent = () => {
                     {images.map((item) => {
                       return (
                         <SwiperSlide
-                          className={`flex items-center justify-center
-                          ${
-                            indexImage.id == item.id
-                              ? "border border-first p-2"
-                              : "border border-gray-100 p-2"
-                          }
+                          className={`flex items-center justify-center rounded-md overflow-hidden p-3
                         `}
                           onClick={() => handleChangeImage(item.id)}
                         >
+                          <div
+                            className={`transition-all cursor-pointer absolute top-0 right-0 w-full h-full ${
+                              indexImage.id == item.id
+                                ? "shadow-md border"
+                                : "bg-black bg-opacity-15"
+                            }`}
+                          ></div>
                           <img
                             src={item.image}
                             className="h-32 w-full object-contain object-top"

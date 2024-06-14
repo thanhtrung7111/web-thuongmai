@@ -86,7 +86,7 @@ const Register = () => {
                 </label>
                 <input
                   type="text"
-                  className="border py-2 px-3 outline-second w-96"
+                  className="border py-2 px-3 outline-second w-full"
                   placeholder="Tài khoản của bạn!"
                   name="username"
                   id="username"
@@ -168,7 +168,7 @@ const Register = () => {
                 </label>
                 <input
                   type="date"
-                  className="border py-[7px] px-3 outline-second w-96"
+                  className="border py-[7px] px-3 outline-second w-full"
                   name="dayOfBirth"
                   id="dayOfBirth"
                   value={formik.values.dayOfBirth}

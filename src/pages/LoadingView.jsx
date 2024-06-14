@@ -2,13 +2,10 @@ import React from "react";
 
 const LoadingView = () => {
   return (
-    <div className="xl:container xl:mx-auto mt-10 mx-5 min-h-[500px] flex gap-x-2 justify-center">
-      <img
-        class="w-10 h-10 animate-spin"
-        src="https://www.svgrepo.com/show/70469/loading.svg"
-        alt="Loading icon"
-      ></img>
-      <span className="text-lg text-gray-dark">Đang tải dữ liệu</span>
+    <div class="flex space-x-2 justify-center items-center bg-white h-screen dark:invert">
+      <div class="h-3 w-3 bg-second rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+      <div class="h-3 w-3 bg-second rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+      <div class="h-3 w-3 bg-second rounded-full animate-bounce"></div>
     </div>
   );
 };

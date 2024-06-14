@@ -6,6 +6,7 @@ const TabComponent = ({ data, id, name, currentIndex, onChange }) => {
       {data.map((item) => {
         return (
           <div
+            key={item[id]}
             onClick={() => onChange(item)}
             className={`px-5 text-sm py-1 border-b-2 cursor-pointer transition-colors duration-300 ${
               currentIndex[id] == item[id]

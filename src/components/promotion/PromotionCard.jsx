@@ -1,7 +1,8 @@
 import React from "react";
 import Asus from "@assets/img/asus.jpg";
 import Wrapper from "@components/Wrapper";
-const PromotionCard = () => {
+import moment from "moment";
+const PromotionCard = ({ item, title, desc, beginDate, endDate }) => {
   return (
     <div className="group/promotion cursor-pointer shadow-md rounded-md overflow-hidden">
       <Wrapper>
@@ -14,17 +15,17 @@ const PromotionCard = () => {
             />
           </div>
           <div className="p-5 flex flex-col gap-y-3">
-            <h3 className="text-gray-dark text-lg font-bold">
-              Mua hai sản phẩm bất kì được tặng một sản phẩm cùng loại
-            </h3>
-            <p className="text-sm text-gray-dark">
-              Khi bạn mua 2 sản phẩm cùng loại sẽ được tặng them một sản phẩm
-              cùng loại.
-            </p>
+            <h3 className="text-gray-dark text-lg font-bold">{item[title]}</h3>
+            <p className="text-sm text-gray-dark">{item[desc]}</p>
             <p className="text-sm text-gray-dark">
               Thời gian áp dụng từ ngày{" "}
-              <span className="font-medium">24-02-2006</span> đến ngày{" "}
-              <span className="font-medium">24-02-2006</span>
+              <span className="font-medium">
+                {moment(item[beginDate]).format("DD/MM/yyyy")}
+              </span>{" "}
+              đến ngày{" "}
+              <span className="font-medium">
+                {moment(item[endDate]).format("DD/MM/yyyy")}
+              </span>
             </p>
             <a
               href="#"

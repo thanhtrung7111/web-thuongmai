@@ -15,6 +15,11 @@ export default {
           lighter: "#DADADA",
         },
       },
+      transitionProperty: {
+        rightOpacityVisibility: "right, opacity,visibility",
+        opacityVisibility: "opacity, visibility",
+        transformColor: "transform, color",
+      },
     },
   },
   plugins: [],

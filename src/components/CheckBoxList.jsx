@@ -43,13 +43,19 @@ const CheckBoxList = ({
         {dataList?.map(
           (item) =>
             item[itemName] !== "" && (
-              <li className="text-sm text-gray-dark flex gap-x-2">
+              <li
+                key={item[itemKey]}
+                className="text-sm text-gray-dark flex gap-x-2"
+              >
                 <input
                   type="checkbox"
+                  id={item[itemKey]}
                   className="accent-first checked:text-white"
                   onChange={() => onChange(item)}
                 />
-                <span>{item[itemName]}</span>
+                <label htmlFor={item[itemKey]} className="cursor-pointer">
+                  {item[itemName]}
+                </label>
               </li>
             )
         )}

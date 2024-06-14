@@ -3,6 +3,7 @@ import SubMenu from "./SubMenu";
 import Phone from "@assets/img/phone.png";
 import QrCode from "@assets/img/qr-code.png";
 import IconVN from "@assets/img/icon-vn.png";
+import Triangle from "@assets/img/triangle.png";
 import Apple from "@assets/img/appple.png";
 import Android from "@assets/img/android.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -100,6 +101,7 @@ const MenuChild = () => {
 
               {data.map((item) => (
                 <SubMenu
+                  key={item[name]}
                   link={item.link}
                   name={item.name}
                   listItem={item.listItem}
@@ -119,7 +121,8 @@ const MenuChild = () => {
               <img src={Phone} alt="" className="w-5" />
               <span className="text-sm font-medium">Tải ứng dụng</span>
 
-              <div className="absolute  border border-gray-200 rounded-md overflow-hidden invisible group-hover/download:visible z-50 top-[130%] -right-2 bg-white w-72 shadow-sm border-t px-4 py-8 text-center before:absolute before:w-full before:h-5 before:bg-transparent before:-top-4 before:right-0 transition-all duration-200">
+              <div className="absolute  border border-gray-200 rounded-md invisible opacity-0 group-hover/download:visible group-hover/download:opacity-100 transition-opacityVisibility z-50 top-[130%] -right-2 bg-white w-72 shadow-sm border-t px-4 py-8 text-center before:absolute before:w-full before:h-5 before:bg-transparent before:-top-4 before:right-0">
+                <div className="absolute -top-2 right-14 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-white"></div>
                 <h4 className="font-medium text-gray-dark mb-3 text-sm">
                   Quét QR để tải ứng dụng
                 </h4>

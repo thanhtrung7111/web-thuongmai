@@ -15,13 +15,26 @@ const dataBanner = [Banner1, Banner2, Banner3];
 const HomeComponent = () => {
   const { products, isLoadingCommon } = useSelector((state) => state.common);
   const [loading, setLoading] = useState(true);
-  const [lstProduct, setLstProduct] = useState([]);
+  const [lstProduct, setLstProduct] = useState(null);
   useEffect(() => {
-    setLoading(isLoadingCommon);
-  }, [isLoadingCommon]);
+    if (
+      products?.length >= 0 &&
+      lstProduct !== null &&
+      isLoadingCommon == false
+    ) {
+      setLoading(false);
+    }
+  }, [products, isLoadingCommon, lstProduct]);
+
   useEffect(() => {
     setLstProduct(products);
   }, [products]);
+
+  useEffect(() => {
+    const getAllCacheData = async () => {};
+    getAllCacheData();
+  }, []);
+  console.log(products);
   return loading ? (
     <LoadingView></LoadingView>
   ) : (
@@ -80,13 +93,12 @@ const HomeComponent = () => {
           </div>
         </Wrapper>
       </div>
-
       {/* SẢN PHẢM BÁN CHẠY  */}
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="font-semibold text-2xl text-first">
+              <h4 className="font-medium text-2xl text-first">
                 Sản phẩm bán chạy
               </h4>
               <a href="#" className="text-gray-light text-sm hover:text-second">
@@ -100,27 +112,45 @@ const HomeComponent = () => {
               image={"PRDCIMGE"}
               unit={"QUOMNAME"}
               discount={"DSCNRATE"}
-              price={"PRCEDSCN"}
+              price={"PRCESALE"}
               reviews={"rating"}
               stars={"rating"}
-              saleOff={"PRCESALE"}
+              saleOff={"PRCEDSCN"}
               sold={""}
             ></ProductSlider>
           </div>
         </Wrapper>
       </div>
-
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="font-semibold text-2xl text-first">Danh mục</h4>
+              <h4 className="font-medium text-2xl text-first">Danh mục</h4>
               <a href="#" className="text-gray-light text-sm hover:text-second">
                 Xem thêm <i className="ri-arrow-right-s-line"></i>
               </a>
             </div>
             <CategorySlider
-              data={["1", "2", "3", "4", "5", "6", "7", "8"]}
+              data={[
+                {
+                  id: 1,
+                  name: "Máy tinh",
+                  image:
+                    "https://cdn.mediamart.vn/images/news/14-thu-thuat-tren-may-tinh-ma-ban-khong-nen-bo-qua-H0WCR7.jpg",
+                },
+                {
+                  id: 2,
+                  name: "Laptop",
+                  image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUHxMP7VWESAjnxcdDQ9exuOdrIPT-GTbJX-0rSXAp0A&s",
+                },
+                {
+                  id: 3,
+                  name: "Tablet",
+                  image:
+                    "https://p2-ofp.static.pub/fes/cms/2021/10/28/juqs65pgl1gh3dysi7yv1tnvtsiqva364946.png",
+                },
+              ]}
               id="id"
               name="name"
               image="image"
@@ -128,13 +158,12 @@ const HomeComponent = () => {
           </div>
         </Wrapper>
       </div>
-
       {/* SẢN PHẢM NỔI BẬT  */}
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="font-semibold text-2xl text-first">
+              <h4 className="font-medium text-2xl text-first">
                 Sản phẩm nổi bật
               </h4>
               <a href="#" className="text-gray-light text-sm hover:text-second">
@@ -149,21 +178,23 @@ const HomeComponent = () => {
               image={"PRDCIMGE"}
               unit={"QUOMNAME"}
               discount={"DSCNRATE"}
-              price={"PRCEDSCN"}
+              price={"PRCESALE"}
               reviews={"rating"}
               stars={"rating"}
-              saleOff={"PRCESALE"}
+              saleOff={"PRCEDSCN"}
               sold={""}
             ></ProductSlider>
           </div>
         </Wrapper>
       </div>
-      {/* Bàn phím  */}
+      {/* Bàn phím
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="font-semibold text-2xl text-first">Bàn phím</h4>
+              <h4 className="font-medium text-2xl text-gray-500 relative">
+                Bàn phím
+              </h4>
               <a href="#" className="text-gray-light text-sm hover:text-second">
                 Xem thêm <i className="ri-arrow-right-s-line"></i>
               </a>
@@ -182,8 +213,7 @@ const HomeComponent = () => {
             ></ProductSlider>
           </div>
         </Wrapper>
-      </div>
-
+      </div> */}
       <Wrapper></Wrapper>
     </>
   );

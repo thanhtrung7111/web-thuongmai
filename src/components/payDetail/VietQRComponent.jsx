@@ -19,6 +19,7 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
     content: () => componentRef.current,
     documentTitle: value?.orderCode,
     onAfterPrint: () => toast.success("In QR Code thành công"),
+    onPrintError: () => toast.error("In QR Code thất bại"),
     // pageStyle: "{ size: 2.5in 4in }",
   });
 
@@ -36,6 +37,7 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
       .then((resp) => resp.data.data)
       .catch((e) => console.log(e));
     dispatch(closeBlock());
+    window.scroll(0, 0);
     navigate(`/status_payvietQR?response=${data.status}`);
   };
 
@@ -225,6 +227,9 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
         });
       }
     );
+    toast.success("Chia sẻ thành công!", {
+      autoClose: 1000,
+    });
   };
 
   useEffect(() => {
@@ -243,10 +248,7 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
           (Math.floor(timeRemain % 60) >= 10
             ? Math.floor(timeRemain % 60)
             : "0" + Math.floor(timeRemain % 60));
-        document.getElementById("progressTime").style.width =
-          100 - ((timeValue - timeRemain) / timeValue) * 100 + "%";
-        --timeRemain;
-
+        timeRemain -= 1;
         if (timeRemain == -1) {
           clearInterval(intervalTime);
           document.getElementById("timeTranfer").textContent =
@@ -262,8 +264,8 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
   return (
     <div
       className={`${
-        open ? "opacity-100 z-50" : "opacity-0 -z-20"
-      } fixed h-screen w-screen top-0 right-0 flex items-center justify-center transition-opacity duration-200 ease-in-out`}
+        open ? "opacity-100 z-50 invisible" : "opacity-0 -z-20 visible"
+      } fixed h-screen w-screen top-0 right-0 flex items-center justify-center transition-opacityVisibility duration-200 ease-in-out`}
     >
       <div
         className="absolute top-0 right-0 w-full h-full bg-black bg-opacity-15"
@@ -362,20 +364,11 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
           </div>
         </div>
         <div className="mb-8 px-5">
-          <div className="flex justify-between">
+          <div className="flex">
             <span className="text-gray-dark font-medium text-sm">
-              Thời gian thanh toán
+              Thời gian thanh toán:
             </span>
-            <div
-              id="timeTranfer"
-              className="text-gray-dark font-medium text-sm"
-            ></div>
-          </div>
-          <div className="w-full h-3 bg-slate-300 rounded-lg">
-            <div
-              className="h-full bg-amber-400 transition-[width] duration-75 rounded-lg"
-              id="progressTime"
-            ></div>
+            <div id="timeTranfer" className="ml-1 text-gray-dark text-sm"></div>
           </div>
         </div>
         <button

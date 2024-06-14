@@ -10,11 +10,12 @@ import { useDispatch, useSelector } from "react-redux";
 import CheckBoxList from "../CheckBoxList";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import LoadingView from "../../pages/LoadingView";
+import { loadProduct } from "../../redux/actions/commonAction";
 
 let pageSize = 20;
 const tagsSort = [
   {
-    id: 0,
+    id: 3,
     name: "Tất cả",
   },
   {
@@ -32,7 +33,7 @@ const ProductListComponent = ({ search }) => {
   const { products, lstQUOM, isLoadingCommon } = useSelector(
     (state) => state.common
   );
-  const [productList, setProductList] = useState([]);
+  const [productList, setProductList] = useState(null);
   const [listSearch, setListSearch] = useState({
     nameSearch: "",
     lstQUOMSearch: [],
@@ -52,10 +53,6 @@ const ProductListComponent = ({ search }) => {
     dispatch(closeBlock());
     // document.getElementsByTagName("body")[0].style.overflowY = "scroll";
   };
-
-  useEffect(() => {
-    setProductList(products);
-  }, [products, search != ""]);
 
   const onchangeQUOM = (item) => {
     if (!listSearch.lstQUOMSearch.includes(item.ITEM_KEY)) {
@@ -77,21 +74,22 @@ const ProductListComponent = ({ search }) => {
   const searchNameProduct = (e) => {
     setListSearch({ ...listSearch, nameSearch: e.target.value });
   };
-  useEffect(() => {
-    let productSearch = products;
-    if (listSearch.lstQUOMSearch.length > 0) {
-      productSearch = productSearch?.filter((item) => {
-        return listSearch.lstQUOMSearch.includes(item.QUOMCODE + "");
-      });
-    }
-    productSearch = productSearch?.filter((item) =>
-      item?.PRDCNAME.toLowerCase().includes(listSearch.nameSearch.toLowerCase())
-    );
-    setProductList(productSearch);
-    setCurrentPage(1);
-  }, [listSearch]);
 
   const handleRefresh = () => {
+    dispatch(
+      loadProduct({
+        DCMNCODE: "appPrdcList",
+        PARACODE: "001",
+        LCTNCODE: "%",
+        LGGECODE: "{{0302}}",
+        SCTNCODE: 1,
+        JSTFDATE: "1990-01-01",
+        KEY_WORD: "%",
+        SHOPCODE: "%",
+        CUSTCODE: "%",
+      })
+    );
+    setLoading(true);
     setRefresh(!refresh);
     setListSearch({
       nameSearch: "",
@@ -101,24 +99,63 @@ const ProductListComponent = ({ search }) => {
 
   const onChangeTag = (value) => {
     console.log(value);
-    // switch (value.id) {
-    //   case 1:
-    //     setProductList([
-    //       ...productList.sort((a, b) =>
-    //         a.PRDCNAME.toLowerCase().localeCompare(b.PRDCNAME.toLowerCase())
-    //       ),
-    //     ]);
-    //     break;
-    //   case 2:
-    //     setProductList([
-    //       ...productList.sort((a, b) => a.PRCEDSCN - b.PRCEDSCN),
-    //     ]);
-    //     break;
-    // }
+    switch (value?.id) {
+      case 3:
+        setProductList([...productList?.reverse()]);
+        break;
+      case 1:
+        setProductList([
+          ...productList?.sort((a, b) =>
+            a.PRDCNAME.toLowerCase().localeCompare(b.PRDCNAME.toLowerCase())
+          ),
+        ]);
+        break;
+      case 2:
+        setProductList([
+          ...productList?.sort((a, b) => a.PRCEDSCN - b.PRCEDSCN),
+        ]);
+        break;
+    }
   };
+
   useEffect(() => {
-    setLoading(isLoadingCommon);
-  }, [isLoadingCommon]);
+    if (
+      products?.length >= 0 &&
+      isLoadingCommon === false &&
+      productList?.length >= 0
+    ) {
+      setLoading(false);
+    }
+  }, [productList?.length, products]);
+
+  useEffect(() => {
+    setProductList(products);
+    setCurrentPage(1);
+  }, [products]);
+
+  useEffect(() => {
+    setLoading(true);
+  }, [search]);
+
+  useEffect(() => {
+    async function search() {
+      let productSearch = await products;
+      if (listSearch.lstQUOMSearch.length > 0) {
+        productSearch = await productSearch?.filter((item) => {
+          return listSearch.lstQUOMSearch.includes(item.QUOMCODE + "");
+        });
+      }
+      productSearch = await productSearch?.filter((item) =>
+        item?.PRDCNAME.toLowerCase().includes(
+          listSearch.nameSearch.toLowerCase()
+        )
+      );
+      setProductList(productSearch);
+      setCurrentPage(1);
+    }
+    search();
+  }, [listSearch]);
+
   return loading ? (
     <LoadingView></LoadingView>
   ) : (
@@ -227,12 +264,19 @@ const ProductListComponent = ({ search }) => {
                       ></TagList>
                     </div>
 
-                    <div className="flex items-center gap-x-2">
-                      <div>
-                        <i class="ri-grid-line text-lg"></i>
+                    <div className="flex items-center gap-x-4">
+                      <div className="text-sm text-gray-dark">
+                        <span>Sản phẩm trên trang </span>
+                        {(currentPage - 1) * pageSize + 1} -{" "}
+                        {(currentPage - 1) * pageSize + pageSize}
                       </div>
-                      <div>
-                        <i class="ri-list-check text-lg"></i>
+                      <div className="flex items-center gap-x-2">
+                        <div>
+                          <i class="ri-grid-line text-lg"></i>
+                        </div>
+                        <div>
+                          <i class="ri-list-check text-lg"></i>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -240,40 +284,49 @@ const ProductListComponent = ({ search }) => {
               </Wrapper>
 
               <Wrapper>
-                <div className="p-5">
-                  <div className="grid grid-cols-2 gap-4 mb-10 lg:grid-cols-3  xl:grid-cols-5 ">
-                    {productList
-                      ?.slice(
-                        (currentPage - 1) * pageSize,
-                        (currentPage - 1) * pageSize + pageSize
-                      )
-                      .map((item) => {
-                        return (
-                          <ProductCard
-                            item={item}
-                            unit={"QUOMNAME"}
-                            id={"PRDCCODE"}
-                            name={"PRDCNAME"}
-                            // reviews={""}
-                            image={"PRDCIMGE"}
-                            price={"PRCEDSCN"}
-                            discount={"DSCNRATE"}
-                            // stars={item.rating.rate}
-                            saleOff={"PRCESALE"}
-                            sold={0}
-                          ></ProductCard>
-                        );
-                      })}
-                  </div>
-                  <Panigation
-                    currentPage={currentPage}
-                    totalCount={
-                      productList?.length > 0 ? productList.length : 0
-                    }
-                    pageSize={pageSize}
-                    scrollTo="product-list"
-                    onPageChange={(page) => setCurrentPage(page)}
-                  ></Panigation>
+                <div className="p-5 min-h-96">
+                  {productList?.length <= 0 ? (
+                    <p className="text-gray-500">
+                      {" "}
+                      Không có sản phẩm bạn tìm thấy!{" "}
+                    </p>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-4 mb-10 lg:grid-cols-3  xl:grid-cols-5 ">
+                      {productList
+                        ?.slice(
+                          (currentPage - 1) * pageSize,
+                          (currentPage - 1) * pageSize + pageSize
+                        )
+                        .map((item) => {
+                          return (
+                            <ProductCard
+                              item={item}
+                              unit={"QUOMNAME"}
+                              id={"PRDCCODE"}
+                              name={"PRDCNAME"}
+                              // reviews={""}
+                              image={"PRDCIMGE"}
+                              price={"PRCESALE"}
+                              discount={"DSCNRATE"}
+                              // stars={item.rating.rate}
+                              saleOff={"PRCEDSCN"}
+                              sold={0}
+                            ></ProductCard>
+                          );
+                        })}
+                    </div>
+                  )}
+                  {productList?.length > 0 && (
+                    <Panigation
+                      currentPage={currentPage}
+                      totalCount={
+                        productList?.length > 0 ? productList.length : 0
+                      }
+                      pageSize={pageSize}
+                      scrollTo="product-list"
+                      onPageChange={(page) => setCurrentPage(page)}
+                    ></Panigation>
+                  )}
                 </div>
               </Wrapper>
             </div>
@@ -297,10 +350,10 @@ const ProductListComponent = ({ search }) => {
                 name={"PRDCNAME"}
                 unit={"QUOMNAME"}
                 image={"PRDCIMGE"}
-                price={"PRCEDSCN"}
+                price={"PRCESALE"}
                 reviews={"rating"}
                 stars={"rating"}
-                saleOff={"PRCESALE"}
+                saleOff={"PRCEDSCN"}
                 sold={""}
               ></ProductSlider>
             </div>

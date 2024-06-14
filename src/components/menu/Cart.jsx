@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Box from "@assets/img/box.png";
+import Triangle from "@assets/img/triangle.png";
 import { NavLink, useNavigate } from "react-router-dom";
-import RowCart from "@components/RowCart";
+import RowCart from "@components/menu/RowCart";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
+import { loadCart } from "../../redux/actions/cartAction";
 const Cart = () => {
   const dispatch = useDispatch();
   const { productCarts } = useSelector((state) => state.cart);
+  const { currentUser } = useSelector((state) => state.user);
   const [overlay, setOverlay] = useState(false);
   const navigate = useNavigate();
 
@@ -30,8 +33,21 @@ const Cart = () => {
 
   const handlePayment = () => {
     handleCloseCart();
+    window.scroll(0, 0);
     navigate("/pay");
   };
+
+  useEffect(() => {
+    if (currentUser !== null) {
+      dispatch(
+        loadCart({
+          DCMNCODE: "APPCARTPRDC",
+          CONDFLTR: "UserLogin like '000005'",
+        })
+      );
+    }
+    console.log(currentUser);
+  }, [currentUser]);
   return (
     <>
       {overlay && (
@@ -64,34 +80,39 @@ const Cart = () => {
         </div>
 
         <div
-          className={`lg:hidden lg:rounded-lg lg:border lg:border-gray-200 lg:group-hover/cart:block lg:absolute z-50 transition-[right] ease-linear bg-white lg:h-fit lg:top-[140%] lg:!-right-1/4 shadow-md lg:w-[450px] w-[400px] px-4 py-5 border-t border-gray-100 before:absolute before:h-10 before:w-full before:bg-transparent before:-top-3 before:right-0
+          className={`lg:opacity-0 lg:invisible lg:rounded-lg lg:border lg:border-gray-200 lg:group-hover/cart:opacity-100 lg:group-hover/cart:visible lg:absolute z-50 transition-rightOpacityVisibility ease-linear bg-white lg:h-fit lg:top-[120%] lg:!-right-1/4 shadow-md lg:w-[450px] w-[400px] px-4 py-5 border-t border-gray-100 before:absolute before:h-10 before:w-full before:bg-transparent before:-top-3 before:right-0
     fixed top-0 -right-full h-screen`}
           id="cart-small"
         >
+          <div className="absolute -top-2 right-10">
+            <img src={Triangle} className="w-4 h-2" alt="" />
+          </div>
           <div className="block lg:hidden">
             <i
               class="ri-arrow-right-double-fill text-xl inline-block hover:translate-x-2 transition-transform duration-200 cursor-pointer hover:text-second"
               onClick={handleCloseCart}
             ></i>
           </div>
-          <h3 className="text-lg text-gray-500 font-normal text-start relative border-b pb-1">
+          <h3 className="text-lg text-gray-500 font-normal text-start relative pb-2">
             Sản phẩm trong giỏ
           </h3>
           {productCarts?.length != 0 ? (
-            <div
-              className={`flex flex-col overflow-y-scroll h-96 border-y border-gray-50 shadow-sm`}
-            >
-              {productCarts.map((item) => {
+            <div className={`flex flex-col overflow-y-scroll h-96  shadow-sm`}>
+              {productCarts?.map((item) => {
                 return (
-                  <RowCart
-                    item={item}
-                    id={"PRDCCODE"}
-                    name={"PRDCNAME"}
-                    price={"PRCEDSCN"}
-                    amount={"quantity"}
-                    image={"PRDCIMGE"}
-                    handleDelete={handleDelete}
-                  ></RowCart>
+                  <div key={item.PRDCCODE}>
+                    <RowCart
+                      item={item}
+                      id={"PRDCCODE"}
+                      name={"PRDCNAME"}
+                      price={"SALEPRCE"}
+                      amount={"QUOMQTTY"}
+                      image={"PRDCIMAGE"}
+                      unit={"QUOMCODE"}
+                      saleoff={"DSCNRATE"}
+                      handleDelete={handleDelete}
+                    ></RowCart>
+                  </div>
                 );
               })}
             </div>
@@ -109,10 +130,9 @@ const Cart = () => {
               </NavLink>
             </div>
           )}
-
           {productCarts?.length != 0 && (
             <div className="flex items-center justify-between mt-3 text-gray-dark text-sm">
-              <span>Tổng sản phẩm: {productCarts.length}</span>
+              <span>Tổng sản phẩm: {productCarts?.length}</span>
               <button
                 type="button"
                 onClick={handlePayment}

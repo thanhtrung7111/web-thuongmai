@@ -8,11 +8,14 @@ import {
 import axios from "axios";
 import {
   addToCart,
+  changeAmoutProduct,
   decreamentAmountProduct,
   deleteProductFromCart,
   increamentAmountProduct,
   loadCart,
 } from "../actions/cartAction";
+import { toast } from "react-toastify";
+import session from "redux-persist/lib/storage/session";
 
 const cartSlice = createSlice({
   name: "cart",
@@ -24,9 +27,11 @@ const cartSlice = createSlice({
 
   reducers: {
     clearCart: (state, action) => {
-      state.productCarts = [];
-      state.isLoadingCart = false;
-      state.errorMessageCart = "";
+      return {
+        productCarts: [],
+        isLoadingCart: false,
+        errorMessageCart: "",
+      };
     },
     chooseProduct: (state, action) => {
       state.productCarts.find(
@@ -47,7 +52,8 @@ const cartSlice = createSlice({
   extraReducers: (builder) => {
     // Load thông tin giỏ hàng
     builder.addCase(loadCart.fulfilled, (state, action) => {
-      state.productCarts = action.payload;
+      console.log(action.payload?.RETNDATA);
+      state.productCarts = action.payload?.data?.RETNDATA;
       state.errorMessageCart = "";
     });
 
@@ -58,60 +64,68 @@ const cartSlice = createSlice({
 
     // Thêm sản phẩm mới vào giỏ hàng
     builder.addCase(addToCart.fulfilled, (state, action) => {
-      const productFind = state.productCarts.find(
-        (item) => item.PRDCCODE == action.payload.PRDCCODE
-      );
-      console.log(state.productCarts);
-      if (productFind) {
-        return;
-      } else {
-        state.productCarts.push({
-          ...action.payload,
-          quantity: 1,
-          choose: false,
-        });
-      }
+      console.log(action.payload);
+      state.productCarts.push({
+        ...action.payload?.data?.RETNDATA[0],
+      });
+      toast.success("Thêm sản phẩm vào giỏ thành công", {
+        autoClose: 2000,
+      });
     });
 
     builder.addCase(addToCart.rejected, (state, action) => {
       state.errorMessageCart = action.payload;
       state.isLoadingCart = false;
+      toast.warning("Sản phẩm đã có trong giỏ hàng!", {
+        autoClose: 2000,
+      });
     });
 
     // Tăng sản phẩm lên 1
     builder.addCase(increamentAmountProduct.fulfilled, (state, action) => {
-      console.log(action.payload.id);
       state.productCarts.find(
-        (item) => item.PRDCCODE == action.payload.id
-      ).quantity += 1;
+        (item) => item.PRDCCODE === action.payload.HEADER[0].PRDCCODE
+      ).QUOMQTTY += 1;
     });
 
     // Giảm sản phẩm xuống 1
     builder.addCase(decreamentAmountProduct.fulfilled, (state, action) => {
-      const productFind = state.productCarts.find(
-        (item) => item.PRDCCODE == action.payload.id
-      );
-
-      if (productFind?.quantity == 1) {
-        state.productCarts = state.productCarts.filter(
-          (item) => item.PRDCCODE != action.payload.id
-        );
-        return;
-      }
-      productFind.quantity -= 1;
+      console.log(action);
+      state.productCarts.find(
+        (item) => item.PRDCCODE === action.payload.HEADER[0].PRDCCODE
+      ).QUOMQTTY -= 1;
     });
+
+    builder.addCase(changeAmoutProduct.fulfilled, (state, action) => {
+      state.productCarts.find(
+        (item) => item.PRDCCODE === action.payload.HEADER[0].PRDCCODE
+      ).QUOMQTTY = action.payload.HEADER[0].QUOMQTTY;
+    });
+
     // Giảm sản phẩm xuống 1
     builder.addCase(deleteProductFromCart.fulfilled, (state, action) => {
+      console.log(action.payload);
       const productFind = state.productCarts.find(
-        (item) => item.PRDCCODE == action.payload.id
+        (item) => item.PRDCCODE == action.payload.PRDCCODE
       );
-
-      if (productFind != null) {
-        state.productCarts = state.productCarts.filter(
-          (item) => item.PRDCCODE != action.payload.id
-        );
-        return;
+      console.log(productFind);
+      console.log(state);
+      if (productFind !== null) {
+        return {
+          ...state,
+          productCarts: state.productCarts.filter(
+            (item) => item.PRDCCODE != action.payload.PRDCCODE
+          ),
+        };
       }
+    });
+
+    builder.addCase(deleteProductFromCart.rejected, (state, action) => {
+      state.errorMessageCart = action.payload;
+      state.isLoadingCart = false;
+      toast.warning("Xóa sản phẩm không thành công!", {
+        autoClose: 2000,
+      });
     });
 
     builder.addMatcher(isPending, (state, action) => {

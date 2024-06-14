@@ -27,7 +27,7 @@ const Panigation = (props) => {
     scrollToElement();
   };
 
-  console.log(paginationRange);
+  // console.log(paginationRange);
   const onNext = () => {
     if (currentPage == lastPage) return;
     onPageChange(currentPage + 1);
@@ -49,10 +49,13 @@ const Panigation = (props) => {
       >
         {"<"}
       </button>
-      {paginationRange.map((pageNumber) => {
+      {paginationRange.map((pageNumber, index) => {
         if (pageNumber == DOTS) {
           return (
-            <button className="w-7 h-7 border-gray-light border bg-white text-gray-400 rounded-sm flex items-center justify-center text-sm cursor-pointer">
+            <button
+              key={index}
+              className="w-7 h-7 border-gray-light border bg-white text-gray-400 rounded-sm flex items-center justify-center text-sm cursor-pointer"
+            >
               {pageNumber}
             </button>
           );
@@ -60,6 +63,7 @@ const Panigation = (props) => {
 
         return (
           <button
+            key={index}
             className={`w-7 h-7 ${
               currentPage == pageNumber
                 ? "border-second border bg-second text-white"

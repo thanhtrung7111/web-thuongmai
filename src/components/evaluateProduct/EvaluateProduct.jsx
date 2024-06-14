@@ -61,6 +61,7 @@ const EvaluateProduct = () => {
                   if (index + 1 <= star) {
                     return (
                       <i
+                        key={index}
                         className="ri-star-fill text-yellow-400 text-3xl cursor-pointer"
                         onClick={() => changeStar(index + 1)}
                       ></i>
@@ -69,6 +70,7 @@ const EvaluateProduct = () => {
 
                   return (
                     <i
+                      key={index}
                       className="ri-star-line text-yellow-400 text-3xl cursor-pointer"
                       onClick={() => changeStar(index + 1)}
                     ></i>

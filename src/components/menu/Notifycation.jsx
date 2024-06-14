@@ -1,4 +1,5 @@
 import React from "react";
+import Triangle from "@assets/img/triangle.png";
 import { useDispatch } from "react-redux";
 import { openEvaluateProduct } from "../../redux/reducer/popupReducer";
 const Notifycation = () => {
@@ -15,7 +16,10 @@ const Notifycation = () => {
       </i>
       <span className="hidden md:block">Thông báo</span>
 
-      <div className="hidden lg:rounded-md lg:border-gray-200 lg:border group-hover/notify:block absolute bg-white top-[150%] -right-[30%] w-96 flex-col gap-y-2 shadow-md rounded-sm border-t z-50 after:absolute after:h-5 after:contents-[''] after:w-1/2 after:bg-transparent after:-top-[5%] after:right-0">
+      <div className="lg:rounded-lg invisible lg:opacity-0 lg:border-gray-200 lg:border  lg:group-hover/notify:visible lg:group-hover/notify:opacity-100 duration-300 transition-opacityVisibility absolute bg-white top-[120%] -right-[10%] w-96 flex-col gap-y-2 shadow-md rounded-sm border-t z-50 after:absolute after:h-5 after:contents-[''] after:w-1/2 after:bg-transparent after:-top-[5%] after:right-0">
+        <div className="absolute -top-2 right-10">
+          <img src={Triangle} className="w-4 h-2" alt="" />
+        </div>
         <div className="flex flex-col">
           <h5 className="p-3 pb-1">Thông báo mới</h5>
           <div className="flex flex-col gap-y-2 px-3">

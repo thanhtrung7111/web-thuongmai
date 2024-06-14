@@ -17,6 +17,7 @@ import {
   loadWareHouse,
   loadinpCustOdMtPayMthd2,
   loadLstQUOM,
+  loadPmtPmtnPrgr,
 } from "../actions/commonAction";
 
 const commonSlice = createSlice({
@@ -36,14 +37,15 @@ const commonSlice = createSlice({
     lstListHour: [],
     lstinpCustOdMtPayMthd2: [],
     lstQUOM: [],
+    lstPmtPmtnPrgr: [],
   },
 
   reducers: {},
 
   extraReducers: (builder) => {
     builder.addCase(loadProduct.fulfilled, (state, action) => {
-      console.log(action.payload);
-      state.products = action.payload?.data?.RETNDATA;
+      state.products = action.payload;
+      // console.log(cache.match(data));
     });
 
     builder.addCase(loadWareHouse.fulfilled, (state, action) => {
@@ -75,6 +77,9 @@ const commonSlice = createSlice({
     });
     builder.addCase(loadLstQUOM.fulfilled, (state, action) => {
       state.lstQUOM = action.payload;
+    });
+    builder.addCase(loadPmtPmtnPrgr.fulfilled, (state, action) => {
+      state.lstPmtPmtnPrgr = action.payload;
     });
 
     builder.addMatcher(isPending, (state) => {

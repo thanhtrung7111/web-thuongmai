@@ -107,7 +107,7 @@ const InfomationOrder = () => {
   useEffect(() => {
     setIsLoading(false);
   }, [listOrderData?.length > 0]);
-  console.log(listOrderData);
+  // console.log(listOrderData);
   return isLoading ? (
     <LoadingView></LoadingView>
   ) : (
@@ -141,8 +141,11 @@ const InfomationOrder = () => {
           {listOrderData?.map((item) => {
             return (
               <RowOrder
-                id={item.KKKK0000}
-                maincode={item.MAINCODE}
+                item={item}
+                key={item["KKKK0000"]}
+                id={"KKKK0000"}
+                maincode={"MAINCODE"}
+                date={"MAINDATE"}
                 status={"complete"}
                 onClickDetail={onClickDetail}
               ></RowOrder>

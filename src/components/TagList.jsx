@@ -4,6 +4,7 @@ const TagList = ({ data, tagName, tagID, onChange }) => {
   const [selected, setSelected] = useState(data[0][tagID]);
   const onclickTag = (value) => {
     setSelected(value[tagID]);
+    // console.log(value);
     onChange(value);
   };
   return (

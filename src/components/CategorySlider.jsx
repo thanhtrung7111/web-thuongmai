@@ -14,6 +14,7 @@ const CategorySlider = ({ data, id, name, image }) => {
   const navigationNextRef = React.useRef(null);
   return (
     <Swiper
+      key={id}
       // install Swiper modules
       modules={[Navigation, Pagination, Scrollbar, A11y]}
       spaceBetween={50}
@@ -25,8 +26,8 @@ const CategorySlider = ({ data, id, name, image }) => {
       }}
       // pagination={{ clickable: true }}
       //   scrollbar={{ draggable: true }}
-      onSwiper={(swiper) => console.log(swiper)}
-      onSlideChange={() => console.log("slide change")}
+      // onSwiper={(swiper) => console.log(swiper)}
+      // onSlideChange={() => console.log("slide change")}
       loop="true"
       className="h-full w-full"
       onInit={(swiper) => {
@@ -69,7 +70,7 @@ const CategorySlider = ({ data, id, name, image }) => {
       {data &&
         data.map((item) => {
           return (
-            <SwiperSlide>
+            <SwiperSlide key={item[id]}>
               <CategoryCard
                 id={item[id]}
                 name={item[name]}

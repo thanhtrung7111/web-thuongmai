@@ -9,11 +9,11 @@ export const login = createAsyncThunk(
       const user = await loginCustom(data)
         .then((response) => response?.data?.RETNDATA)
         .catch((e) => e);
-      console.log(user);
+      // console.log(user);
       if (user) {
         return user;
       } else {
-        console.log("Sa");
+        // console.log("Sa");
         return rejectWithValue("Người dùng không tòn tại");
       }
     } catch (error) {
@@ -28,11 +28,11 @@ export const loginLCTN = createAsyncThunk(
       const result = await fetchLocationData(data)
         .then((response) => response?.data?.RETNDATA)
         .catch((e) => e);
-      console.log(result);
+      // console.log(result);
       if (result) {
         return result;
       } else {
-        console.log("Sa");
+        // console.log("Sa");
         return rejectWithValue("Người dùng không tòn tại");
       }
     } catch (error) {

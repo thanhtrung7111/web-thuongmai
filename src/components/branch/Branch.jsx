@@ -23,6 +23,7 @@ const Branch = ({ locations, onChange }) => {
       LCTNCODE: lctnSelected,
     };
     dispatch(loginLCTN(body));
+    window.scroll(0, 0);
     navigate("/");
     console.log(lctnSelected);
   };
@@ -40,9 +41,14 @@ const Branch = ({ locations, onChange }) => {
           id=""
           className="border py-2 px-3 outline-second"
         >
-          {locations?.map((item) => {
-            return <option value={item.COMPCODE}>{item.COMPNAME}</option>;
-          })}
+          {locations?.length > 0 &&
+            locations?.map((item) => {
+              return (
+                <option key={item.COMPCODE} value={item.COMPCODE}>
+                  {item.COMPNAME}
+                </option>
+              );
+            })}
         </select>
         <select
           onChange={(e) => setLctnSelected(e.target.value)}

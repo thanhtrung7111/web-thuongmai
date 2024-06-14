@@ -6,10 +6,10 @@ const InfoPage = ({ data }) => {
       <i className="ri-home-line"></i>
       {data.map((item) => {
         return (
-          <>
+          <div key={item}>
             <i className="ri-arrow-right-s-line leading-none h-fit"></i>
             <span>{item}</span>
-          </>
+          </div>
         );
       })}
     </div>

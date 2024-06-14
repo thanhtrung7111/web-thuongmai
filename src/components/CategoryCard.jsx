@@ -7,7 +7,7 @@ const CategoryCard = ({ id, name, image }) => {
         <img
           src={image ? image : Chuot}
           alt=""
-          className="w-20 h-20 object-cover object-center rounded-full"
+          className="w-20 h-20 object-contain object-center rounded-full"
         />
       </div>
       <h4 className="text-gray-dark text-sm font-medium">

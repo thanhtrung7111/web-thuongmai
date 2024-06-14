@@ -21,16 +21,20 @@ const ImageFetch = ({ url, className }) => {
         });
     }
     fetchImage();
-    setIsLoading(false);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   }, [url]);
-  console.log(image);
+  // console.log(image);
   return (
     <img
       loading="lazy"
-      src={image}
-      className={`${
-        isLoading && "animate-pulse"
-      } size-36 object-center object-cover ${className}`}
+      src={
+        !isLoading && url != ""
+          ? image
+          : "https://www.4me.com/wp-content/uploads/2018/01/4me-icon-product.png"
+      }
+      className={`size-36 object-top object-cover ${className}`}
     />
   );
 };

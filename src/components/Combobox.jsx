@@ -31,6 +31,7 @@ const Combobox = ({
             data?.map((item) => {
               return (
                 <option
+                  key={item[itemKey]}
                   value={item[itemKey]}
                   selected={field.value == item[itemKey]}
                 >

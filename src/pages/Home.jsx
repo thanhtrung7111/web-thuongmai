@@ -18,6 +18,7 @@ const Home = () => {
         KEY_WORD: "%",
         SHOPCODE: "%",
         CUSTCODE: "%",
+        reload: true,
       })
     );
     console.log("HOme");

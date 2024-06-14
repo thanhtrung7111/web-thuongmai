@@ -1,19 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Wrapper from "@components/Wrapper";
 import InfoPage from "@components/InfoPage";
 import PromotionCard from "./PromotionCard";
+import { useSelector } from "react-redux";
+import LoadingView from "../../pages/LoadingView";
 const PromotionComponent = () => {
-  return (
+  const { lstPmtPmtnPrgr, isLoadingCommon } = useSelector(
+    (state) => state.common
+  );
+  const [pmtPmtnPrgr, setPmtPmtnPrgr] = useState([]);
+
+  return isLoadingCommon ? (
+    <LoadingView></LoadingView>
+  ) : (
     <div className="xl:container xl:mx-auto mx-5">
       <InfoPage data={["Chương trình khuyến mãi"]} />
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
-        <PromotionCard></PromotionCard>
-        <PromotionCard></PromotionCard>
-        <PromotionCard></PromotionCard>
-        <PromotionCard></PromotionCard>
-        <PromotionCard></PromotionCard>
-        <PromotionCard></PromotionCard>
-        <PromotionCard></PromotionCard>
+        {lstPmtPmtnPrgr?.map((item) => {
+          return (
+            <PromotionCard
+              item={item}
+              title={"PrgrName"}
+              beginDate={"Beg_Date"}
+              endDate={"End_Date"}
+            ></PromotionCard>
+          );
+        })}
       </div>
     </div>
   );

@@ -37,13 +37,13 @@ const ProductSlider = ({
       spaceBetween={50}
       // slidesPerView={1}
       autoplay={{
-        delay: 1000,
+        delay: 2000,
         disableOnInteraction: false,
+        pauseOnMouseEnter: true,
       }}
       watchSlidesProgress={true}
       preventClicks={true}
       resistance={true}
-      noSwipingSelector="a"
       a11y={false}
       onMouseDown={(e) => e.preventDefault()}
       speed={500}
@@ -90,7 +90,7 @@ const ProductSlider = ({
       {data &&
         data.map((item) => {
           return (
-            <SwiperSlide>
+            <SwiperSlide key={item[id]}>
               <ProductCard
                 item={item}
                 id={id}

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Asus from "../assets/img/asus.jpg";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { addToCart } from "@redux/actions/cartAction.js";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import NoImage from "@assets/img/noimage.png";
 import ImageFetch from "./ImageFetch";
 import { toast } from "react-toastify";
@@ -19,22 +19,54 @@ const ProductCard = ({
   stars,
   sold,
 }) => {
+  const { currentUser } = useSelector((state) => state.user);
+  const { errorMessageCart } = useSelector((state) => state.cart);
+  const [disableAction, setDisableAction] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleAddProductToCart = (e) => {
     e.preventDefault();
-    dispatch(
-      addToCart({
-        ...item,
-      })
-    );
-    toast.success("Thêm sản phẩm thành công", {
-      autoClose: 2000,
-    });
+    setDisableAction(true);
+    if (currentUser !== null) {
+      dispatch(
+        addToCart({
+          COMPCODE: item["COMPCODE"],
+          LCTNCODE: "001",
+          USERLOGIN: currentUser?.USERLGIN,
+          PRDCCODE: item[id],
+          QUOMQTTY: 1,
+          QUOMCODE: item["QUOMCODE"],
+          SALEPRCE: item[price],
+          DSCNRATE: item[discount],
+          PRDCNAME: item["PRDCNAME"],
+          PRDCIMAGE: item["PRDCIMGE"],
+        })
+      );
+    } else {
+      toast.warning("Bạn cần phải đăng nhập để thêm sản phẩm vào giỏ hàng!", {
+        autoClose: 1500,
+      });
+    }
   };
-
+  // useEffect(() => {
+  //   if (errorMessageCart !== "" && errorMessageCart !== null) {
+  //     toast.warning("Thêm sản phẩm vào giỏ thất bại", {
+  //       autoClose: 2000,
+  //     });
+  //   } else {
+  //     toast.success("Thêm sản phẩm vào giỏ thành công", {
+  //       autoClose: 2000,
+  //     });
+  //   }
+  // }, [errorMessageCart]);
+  useEffect(() => {
+    setTimeout(() => {
+      setDisableAction(false);
+    }, 1500);
+  }, [disableAction === true]);
   return (
     <div
-      className={`group/product bg-white shadow-sm w-full rounded-lg border overflow-hidden border-gray-200 flex flex-col items-center`}
+      className={`group/product  bg-white shadow-sm w-full rounded-lg border overflow-hidden border-gray-200 flex flex-col items-center`}
     >
       <div className="relative w-full h-40 mb-3 overflow-hidden">
         <div className="text-xs absolute top-2 left-2 bg-slate-500 px-2 py-1 text-white z-10 rounded-md">
@@ -42,39 +74,46 @@ const ProductCard = ({
         </div>
 
         <div className="opacity-0 group-hover/product:opacity-100 transition-opacity duration-300 absolute top-0 right-0 h-full w-full bg-black bg-opacity-20 flex items-center justify-center">
-          <NavLink
-            to={`/products/${item[id]}`}
+          <button
+            onClick={() => {
+              window.scroll(0, 0);
+              navigate(`/products/${item[id]}`);
+            }}
             className="text-xs text-white bg-first bg-opacity-95 py-2 px-5 rounded-sm hover:opacity-85"
           >
             <i class="ri-error-warning-line font-thin"></i> Xem chi tiết
-          </NavLink>
+          </button>
         </div>
         <ImageFetch
           url={item[image]}
           className={"!w-full !h-full"}
         ></ImageFetch>
         {item[discount] > 0 && (
-          <div className="absolute top-0 right-0 text-xs p-1 bg-red-700 text-white">
+          <div className="absolute top-0 right-0 text-xs p-1 bg-red-600 text-white">
             -{item[discount]}%
           </div>
         )}
       </div>
       <div className="flex flex-col gap-y-1 w-full px-5 pb-8">
-        <h5 className="line-clamp-2 font-semibold text-sm text-gray-darked h-10">
+        <h5
+          className="line-clamp-2 font-semibold text-sm text-gray-600 h-10"
+          title={item[name]}
+        >
           {item[name]}
         </h5>
         <div className="flex gap-x-1">
-          <span className="text-second font-bold text-base flex items-start">
-            {item[price]?.toLocaleString("vi", {
-              style: "currency",
-              currency: "VND",
-            })}
-          </span>
-          <span className="text-gray-light font-thin text-xs  line-through flex items-start">
+          <span className="text-second font-semibold text-xl flex items-start">
             {item[saleOff]?.toLocaleString("vi", {
               style: "currency",
               currency: "VND",
             })}
+          </span>
+          <span className="text-gray-light font-thin text-sm  line-through flex items-start">
+            {item[saleOff] < item[price] &&
+              item[price]?.toLocaleString("vi", {
+                style: "currency",
+                currency: "VND",
+              })}
           </span>
         </div>
         <div className="flex items-end justify-between w-full">
@@ -97,12 +136,15 @@ const ProductCard = ({
             </p>
           </div>
           <div>
-            <div
+            <button
+              title="Thêm vào giỏ hàng"
+              disabled={disableAction}
               onClick={(e) => handleAddProductToCart(e)}
-              className="w-8 h-8 rounded-full bg-second flex items-center justify-center cursor-pointer hover:scale-125 transition-transform duration-200"
+              className={`w-10 h-8 rounded-md bg-second disabled:bg-gray-300
+               flex items-center justify-center cursor-pointer hover:scale-125 transition-transform duration-200`}
             >
               <i class="ri-shopping-cart-line text-white"></i>
-            </div>
+            </button>
           </div>
         </div>
       </div>

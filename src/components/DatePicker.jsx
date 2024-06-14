@@ -11,7 +11,7 @@ const DatePicker = ({ title, className, ...props }) => {
           type="date"
           {...props}
           {...field}
-          className={`outline-second  ${
+          className={`outline-second ${
             meta.error ? "border border-red-600" : "border"
           }  rounded-sm py-1 px-2 text-sm text-gray-dark appearance-none w-full`}
         />

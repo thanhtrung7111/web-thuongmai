@@ -6,6 +6,7 @@ import { login } from "@redux/actions/userAction";
 import { NavLink, useNavigate } from "react-router-dom";
 import Branch from "../components/branch/Branch";
 import { loginLCTN } from "../redux/actions/userAction";
+import { Keyboard } from "swiper/modules";
 const Login = () => {
   const [compCode, setCompCode] = useState("");
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Login = () => {
         LGGECODE: "V",
         CUSTLGIN: username.current.value,
         PASSWORD: password.current.value,
-        SYSTCODE: 8,
+        SYSTCODE: 2,
         SYSTCHAR: "",
         INPTCHAR: "",
         PHONNAME: "",
@@ -42,8 +43,15 @@ const Login = () => {
         // TKENDEVC: "",
       })
     );
-
+    window.scroll(0, 0);
     // navigate("/branch");
+  };
+
+  const handlePressKey = (e) => {
+    if (e.keyCode === 13) {
+      window.scroll(0, 0);
+      handleLogin();
+    }
   };
 
   useEffect(() => {
@@ -51,6 +59,7 @@ const Login = () => {
       setCompCode(locations?.LCTNLIST.LCTNCODE);
     }
   }, [locations]);
+
   return (
     <div className="relative">
       <div className="xl:container xl:mx-auto mx-5">
@@ -69,6 +78,7 @@ const Login = () => {
                       type="text"
                       className="border py-2 px-3 outline-second"
                       placeholder="Tài khoản của bạn!"
+                      onKeyDown={(e) => handlePressKey(e)}
                     />
                   </div>
                   <div className="flex flex-col gap-y-1 text-gray-dark">
@@ -79,6 +89,7 @@ const Login = () => {
                         type={visiblePassword ? "text" : "password"}
                         className="outline-none bg-white flex-auto"
                         placeholder="Mật khẩu của bạn!"
+                        onKeyDown={(e) => handlePressKey(e)}
                       />
                       <div
                         className="cursor-pointer"
@@ -94,8 +105,14 @@ const Login = () => {
                   </div>
                 </div>
                 <div className="text-gray-dark flex gap-x-1 text-xs">
-                  <input type="checkbox" className="accent-first" />
-                  <label>Ghi nhớ</label>
+                  <input
+                    id="remember"
+                    type="checkbox"
+                    className="w-4 h-4 accent-first"
+                  />
+                  <label htmlFor="remember" className="cursor-pointer">
+                    Ghi nhớ
+                  </label>
                 </div>
               </div>
               {errorMessageUser && (
@@ -105,6 +122,7 @@ const Login = () => {
                 className="bg-second text-white py-3 text-center px-3 hover:bg-opacity-90 transition-all duration-200"
                 onClick={handleLogin}
                 disabled={isLoadingUser}
+                type="submit"
               >
                 {isLoadingUser ? (
                   <svg

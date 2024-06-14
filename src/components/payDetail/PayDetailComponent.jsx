@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Wrapper from "@components/Wrapper";
 import Asus from "@assets/img/asus.jpg";
 import ProductSlider from "@components/ProductSlider";
@@ -10,7 +10,11 @@ import {
 } from "@redux/actions/cartAction";
 import { chooseProduct } from "@redux/reducer/cartReducer";
 import { chooseAllProduct } from "@redux/reducer/cartReducer";
-import { deleteProductFromCart } from "../../redux/actions/cartAction";
+import {
+  changeAmoutProduct,
+  deleteProductFromCart,
+  loadCart,
+} from "../../redux/actions/cartAction";
 import Combobox from "../Combobox";
 import Input from "../Input";
 import DatePicker from "../DatePicker";
@@ -39,10 +43,12 @@ import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import { toast } from "react-toastify";
 import { info } from "autoprefixer";
 import { base64StringToBlob } from "blob-util";
+import { postData } from "../../api/api";
+import TableDetailProduct from "./TableDetailProduct";
 const PayDetailComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [disableButton, setDisableButton] = useState(false);
   const [stateButton, setStateButton] = useState("");
   const [chooseAll, setChooseAll] = useState(false);
   const { productCarts } = useSelector((state) => state.cart);
@@ -50,6 +56,8 @@ const PayDetailComponent = () => {
   const { showAlert } = useSelector((state) => state.popup);
   const [openVietQR, setOpenVietQR] = useState(false);
   const [infoVietQR, setInfoVietQR] = useState(null);
+  const [stateAction, setStateAction] = useState(false);
+  let timer = useRef(null);
   const {
     isLoadingCommon,
     products,
@@ -103,28 +111,31 @@ const PayDetailComponent = () => {
       DETAIL: [], //Chi tiết
     },
     validationSchema: Yup.object().shape({
-      MCUSTNME: Yup.string().required("Không được để trống"),
-      CUSTADDR: Yup.string().required("Địa chỉ không được để trống"),
-      CUST_TEL: Yup.string().required("Số điện thoại không được để trống"),
-      ODERDATE: Yup.string().required("Ngày đặt hàng không để trống"),
-      DCMNSBCD: Yup.string().required("Không để trống phân loại"),
-      DLVRMTHD: Yup.string().required("Không để trống phân loại"),
+      // MCUSTNME: Yup.string().required("Không được để trống"),
+      // CUSTADDR: Yup.string().required("Địa chỉ không được để trống"),
+      // CUST_TEL: Yup.string().required("Số điện thoại không được để trống"),
+      // ODERDATE: Yup.string().required("Ngày đặt hàng không để trống"),
+      // DCMNSBCD: Yup.string().required("Không để trống phân loại"),
+      // DLVRMTHD: Yup.string().required("Không để trống phân loại"),
     }),
     onSubmit: (value) => {
-      console.log(value);
-      if (stateButton == "") {
-        toast.warning("Bạn chưa chọn ngân hàng để thanh toán", {
+      console.log(value.SMPRQTTY);
+      if (value.SMPRQTTY == undefined) {
+        toast.warning("Bạn chưa chọn sản phẩm thanh toán!", {
           autoClose: 1500,
+          hideProgressBar: true,
+          position: "top-center",
         });
         return;
       }
+
       switch (stateButton) {
         case "vnpay":
-          console.log("payment");
+          // console.log("payment");
           handlePayment();
           break;
         case "order":
-          console.log("order");
+          // console.log("order");
           // const body = { ...value };
           // console.log(body);
           // dispatch(postOrder({ DCMNCODE: "DDHKH", HEADER: [body] }));
@@ -133,6 +144,11 @@ const PayDetailComponent = () => {
           handleQR();
           break;
         default:
+          toast.warning("Bạn chưa chọn ngân hàng để thanh toán!", {
+            autoClose: 1500,
+            hideProgressBar: true,
+            position: "top-center",
+          });
           break;
       }
     },
@@ -143,7 +159,7 @@ const PayDetailComponent = () => {
       const id = toast.loading("Đang tạo VietQR");
       const body = {
         orderCode: new Date(Date.now()).getTime(),
-        amount: 10000,
+        amount: formik.values.SUM_AMNT,
         description: "Thanh toan HD",
         buyerAddress: "số nhà, đường, phường, tỉnh hoặc thành phố",
         items: [],
@@ -213,7 +229,7 @@ const PayDetailComponent = () => {
           );
 
           const blob = base64StringToBlob(b64Data, contentType);
-          console.log(URL.createObjectURL(blob));
+          // console.log(URL.createObjectURL(blob));
         })
         .catch((e) => console.log(e));
     }
@@ -222,9 +238,9 @@ const PayDetailComponent = () => {
     dispatch(openBlock());
   };
 
-  useEffect(() => {
-    console.log(infoVietQR);
-  }, [infoVietQR]);
+  // useEffect(() => {
+  // console.log(infoVietQR);
+  // }, [infoVietQR]);
 
   const handlePayment = async () => {
     // let i = crypto
@@ -262,33 +278,75 @@ const PayDetailComponent = () => {
     });
     const query = resultArray.join("&");
     console.log(query);
+    // console.log(query);
     const hmac = Base64.stringify(hmacSHA512(query, vnp_SecureHash));
     console.log(hmac);
+    console.log(hmacSHA512(query, vnp_SecureHash));
     let url =
       "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?" +
       query +
       "&vnp_SecureHash=" +
       hmac;
     window.open(url, "_blank");
-    console.log("hello");
+    // console.log("hello");
     navigate("/");
   };
 
   const handlePlus = (id) => {
-    formik.values.DETAIL.find((item) => item.PRDCCODE == id).PRDCQTTY += 1;
-    formik.setFieldValue("DETAIL", formik.values.DETAIL);
-    formik.setFieldValue(
-      "SMPRQTTY",
-      formik.values.DETAIL.filter((item) => item.checked == true).reduce(
-        (value, currentValue) => value + currentValue.PRDCQTTY,
-        0
-      )
+    const productFind = formik.values.DETAIL.find(
+      (item) => item.PRDCCODE == id
     );
+    console.log(id);
+    productFind.PRDCQTTY += 1;
+    productFind.MNEYAMNT = productFind.PRDCQTTY * productFind.SALEPRCE;
+    const body = {
+      DCMNCODE: "APPCARTPRDC",
+      HEADER: [
+        {
+          ...productFind,
+          QUOMQTTY: productFind.PRDCQTTY,
+          USERLOGIN: currentUser?.USERLGIN,
+          PRDCIMAGE: productFind.PRDCIMGE,
+        },
+      ],
+    };
+    try {
+      dispatch(increamentAmountProduct(body));
+    } catch (error) {
+      return;
+    }
+    updateFormik();
   };
 
   const handleSubstract = (id) => {
-    formik.values.DETAIL.find((item) => item.PRDCCODE == id).PRDCQTTY -= 1;
-    formik.setFieldValue("DETAIL", formik.values.DETAIL);
+    setDisableButton(true);
+    const productFind = formik.values.DETAIL.find(
+      (item) => item.PRDCCODE == id
+    );
+    productFind.PRDCQTTY -= 1;
+    productFind.MNEYAMNT = productFind.PRDCQTTY * productFind.SALEPRCE;
+    if (productFind.PRDCQTTY == 0) {
+      let result = formik.values.DETAIL.filter(
+        (item) => item.PRDCCODE != productFind.PRDCCODE
+      );
+      formik.setFieldValue("DETAIL", result);
+      handleDeleteProduct(productFind.PRDCCODE, productFind.KKKK0000);
+    } else {
+      // console.log(body);
+      formik.setFieldValue("DETAIL", formik.values.DETAIL);
+      const body = {
+        DCMNCODE: "APPCARTPRDC",
+        HEADER: [
+          {
+            ...productFind,
+            QUOMQTTY: productFind.PRDCQTTY,
+            USERLOGIN: currentUser?.USERLGIN,
+            PRDCIMAGE: productFind.PRDCIMGE,
+          },
+        ],
+      };
+      dispatch(decreamentAmountProduct(body));
+    }
     formik.setFieldValue(
       "SMPRQTTY",
       formik.values.DETAIL.filter((item) => item.checked == true).reduce(
@@ -301,7 +359,15 @@ const PayDetailComponent = () => {
   const handleChangeChoose = (id) => {
     formik.values.DETAIL.find((item) => item.PRDCCODE == id).checked =
       !formik.values.DETAIL.find((item) => item.PRDCCODE == id).checked;
-    formik.setFieldValue("DETAIL", formik.values.DETAIL);
+    if (formik.values.DETAIL.find((item) => item.checked == false)) {
+      const detailCheckedTrue = formik.values.DETAIL;
+      setChooseAll(false);
+      formik.values.DETAIL = detailCheckedTrue;
+    } else {
+      setChooseAll(true);
+    }
+
+    updateFormik();
   };
 
   const handleClickAllProduct = () => {
@@ -316,43 +382,117 @@ const PayDetailComponent = () => {
         ...item,
         checked: false,
       }));
+      formik.values.SUM_CRAM = 0;
     }
-    formik.setFieldValue("DETAIL", formik.values.DETAIL);
+    updateFormik();
   };
 
-  const handleDeleteProduct = (id) => {
-    const result = formik.values.DETAIL.filter((item) => item.PRDCCODE != id);
-    formik.setFieldValue("DETAIL", result);
-    dispatch(deleteProductFromCart({ id: id }));
+  // useEffect(() => {}, [chooseAll]);
+
+  const handleDeleteProduct = (prdcCode, id) => {
+    let result = formik.values.DETAIL.filter(
+      (item) => item.PRDCCODE !== prdcCode
+    );
+    // if (result.length < 1) {
+    //   result = [];
+    // }
+    dispatch(deleteProductFromCart({ PRDCCODE: prdcCode, id: id }));
+    formik.values.DETAIL = result;
+    if (result.length == 0) {
+      setChooseAll(false);
+    }
+    console.log(result.length);
+    updateFormik();
   };
 
-  const changeForm = () => {
-    formik.setFieldValue(
-      "SMPRQTTY",
-      formik.values.DETAIL.filter((item) => item.checked == true).reduce(
+  const handleBlurAmount = (e, id) => {
+    console.log("Hllo");
+    const productFind = formik.values.DETAIL.find(
+      (item) => item.PRDCCODE == id
+    );
+    if (parseInt(e.target.value) == 0) {
+      let result = formik.values.DETAIL.filter(
+        (item) => item.PRDCCODE != productFind.PRDCCODE
+      );
+      formik.values.DETAIL = result;
+      handleDeleteProduct(productFind.PRDCCODE, productFind.KKKK0000);
+    } else {
+      productFind.PRDCQTTY = parseInt(e.target.value);
+      productFind.MNEYAMNT = productFind.PRDCQTTY * productFind.SALEPRCE;
+      const body = {
+        DCMNCODE: "APPCARTPRDC",
+        HEADER: [
+          {
+            ...productFind,
+            QUOMQTTY: productFind.PRDCQTTY,
+            USERLOGIN: currentUser?.USERLGIN,
+            PRDCIMAGE: productFind.PRDCIMGE,
+          },
+        ],
+      };
+      dispatch(changeAmoutProduct(body));
+    }
+    updateFormik();
+  };
+
+  const updateFormik = () => {
+    const varFormik = formik.values.DETAIL.filter(
+      (item) => item.checked == true
+    );
+    console.log(formik.values.DETAIL);
+    formik.setValues({
+      DETAIL: formik.values.DETAIL,
+      SMPRQTTY: varFormik.reduce(
         (value, currentValue) => value + currentValue.PRDCQTTY,
         0
-      )
-    );
-    formik.setFieldValue(
-      "RDTNCRAM",
-      formik.values.SUM_CRAM * formik.values.RDTNRATE
-    );
-    formik.setFieldValue(
-      "VAT_CRAM",
-      formik.values.VAT_RATE * formik.values.SUM_CRAM
-    );
+      ),
+      RDTNCRAM:
+        varFormik.length > 0
+          ? varFormik.reduce(
+              (value, currentValue) =>
+                value +
+                (currentValue.SALEPRCE *
+                  currentValue.PRDCQTTY *
+                  currentValue.DSCNRATE) /
+                  100,
 
-    formik.setFieldValue(
-      "SUM_AMNT",
-      formik.values.SUM_CRAM - formik.values.VAT_CRAM - formik.values.RDTNCRAM
-    );
-    formik.setFieldValue("RDTNAMNT", formik.values.RDTNCRAM);
-    formik.setFieldValue("VAT_AMNT", formik.values.VAT_CRAM);
+              0
+            )
+          : 0,
+      SUM_CRAM:
+        varFormik.length > 0
+          ? varFormik.reduce(
+              (value, currentValue) =>
+                value + currentValue.SALEPRCE * currentValue.PRDCQTTY,
+              0
+            )
+          : 0,
+      SUM_AMNT:
+        varFormik.length > 0
+          ? varFormik.reduce(
+              (value, currentValue) =>
+                value +
+                currentValue.SALEPRCE * currentValue.PRDCQTTY -
+                (currentValue.SALEPRCE *
+                  currentValue.PRDCQTTY *
+                  currentValue.DSCNRATE) /
+                  100,
+              0
+            )
+          : 0,
+    });
+  };
+  const handleChangeAmount = (e, id) => {
+    console.log(e.target.value);
+    formik.values.DETAIL.find((item) => item.PRDCCODE == id).PRDCQTTY =
+      parseInt(e.target.value);
+    updateFormik();
   };
 
+  const changeForm = () => {};
+
   useEffect(() => {
-    const detail = productCarts.map((item) => {
+    const detail = productCarts?.map((item) => {
       return {
         checked: false,
         PRDCCODE: item.PRDCCODE, //Mã sản phẩm
@@ -363,36 +503,37 @@ const PayDetailComponent = () => {
         QUOMQTTY: 1, //Số lượng
         CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
         MNEYCRAM: item.PRCEDSCN, //Thành tiền
-        PRDCIMGE: item.PRDCIMGE,
+        PRDCIMGE: item.PRDCIMAGE,
         DISCRATE: 0, //%Chiết khấu
         DCPRCRAM: 0, //Tiền giảm CK
-        PRDCQTTY: 1, //Số lượng qui đổi
-        SALEPRCE: item.PRCEDSCN, //Đơn giá qui đổi
-        MNEYAMNT: item.PRCEDSCN * item.quantity, //Thành tiền qui đổi
+        PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
+        SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
+        MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
         DCPRAMNT: 0, //Tiền giảm CK qui đổi
+        DSCNRATE: item.DSCNRATE,
+        KKKK0000: item["KKKK0000"],
+        COMPCODE: item["COMPCODE"],
+        LCTNCODE: item["LCTNCODE"],
       };
     });
-    formik.setFieldValue("DETAIL", detail);
-    formik.setFieldValue(
-      "SMPRQTTY",
-      detail
-        .filter((item) => item.checked == true)
-        .reduce((value, currentValue) => value + currentValue.PRDCQTTY, 0)
-    );
-    formik.setFieldValue(
-      "SUM_CRAM",
-      detail
-        .filter((item) => item.checked == true)
-        .reduce((value, currentValue) => value + currentValue.MNEYCRAM, 0)
-    );
+    formik.setValues({
+      DETAIL: detail,
+    });
   }, [formik.values.DETAIL.length == 0]);
 
-  // console.log(formik.values);
   useEffect(() => {
-    setLoading(isLoadingCommon);
-  }, [isLoadingCommon]);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [productCarts]);
 
-  console.log();
+  // console.log();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setDisableButton(false);
+    }, 500);
+  }, [disableButton == true]);
   return loading ? (
     <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
       <LoadingView></LoadingView>
@@ -422,13 +563,13 @@ const PayDetailComponent = () => {
               className="shadow-md border-t border-gray-200 h-[500px]  rounded-lg overflow-hidden border"
             >
               <div className="overflow-y-scroll h-full">
-                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                {/* <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                   <thead class="text-xs text-gray-600 bg-gray-50 dark:text-gray-400 sticky top-0">
                     <th class="px-6 py-3 uppercase text-gray-dark flex gap-x-2">
                       <input
                         type="checkbox"
                         className="accent-first border-gray-light"
-                        onClick={handleClickAllProduct}
+                        onChange={handleClickAllProduct}
                         value={chooseAll}
                       />
                       <span> Tất cả</span>
@@ -443,10 +584,14 @@ const PayDetailComponent = () => {
                   </thead>
 
                   <tbody>
-                    {formik.values.DETAIL?.length >= 1
-                      ? formik.values.DETAIL.map((item) => {
+                    {formik.values.DETAIL.length <= 0
+                      ? "Bạn chưa có sản phẩm nào trong giỏ hàng"
+                      : formik.values.DETAIL.map((item) => {
                           return (
-                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <tr
+                              key={item["PRDCCODE"]}
+                              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                            >
                               <td
                                 scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -460,7 +605,7 @@ const PayDetailComponent = () => {
                                       handleChangeChoose(item["PRDCCODE"])
                                     }
                                   />
-                                  <div className="border rounded-xl overflow-hidden shadow-lg">
+                                  <div className="border border-gray-300 rounded-xl overflow-hidden shadow-lg">
                                     <ImageFetch
                                       url={item["PRDCIMGE"]}
                                       className={"!size-20"}
@@ -473,59 +618,104 @@ const PayDetailComponent = () => {
                               </td>
                               <td class="px-6 py-4">
                                 <div className="flex items-center w-fit gap-x-1">
-                                  <div
+                                  <button
+                                    disabled={disableButton}
                                     onClick={() =>
                                       handleSubstract(item["PRDCCODE"])
                                     }
-                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark cursor-pointer"
+                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark cursor-pointer disabled:bg-slate-100"
                                   >
                                     -
-                                  </div>
-                                  <div className="border rounded-md w-6 h-6 flex items-center justify-center text-xs text-gray-dark">
-                                    {item["PRDCQTTY"]}
-                                  </div>
-                                  <div
+                                  </button>
+
+                                  <input
+                                    disabled={disableButton}
+                                    type="number"
+                                    min={1}
+                                    onBlur={(e) =>
+                                      handleBlurAmount(e, item["PRDCCODE"])
+                                    }
+                                    onKeyDown={(e) => {
+                                      if (e.keyCode === 13) {
+                                        handleBlurAmount(e, item["PRDCCODE"]);
+                                      }
+                                    }}
+                                    id={item["PRDCCODE"]}
+                                    value={item["PRDCQTTY"]}
+                                    onChange={(e) =>
+                                      handleChangeAmount(e, item["PRDCCODE"])
+                                    }
+                                    className="border pl-2 w-14 h-6 rounded-md  outline-none text-xs text-gray-dark disabled:bg-slate-100"
+                                  />
+
+                                  <button
+                                    disabled={disableButton}
                                     onClick={() => handlePlus(item["PRDCCODE"])}
-                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark cursor-pointer"
+                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark cursor-pointer disabled:bg-slate-100"
                                   >
                                     +
-                                  </div>
+                                  </button>
                                 </div>
                               </td>
                               <td class="px-6 py-4">
                                 <div className="font-semibold">
-                                  {item["SALEPRCE"]}{" "}
-                                  <span className="text-xs">đ</span>
+                                  {item["SALEPRCE"]?.toLocaleString("vi", {
+                                    style: "currency",
+                                    currency: "VND",
+                                  })}
                                 </div>
                               </td>
                               <td class="px-6 py-4">
                                 <div className="font-semibold">
-                                  {item["SALEPRCE"] * item["PRDCQTTY"]}{" "}
-                                  <span className="text-xs">đ</span>
+                                  {item["MNEYAMNT"]?.toLocaleString("vi", {
+                                    style: "currency",
+                                    currency: "VND",
+                                  })}
                                 </div>
                               </td>
                               <td class="px-6 py-4">
-                                <div
-                                  className="text-white bg-red-400 w-fit px-7 py-2 rounded-md text-xs cursor-pointer"
+                                <button
+                                  disabled={disableButton}
+                                  className="text-white bg-red-400 w-fit px-7 py-2 rounded-md text-xs cursor-pointer disabled:bg-gray-400"
                                   onClick={() =>
-                                    handleDeleteProduct(item["PRDCCODE"])
+                                    handleDeleteProduct(
+                                      item["PRDCCODE"],
+                                      item["KKKK0000"]
+                                    )
                                   }
                                 >
                                   Xóa
-                                </div>
+                                </button>
                               </td>
                             </tr>
                           );
-                        })
-                      : "Bạn chưa có sản phẩm nào trong giỏ hàng"}
+                        })}
                   </tbody>
-                </table>
+                </table> */}
+                <TableDetailProduct
+                  handleBlurAmount={handleBlurAmount}
+                  handleChangeAmount={handleChangeAmount}
+                  handleDelete={handleDeleteProduct}
+                  handleClickAll={handleClickAllProduct}
+                  handleChoose={handleChangeChoose}
+                  data={formik.values.DETAIL}
+                  handlePlus={handlePlus}
+                  maincode={"KKKK0000"}
+                  name={"PRDCNAME"}
+                  id={"PRDCCODE"}
+                  image={"PRDCIMGE"}
+                  saleoff={"DSCNRATE"}
+                  price={"SALEPRCE"}
+                  quantity={"PRDCQTTY"}
+                  choose={"checked"}
+                  chooseAll={chooseAll}
+                ></TableDetailProduct>
               </div>
             </div>
             <div className="mb-5">
               <Wrapper>
                 <div className="px-3 py-5">
-                  <h5 className="font-medium text-gray-dark mb-3">
+                  <h5 className="font-semibold text-gray-dark mb-3">
                     Thông tin đơn hàng
                   </h5>
 
@@ -756,7 +946,7 @@ const PayDetailComponent = () => {
             </div>
             <Wrapper>
               <div className="p-5">
-                <h5 className="font-medium text-gray-dark mb-3">
+                <h5 className="font-semibold text-gray-dark mb-3">
                   Phương thức thanh toán
                 </h5>
                 <div className="flex gap-x-5 gap-y-3 mb-3">
@@ -795,7 +985,7 @@ const PayDetailComponent = () => {
                       Tổng số lượng:
                     </span>
                     <div className="w-64 text-end text-gray-dark">
-                      {formik.values.SMPRQTTY}
+                      {formik.values.SMPRQTTY ? formik.values.SMPRQTTY : 0}
                     </div>
                   </div>
                   <div className="flex">
@@ -803,7 +993,16 @@ const PayDetailComponent = () => {
                       Tổng tiền:
                     </span>
                     <div className="w-64 text-end text-gray-dark">
-                      {formik.values.SUM_CRAM}
+                      +
+                      {formik.values.SUM_CRAM
+                        ? formik.values.SUM_CRAM?.toLocaleString("vi", {
+                            style: "currency",
+                            currency: "VND",
+                          })
+                        : Number(0).toLocaleString("vi", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
                     </div>
                   </div>
                   <div className="flex">
@@ -811,7 +1010,16 @@ const PayDetailComponent = () => {
                       Tiền chiết khấu:
                     </span>
                     <div className="w-64 text-end text-gray-dark">
-                      {formik.values.RDTNCRAM}
+                      -
+                      {formik.values.RDTNCRAM
+                        ? formik.values.RDTNCRAM?.toLocaleString("vi", {
+                            style: "currency",
+                            currency: "VND",
+                          })
+                        : Number(0).toLocaleString("vi", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
                     </div>
                   </div>
                   <div className="flex">
@@ -820,6 +1028,23 @@ const PayDetailComponent = () => {
                     </span>
                     <div className="w-64 text-end text-gray-dark">
                       {formik.values.VAT_CRAM}
+                    </div>
+                  </div>
+
+                  <div className="flex border-t pt-3">
+                    <span className="text-gray-dark font-medium">
+                      Thành tiền:
+                    </span>
+                    <div className="w-64 text-end text-gray-dark font-bold">
+                      {formik.values.SUM_AMNT
+                        ? formik.values.SUM_AMNT?.toLocaleString("vi", {
+                            style: "currency",
+                            currency: "VND",
+                          })
+                        : Number(0).toLocaleString("vi", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
                     </div>
                   </div>
                 </div>
@@ -836,7 +1061,7 @@ const PayDetailComponent = () => {
           </div>
         </Form>
       </FormikProvider>
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      {/* <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
@@ -846,8 +1071,8 @@ const PayDetailComponent = () => {
               <a href="#" className="text-gray-light">
                 Xem thêm <i className="ri-arrow-right-s-line"></i>
               </a>
-            </div>
-            {/* <ProductSlider
+            </div> */}
+      {/* <ProductSlider
               data={products?.slice(5, 30)}
               id="PRDCCODE"
               name={"PRDCNAME"}
@@ -857,11 +1082,12 @@ const PayDetailComponent = () => {
               stars={"rating"}
               saleOff={""}
               sold={""}
-            ></ProductSlider> */}
-          </div>
-        </Wrapper>
-      </div>
+    //         ></ProductSlider> */}
+      //{" "}
     </div>
+    //     </Wrapper>
+    //   </div>
+    // </div>
   );
 };
 
