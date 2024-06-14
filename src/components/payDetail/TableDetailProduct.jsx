@@ -23,7 +23,7 @@ const TableDetailProduct = ({
 }) => {
   return (
     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
-      <thead class="text-xs text-gray-600 z-50 bg-gray-200 dark:bg-gray-700 dark:text-gray-400 sticky top-0 right-0 ">
+      <thead class="text-xs text-gray-600 z-20 bg-gray-200 dark:bg-gray-700 dark:text-gray-400 sticky top-0 right-0 ">
         <th class="px-6 py-3 uppercase">
           <div className="flex gap-x-2 items-center">
             <input

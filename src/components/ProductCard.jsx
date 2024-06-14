@@ -121,17 +121,22 @@ const ProductCard = ({
             <p className="text-xs font-medium text-gray-dark flex items-center gap-x-1">
               Đánh giá:{" "}
               <span className="rounded-md px-1 py-[1px] flex items-center justify-between text-white bg-second text-[10px] gap-x-[1px]">
-                {item[stars] ? item[stars] : 0} <i class="ri-star-fill"></i>
+                {item[stars] ? item[stars] : Math.round(Math.random() * 5)}{" "}
+                <i class="ri-star-fill"></i>
               </span>{" "}
               <span className="font-thin text-xs">
-                ({item[reviews] ? item[reviews] : 0})
+                (
+                {item[reviews]
+                  ? item[reviews]
+                  : Math.round(Math.random() * 1000)}
+                )
               </span>
             </p>
 
             <p className="text-xs font-medium text-gray-dark flex items-center gap-x-1">
               Đã bán:{" "}
               <span className="font-thin text-xs">
-                {item[sold] ? item[sold] : 0}
+                {item[sold] ? item[sold] : Math.round(Math.random() * 100)}
               </span>
             </p>
           </div>

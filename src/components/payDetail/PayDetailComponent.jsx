@@ -523,7 +523,7 @@ const PayDetailComponent = () => {
     formik.setValues({
       DETAIL: detail,
     });
-  }, [formik.values.DETAIL?.length == 0]);
+  }, [formik.values.DETAIL?.length == 0, productCarts?.length]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -564,7 +564,7 @@ const PayDetailComponent = () => {
           <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
             <div
               style={{ marginBottom: "10px" }}
-              className="shadow-md border-t border-gray-200 h-[500px]  rounded-lg overflow-hidden border"
+              className="shadow-md border-t border-gray-200 h-[700px]  rounded-lg overflow-hidden border"
             >
               <div className="overflow-y-scroll h-full">
                 {/* <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

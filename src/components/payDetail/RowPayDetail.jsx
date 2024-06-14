@@ -37,6 +37,7 @@ const RowPayDetail = ({
         <div className="flex items-center gap-x-2 w-fit">
           <input
             id={item[id]}
+            readOnly
             type="checkbox"
             className="w-4 h-4 accent-first border-gray-light"
             checked={item[choose]}
@@ -130,7 +131,7 @@ const RowPayDetail = ({
           >
             Xóa
           </button>
-        
+
           <ProductSuggestion></ProductSuggestion>
         </div>
       </td>

@@ -41,6 +41,7 @@ const Panigation = (props) => {
   return (
     <div className="flex items-center justify-center gap-x-2">
       <button
+        type="button"
         onClick={onPrevious}
         className={`w-7 h-7 border rounded-sm flex items-center justify-center text-gray-light text-sm cursor-pointer ${
           currentPage == 1 && "cursor-not-allowed"
@@ -53,6 +54,7 @@ const Panigation = (props) => {
         if (pageNumber == DOTS) {
           return (
             <button
+              type="button"
               key={index}
               className="w-7 h-7 border-gray-light border bg-white text-gray-400 rounded-sm flex items-center justify-center text-sm cursor-pointer"
             >
@@ -63,6 +65,7 @@ const Panigation = (props) => {
 
         return (
           <button
+            type="button"
             key={index}
             className={`w-7 h-7 ${
               currentPage == pageNumber
@@ -80,6 +83,7 @@ const Panigation = (props) => {
       })}
 
       <button
+        type="button"
         onClick={onNext}
         // disabled={currentPage == lastPage}
         className={`${
