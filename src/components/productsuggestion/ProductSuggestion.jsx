@@ -82,6 +82,7 @@ const ProductSuggestion = ({ keyword }) => {
                     .map((item) => {
                       return (
                         <ProductCard
+                          key={item.PRDCCODE}
                           item={item}
                           unit={"QUOMNAME"}
                           id={"PRDCCODE"}

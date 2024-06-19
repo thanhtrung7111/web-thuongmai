@@ -13,20 +13,21 @@ const Login = () => {
   const dispath = useDispatch();
   const { isLoadingUser, errorMessageUser, currentUser, locations } =
     useSelector((state) => state.user);
-  const username = useRef("");
-  const password = useRef("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [visiblePassword, setVisiblePassword] = useState(false);
+  const [remember, setRemember] = useState(false);
   const changeLCTN = (e) => {
     setCompCode(e.target.value);
     console.log(compCode);
   };
-  const handleLogin = () => {
-    dispath(
+  const handleLogin = async () => {
+    await dispath(
       login({
         APP_CODE: "AER",
         LGGECODE: "V",
-        CUSTLGIN: username.current.value,
-        PASSWORD: password.current.value,
+        CUSTLGIN: username,
+        PASSWORD: password,
         SYSTCODE: 2,
         SYSTCHAR: "",
         INPTCHAR: "",
@@ -43,6 +44,22 @@ const Login = () => {
         // TKENDEVC: "",
       })
     );
+    const url = "http://localhost:5173";
+    const cacheUser = await caches.open("user");
+    console.log(remember);
+    if (remember == false) {
+      await cacheUser.delete(url);
+    } else {
+      console.log(username);
+      const data = new Response(
+        JSON.stringify({
+          username: username,
+          password: password,
+          remember: true,
+        })
+      );
+      await cacheUser.put(url, data);
+    }
     window.scroll(0, 0);
     // navigate("/branch");
   };
@@ -60,6 +77,22 @@ const Login = () => {
     }
   }, [locations]);
 
+  useEffect(() => {
+    async function getRemember() {
+      const url = "http://localhost:5173";
+      const cacheUser = await caches.open("user");
+      const response = await cacheUser.match(url);
+      let data = await response?.json();
+      if (data != null && data?.remember != null && data.remember) {
+        console.log(data.remember);
+        setRemember(data.remember);
+        setUsername(data?.username);
+        setPassword(data?.password);
+      }
+    }
+    getRemember();
+  }, []);
+
   return (
     <div className="relative">
       <div className="xl:container xl:mx-auto mx-5">
@@ -74,7 +107,8 @@ const Login = () => {
                   <div className="flex flex-col gap-y-1 text-gray-dark">
                     <label>Tài khoản</label>
                     <input
-                      ref={username}
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                       type="text"
                       className="border py-2 px-3 outline-second"
                       placeholder="Tài khoản của bạn!"
@@ -85,7 +119,8 @@ const Login = () => {
                     <label>Mật khẩu</label>
                     <div className="flex items-center gap-x-2 w-full border py-2 px-3 outline-second">
                       <input
-                        ref={password}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         type={visiblePassword ? "text" : "password"}
                         className="outline-none bg-white flex-auto"
                         placeholder="Mật khẩu của bạn!"
@@ -108,6 +143,10 @@ const Login = () => {
                   <input
                     id="remember"
                     type="checkbox"
+                    checked={remember}
+                    onChange={() => {
+                      setRemember(!remember);
+                    }}
                     className="w-4 h-4 accent-first"
                   />
                   <label htmlFor="remember" className="cursor-pointer">
@@ -116,7 +155,7 @@ const Login = () => {
                 </div>
               </div>
               {errorMessageUser && (
-                <div className="text-red-600 text-xs">Đăng nhập thất bại</div>
+                <div className="text-red-600 text-xs">{errorMessageUser}</div>
               )}
               <button
                 className="bg-second text-white py-3 text-center px-3 hover:bg-opacity-90 transition-all duration-200"

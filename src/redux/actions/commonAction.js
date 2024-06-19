@@ -33,9 +33,17 @@ export const loadProduct = createAsyncThunk(
         console.log(products);
         if (products?.data?.RETNDATA?.length > 0) {
           let cache = await caches.open("data");
-          const data = new Response(JSON.stringify(products?.data?.RETNDATA));
+          const data = new Response(
+            JSON.stringify(
+              products?.data?.RETNDATA.filter(
+                (item) => item.PRDCNAME.indexOf("Tấm Trần Pima") >= 0
+              )
+            )
+          );
           cache.put("http://localhost:5173/", data);
-          return products.data?.RETNDATA;
+          return products?.data?.RETNDATA.filter(
+            (item) => item.PRDCNAME.indexOf("Tấm Trần Pima") >= 0
+          );
         } else {
           return rejectWithValue(products.data?.RETNDATA);
         }

@@ -50,6 +50,7 @@ const TableDetailProduct = ({
           ? data?.map((i) => {
               return (
                 <RowPayDetail
+                  key={i[id]}
                   handleBlurAmount={handleBlurAmount}
                   handleChangeAmount={handleChangeAmount}
                   handlePlus={handlePlus}

@@ -17,24 +17,21 @@ const HomeComponent = () => {
   const [loading, setLoading] = useState(true);
   const [lstProduct, setLstProduct] = useState(null);
   useEffect(() => {
-    if (
-      products?.length >= 0 &&
-      lstProduct !== null &&
-      isLoadingCommon == false
-    ) {
+    if (products?.length >= 0 && lstProduct != null) {
       setLoading(false);
     }
-  }, [products, isLoadingCommon, lstProduct]);
+  }, [isLoadingCommon]);
 
   useEffect(() => {
     setLstProduct(products);
-  }, [products]);
+  }, []);
 
   useEffect(() => {
     const getAllCacheData = async () => {};
     getAllCacheData();
+    console.log(products);
   }, []);
-  console.log(products);
+
   return loading ? (
     <LoadingView></LoadingView>
   ) : (

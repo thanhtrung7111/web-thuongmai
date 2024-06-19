@@ -30,7 +30,7 @@ const PayDetail = () => {
     //   })
     // );
     dispatch(loadWareHouse());
-    dispatch(loadLocations());
+    // dispatch(loadLocations());
     dispatch(loadCUOM());
     dispatch(loadTimeType());
     dispatch(loadDlvrType());

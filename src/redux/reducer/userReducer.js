@@ -58,7 +58,7 @@ const userSlice = createSlice({
     });
 
     builder.addCase(login.rejected, (state, action) => {
-      state.errorMessageUser = action.error;
+      state.errorMessageUser = action.payload;
       state.isLoadingUser = false;
     });
   },

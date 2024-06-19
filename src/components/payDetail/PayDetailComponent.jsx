@@ -498,7 +498,11 @@ const PayDetailComponent = () => {
   useEffect(() => {
     const detail = productCarts?.map((item) => {
       return {
-        checked: false,
+        checked: formik.values.DETAIL.find((i) => i.PRDCCODE == item.PRDCCODE)
+          ?.checked
+          ? formik.values.DETAIL.find((i) => i.PRDCCODE == item.PRDCCODE)
+              ?.checked
+          : false,
         PRDCCODE: item.PRDCCODE, //Mã sản phẩm
         PRDCNAME: item.PRDCNAME,
         ORGNCODE: "1", //Nguồn sản phẩm
@@ -523,7 +527,9 @@ const PayDetailComponent = () => {
     formik.setValues({
       DETAIL: detail,
     });
-  }, [formik.values.DETAIL?.length == 0, productCarts?.length]);
+    setChooseAll(false);
+    console.log(">>>>>>>>>>>>" + "load data");
+  }, [productCarts?.length]);
 
   useEffect(() => {
     setTimeout(() => {

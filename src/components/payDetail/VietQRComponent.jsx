@@ -236,7 +236,7 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
     const timeValue =
       value?.expiredAt - Math.floor(new Date().getTime() / 1000);
     let timeRemain = value?.expiredAt - Math.floor(new Date().getTime() / 1000);
-    console.log(timeRemain);
+    // console.log(timeRemain);
     let intervalTime = null;
     if (timeRemain >= 0 && open) {
       intervalTime = setInterval(() => {
@@ -260,8 +260,8 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
     if (!open) {
       for (var i = 1; i < 10000; i++) window.clearInterval(i);
     }
-  }, [open]);
-  console.log(open);
+  }, [open == true]);
+  // console.log(open);
   return (
     <div
       className={`${

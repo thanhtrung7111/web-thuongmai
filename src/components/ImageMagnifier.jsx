@@ -67,68 +67,76 @@ const ImageMagnifier = ({ image }) => {
         className="absolute  bg-black bg-opacity-50 top-0 right-0 w-full h-full"
         onClick={closManify}
       ></div>
-      <div className="p-5 bg-white max-w-[1000px] z-20">
-        <div className="border mb-5">
-          <img
-            src={mainImage}
-            alt=""
-            className="w-full h-[600px] object-contain object-center"
-          />
+      <div className=" bg-white max-w-[1000px] z-20">
+        <div
+          className="block text-right pr-2 pt-2 cursor-pointer"
+          onClick={closManify}
+        >
+          <i class="ri-close-line text-2xl"></i>
         </div>
-        <div className="max-w-fit">
-          <Swiper
-            // install Swiper modules
-            modules={[Navigation, Pagination, Scrollbar, A11y]}
-            spaceBetween={10}
-            slidesPerView={images.length}
-            autoplay="true"
-            navigation={{
-              prevEl: navigationPrevRef.current,
-              nextEl: navigationNextRef.current,
-            }}
-            // pagination={{ clickable: true }}
-            //   scrollbar={{ draggable: true }}
-            loop="true"
-            className="h-full w-full"
-            onInit={(swiper) => {
-              swiper.params.navigation.prevEl = navigationPrevRef.current;
-              swiper.params.navigation.nextEl = navigationNextRef.current;
-              swiper.navigation.init();
-              swiper.navigation.update();
-            }}
-          >
-            {images.map((item) => {
-              return (
-                <SwiperSlide
-                  className={
-                    indexImage.id == item.id
-                      ? "border border-first p-2"
-                      : "border border-gray-100 p-2"
-                  }
-                  onClick={() => handleChangeImage(item.id)}
-                >
-                  <img
-                    src={item.image}
-                    className="h-32 w-full object-cover object-top"
-                    alt=""
-                  />
-                </SwiperSlide>
-              );
-            })}
+        <div className="p-5 pt-1">
+          <div className="border mb-5">
+            <img
+              src={mainImage}
+              alt=""
+              className="w-full h-[600px] object-contain object-center"
+            />
+          </div>
+          <div className="max-w-fit">
+            <Swiper
+              // install Swiper modules
+              modules={[Navigation, Pagination, Scrollbar, A11y]}
+              spaceBetween={10}
+              slidesPerView={images.length}
+              autoplay="true"
+              navigation={{
+                prevEl: navigationPrevRef.current,
+                nextEl: navigationNextRef.current,
+              }}
+              // pagination={{ clickable: true }}
+              //   scrollbar={{ draggable: true }}
+              loop="true"
+              className="h-full w-full"
+              onInit={(swiper) => {
+                swiper.params.navigation.prevEl = navigationPrevRef.current;
+                swiper.params.navigation.nextEl = navigationNextRef.current;
+                swiper.navigation.init();
+                swiper.navigation.update();
+              }}
+            >
+              {images.map((item) => {
+                return (
+                  <SwiperSlide
+                    className={
+                      indexImage.id == item.id
+                        ? "border border-first p-2"
+                        : "border border-gray-100 p-2"
+                    }
+                    onClick={() => handleChangeImage(item.id)}
+                  >
+                    <img
+                      src={item.image}
+                      className="h-32 w-full object-cover object-top"
+                      alt=""
+                    />
+                  </SwiperSlide>
+                );
+              })}
 
-            <div
-              ref={navigationPrevRef}
-              className="absolute top-[50%] -translate-y-[50%] left-0 cursor-pointer z-50 py-4 px-3 bg-black bg-opacity-20 text-white"
-            >
-              <i class="ri-arrow-left-s-line"></i>
-            </div>
-            <div
-              ref={navigationNextRef}
-              className="absolute top-[50%] -translate-y-[50%] right-0 cursor-pointer z-50 py-4 px-3 bg-black bg-opacity-20 text-white"
-            >
-              <i class="ri-arrow-right-s-line"></i>
-            </div>
-          </Swiper>
+              <div
+                ref={navigationPrevRef}
+                className="absolute top-[50%] -translate-y-[50%] left-0 cursor-pointer z-50 py-4 px-3 bg-black bg-opacity-20 text-white"
+              >
+                <i class="ri-arrow-left-s-line"></i>
+              </div>
+              <div
+                ref={navigationNextRef}
+                className="absolute top-[50%] -translate-y-[50%] right-0 cursor-pointer z-50 py-4 px-3 bg-black bg-opacity-20 text-white"
+              >
+                <i class="ri-arrow-right-s-line"></i>
+              </div>
+            </Swiper>
+          </div>
         </div>
       </div>
     </div>

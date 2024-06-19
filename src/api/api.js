@@ -16,6 +16,7 @@ export const injectStore = (_store) => {
 
 export const api = axios.create({
   baseURL: "https://api-dev.firstems.com",
+  timeout: 10000,
   headers: {
     token:
       "CmzFIKFr7UvPe6zBPBtn3nkrWOY3UYSLLnTfii/H9QG56Ur6b9XtFty3M9tBEKV1l3d+0mGEXmfQyuGFjrNHYGSODDy+ihkBmsHYUNPgD44=",
@@ -24,7 +25,7 @@ export const api = axios.create({
 
 const apiFetchLogin = axios.create({
   baseURL: "https://api-dev.firstems.com",
-  timeout: 5000,
+  timeout: 10000,
 });
 apiFetchLogin.interceptors.request.use((req) => {
   if (sessionStorage.getItem("tokenInitial")) {
@@ -35,7 +36,13 @@ apiFetchLogin.interceptors.request.use((req) => {
 
 apiFetchLogin.interceptors.response.use(
   (response) => {
+    // console.log(response);
+    // if (response?.data?.RETNDATA != null) {
     return response;
+    // }
+    // store.dispatch(logout());
+    // store.dispatch(clearCart());
+    // store.dispatch(openAppNotify({ link: "33432" }));
   },
   (error) => {
     if (error.response?.status === 401) {
@@ -65,7 +72,7 @@ export const loginCustom = (body) => {
 
 const apiFetchData = axios.create({
   baseURL: "https://api-dev.firstems.com",
-  timeout: 5000,
+  timeout: 10000,
 });
 apiFetchData.interceptors.request.use((req) => {
   if (
@@ -85,7 +92,13 @@ apiFetchData.interceptors.request.use((req) => {
 
 apiFetchData.interceptors.response.use(
   (response) => {
-    return response;
+    console.log(response);
+    if (response?.data?.RETNDATA != null) {
+      return response;
+    }
+    store.dispatch(logout());
+    store.dispatch(clearCart());
+    store.dispatch(openAppNotify({ link: "33432" }));
   },
   (error) => {
     if (error.response?.status === 401) {
@@ -196,7 +209,8 @@ export const fetchDataDetail = (body) => {
     );
     return result;
   } catch (error) {
-    return error;s
+    return error;
+    s;
   }
 };
 
