@@ -12,6 +12,7 @@ const AppNotifycation = ({}) => {
     dispatch(closeAppNotify());
     dispatch(logout());
     navigate("/login");
+    window.location.reload();
   };
   return (
     <div

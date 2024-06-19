@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  HashRouter,
+} from "react-router-dom";
 import Home from "@pages/Home";
 import Footer from "@components/Footer";
 import ProductDetail from "@pages/ProductDetail";
@@ -57,27 +63,12 @@ function App() {
   return (
     <div>
       <ToastContainer></ToastContainer>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
+      {/* <BrowserRouter basename={import.meta.env.BASE_URL}> */}
+      <HashRouter>
         <DetailOrder></DetailOrder>
         <EvaluateProduct></EvaluateProduct>
         <AppNotifycation></AppNotifycation>
         <Routes>
-          <Route element={<AppLogin></AppLogin>}>
-            <Route
-              path="/login"
-              element={
-                // currentUser ? <Navigate to={"/"} /> :
-                <Login></Login>
-              }
-            ></Route>
-            <Route
-              path="/register"
-              element={
-                // currentUser ? <Navigate to={"/"} /> :
-                <Register></Register>
-              }
-            ></Route>
-          </Route>
           <Route element={<AppLayout></AppLayout>}>
             <Route path="/" element={<Home></Home>}></Route>
             <Route
@@ -131,12 +122,29 @@ function App() {
             ></Route>
             {/* <Route path="/*" element={<Navigate to="/" />}></Route> */}
           </Route>
+          <Route element={<AppLogin></AppLogin>}>
+            <Route
+              path="/login"
+              element={
+                // currentUser ? <Navigate to={"/"} /> :
+                <Login></Login>
+              }
+            ></Route>
+            <Route
+              path="/register"
+              element={
+                // currentUser ? <Navigate to={"/"} /> :
+                <Register></Register>
+              }
+            ></Route>
+          </Route>
+
           <Route path="/test" element={<Test></Test>}></Route>
           <Route path="/error" element={<ErrorServer></ErrorServer>}></Route>
         </Routes>
 
         <Footer></Footer>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }

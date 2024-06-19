@@ -496,39 +496,41 @@ const PayDetailComponent = () => {
   const changeForm = () => {};
 
   useEffect(() => {
-    const detail = productCarts?.map((item) => {
-      return {
-        checked: formik.values.DETAIL.find((i) => i.PRDCCODE == item.PRDCCODE)
-          ?.checked
-          ? formik.values.DETAIL.find((i) => i.PRDCCODE == item.PRDCCODE)
-              ?.checked
-          : false,
-        PRDCCODE: item.PRDCCODE, //Mã sản phẩm
-        PRDCNAME: item.PRDCNAME,
-        ORGNCODE: "1", //Nguồn sản phẩm
-        SORTCODE: "1", //Phân loại sản phẩm
-        QUOMCODE: item.QUOMCODE, //Đơn vị tính
-        QUOMQTTY: 1, //Số lượng
-        CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
-        MNEYCRAM: item.PRCEDSCN, //Thành tiền
-        PRDCIMGE: item.PRDCIMAGE,
-        DISCRATE: 0, //%Chiết khấu
-        DCPRCRAM: 0, //Tiền giảm CK
-        PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
-        SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
-        MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
-        DCPRAMNT: 0, //Tiền giảm CK qui đổi
-        DSCNRATE: item.DSCNRATE,
-        KKKK0000: item["KKKK0000"],
-        COMPCODE: item["COMPCODE"],
-        LCTNCODE: item["LCTNCODE"],
-      };
-    });
-    formik.setValues({
-      DETAIL: detail,
-    });
-    setChooseAll(false);
-    console.log(">>>>>>>>>>>>" + "load data");
+    if (productCarts?.length > 0) {
+      const detail = productCarts?.map((item) => {
+        return {
+          checked: formik.values.DETAIL.find((i) => i.PRDCCODE == item.PRDCCODE)
+            ?.checked
+            ? formik.values.DETAIL.find((i) => i.PRDCCODE == item.PRDCCODE)
+                ?.checked
+            : false,
+          PRDCCODE: item.PRDCCODE, //Mã sản phẩm
+          PRDCNAME: item.PRDCNAME,
+          ORGNCODE: "1", //Nguồn sản phẩm
+          SORTCODE: "1", //Phân loại sản phẩm
+          QUOMCODE: item.QUOMCODE, //Đơn vị tính
+          QUOMQTTY: 1, //Số lượng
+          CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
+          MNEYCRAM: item.PRCEDSCN, //Thành tiền
+          PRDCIMGE: item.PRDCIMAGE,
+          DISCRATE: 0, //%Chiết khấu
+          DCPRCRAM: 0, //Tiền giảm CK
+          PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
+          SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
+          MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
+          DCPRAMNT: 0, //Tiền giảm CK qui đổi
+          DSCNRATE: item.DSCNRATE,
+          KKKK0000: item["KKKK0000"],
+          COMPCODE: item["COMPCODE"],
+          LCTNCODE: item["LCTNCODE"],
+        };
+      });
+      formik.setValues({
+        DETAIL: [...detail],
+      });
+      setChooseAll(false);
+      console.log(">>>>>>>>>>>>" + "load data");
+    }
   }, [productCarts?.length]);
 
   useEffect(() => {
