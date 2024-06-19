@@ -24,7 +24,7 @@ const HomeComponent = () => {
 
   useEffect(() => {
     setLstProduct(products);
-  }, []);
+  }, [products]);
 
   useEffect(() => {
     const getAllCacheData = async () => {};
