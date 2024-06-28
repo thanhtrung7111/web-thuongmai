@@ -420,18 +420,18 @@ const PayDetailComponent = () => {
   };
 
   const updateFormik = () => {
-    const varFormik = formik.values.DETAIL.filter(
+    const varFormik = formik.values.DETAIL?.filter(
       (item) => item.checked == true
     );
     console.log(formik.values.DETAIL);
     formik.setValues({
       DETAIL: formik.values.DETAIL,
-      SMPRQTTY: varFormik.reduce(
+      SMPRQTTY: varFormik?.reduce(
         (value, currentValue) => value + currentValue.PRDCQTTY,
         0
       ),
       RDTNCRAM:
-        varFormik.length > 0
+        varFormik?.length > 0
           ? varFormik.reduce(
               (value, currentValue) =>
                 value +
@@ -444,7 +444,7 @@ const PayDetailComponent = () => {
             )
           : 0,
       SUM_CRAM:
-        varFormik.length > 0
+        varFormik?.length > 0
           ? varFormik.reduce(
               (value, currentValue) =>
                 value + currentValue.SALEPRCE * currentValue.PRDCQTTY,
@@ -452,7 +452,7 @@ const PayDetailComponent = () => {
             )
           : 0,
       SUM_AMNT:
-        varFormik.length > 0
+        varFormik?.length > 0
           ? varFormik.reduce(
               (value, currentValue) =>
                 value +
@@ -505,12 +505,15 @@ const PayDetailComponent = () => {
         LCTNCODE: item["LCTNCODE"],
       };
     });
-    formik.setValues({
-      DETAIL: [...detail],
-    });
-    setChooseAll(false);
+    formik.values.DETAIL = [...detail];
+    if (detail.find((item) => item.checked == false)) {
+      setChooseAll(false);
+    } else {
+      setChooseAll(true);
+    }
     console.log(">>>>>>>>>>>>" + "load data");
     // }
+    updateFormik();
   }, [productCarts?.length, formik.values.DETAIL == null]);
 
   // console.log();
