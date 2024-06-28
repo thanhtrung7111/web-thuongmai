@@ -48,7 +48,6 @@ import TableDetailProduct from "./TableDetailProduct";
 const PayDetailComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [disableButton, setDisableButton] = useState(false);
   const [stateButton, setStateButton] = useState("");
   const [chooseAll, setChooseAll] = useState(false);
   const { productCarts } = useSelector((state) => state.cart);
@@ -56,7 +55,6 @@ const PayDetailComponent = () => {
   const { showAlert } = useSelector((state) => state.popup);
   const [openVietQR, setOpenVietQR] = useState(false);
   const [infoVietQR, setInfoVietQR] = useState(null);
-  const [stateAction, setStateAction] = useState(false);
   let timer = useRef(null);
   const {
     isLoadingCommon,
@@ -108,7 +106,7 @@ const PayDetailComponent = () => {
       SUM_AMNT: 0, //Tổng tiền qui đổi
       RDTNAMNT: 0, //Tiền chiết khấu
       VAT_AMNT: 0, //Tiền thuế qui đổi
-      DETAIL: [], //Chi tiết
+      DETAIL: null, //Chi tiết
     },
     validationSchema: Yup.object().shape({
       // MCUSTNME: Yup.string().required("Không được để trống"),
@@ -322,42 +320,30 @@ const PayDetailComponent = () => {
     updateFormik();
   };
 
-  const handleSubstract = (id) => {
-    setDisableButton(true);
+  const handleSubstract = async (id) => {
     const productFind = formik.values.DETAIL.find(
       (item) => item.PRDCCODE == id
     );
-    productFind.PRDCQTTY -= 1;
+    console.log(id);
     productFind.MNEYAMNT = productFind.PRDCQTTY * productFind.SALEPRCE;
-    if (productFind.PRDCQTTY == 0) {
-      let result = formik.values.DETAIL.filter(
-        (item) => item.PRDCCODE != productFind.PRDCCODE
-      );
-      formik.setFieldValue("DETAIL", result);
-      handleDeleteProduct(productFind.PRDCCODE, productFind.KKKK0000);
-    } else {
-      // console.log(body);
-      formik.setFieldValue("DETAIL", formik.values.DETAIL);
-      const body = {
-        DCMNCODE: "APPCARTPRDC",
-        HEADER: [
-          {
-            ...productFind,
-            QUOMQTTY: productFind.PRDCQTTY,
-            USERLOGIN: currentUser?.USERLGIN,
-            PRDCIMAGE: productFind.PRDCIMGE,
-          },
-        ],
-      };
-      dispatch(decreamentAmountProduct(body));
+    const body = {
+      DCMNCODE: "APPCARTPRDC",
+      HEADER: [
+        {
+          ...productFind,
+          QUOMQTTY: productFind.PRDCQTTY - 1,
+          USERLOGIN: currentUser?.USERLGIN,
+          PRDCIMAGE: productFind.PRDCIMGE,
+        },
+      ],
+    };
+    try {
+      await dispatch(decreamentAmountProduct(body));
+      productFind.PRDCQTTY -= 1;
+    } catch (error) {
+      return;
     }
-    formik.setFieldValue(
-      "SMPRQTTY",
-      formik.values.DETAIL.filter((item) => item.checked == true).reduce(
-        (value, currentValue) => value + currentValue.PRDCQTTY,
-        0
-      )
-    );
+    updateFormik();
   };
 
   const handleChangeChoose = (id) => {
@@ -499,9 +485,10 @@ const PayDetailComponent = () => {
     if (productCarts?.length > 0) {
       const detail = productCarts?.map((item) => {
         return {
-          checked: formik.values.DETAIL.find((i) => i.PRDCCODE == item.PRDCCODE)
-            ?.checked
-            ? formik.values.DETAIL.find((i) => i.PRDCCODE == item.PRDCCODE)
+          checked: formik.values.DETAIL?.find(
+            (i) => i.PRDCCODE == item.PRDCCODE
+          )?.checked
+            ? formik.values.DETAIL?.find((i) => i.PRDCCODE == item.PRDCCODE)
                 ?.checked
             : false,
           PRDCCODE: item.PRDCCODE, //Mã sản phẩm
@@ -531,26 +518,11 @@ const PayDetailComponent = () => {
       setChooseAll(false);
       console.log(">>>>>>>>>>>>" + "load data");
     }
-  }, [productCarts?.length]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, [productCarts]);
+  }, [productCarts?.length, formik.values.DETAIL == null]);
 
   // console.log();
 
-  useEffect(() => {
-    setTimeout(() => {
-      setDisableButton(false);
-    }, 500);
-  }, [disableButton == true]);
-  return loading ? (
-    <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
-      <LoadingView></LoadingView>
-    </div>
-  ) : (
+  return (
     <div className="product-detail">
       <VietQRComponent
         open={openVietQR}
@@ -709,6 +681,7 @@ const PayDetailComponent = () => {
                   handleChangeAmount={handleChangeAmount}
                   handleDelete={handleDeleteProduct}
                   handleClickAll={handleClickAllProduct}
+                  handleSubstract={handleSubstract}
                   handleChoose={handleChangeChoose}
                   data={formik.values.DETAIL}
                   handlePlus={handlePlus}

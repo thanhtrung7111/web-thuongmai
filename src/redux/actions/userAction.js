@@ -9,7 +9,7 @@ export const login = createAsyncThunk(
       const user = await loginCustom(data)
         .then((response) => response?.data?.RETNDATA)
         .catch((e) => e);
-      // console.log(user);
+      console.log(user);
       if (user) {
         return user;
       } else {

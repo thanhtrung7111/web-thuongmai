@@ -15,6 +15,7 @@ import SubMenu from "./SubMenu";
 import MenuChild from "./MenuChild";
 import { clearSearch, logout } from "../../redux/reducer/userReducer";
 import { PURGE } from "redux-persist/lib/constants";
+import { deleteCacheData } from "../../helper/CacheHelper";
 const Menu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,7 +24,8 @@ const Menu = () => {
 
   const handleLogout = async (e) => {
     e.preventDefault();
-    dispatch(clearCart());
+    await dispatch(clearCart());
+    await deleteCacheData();
     dispatch(clearSearch());
     dispatch(logout());
     sessionStorage.removeItem("tokenUser");

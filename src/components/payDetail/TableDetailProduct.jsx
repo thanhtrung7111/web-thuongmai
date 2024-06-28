@@ -17,6 +17,7 @@ const TableDetailProduct = ({
   handlePlus,
   handleBlurAmount,
   handleChangeAmount,
+  handleSubstract,
   handleDelete,
   handleChoose,
   chooseAll,
@@ -56,6 +57,7 @@ const TableDetailProduct = ({
                   handlePlus={handlePlus}
                   handleDelete={handleDelete}
                   handleChoose={handleChoose}
+                  handleSubstract={handleSubstract}
                   id={id}
                   item={i}
                   choose={choose}

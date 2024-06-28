@@ -64,6 +64,7 @@ export const loginCustom = (body) => {
       "/Api/data/runApi_Syst?run_Code=SYS010",
       body
     );
+    // console.log(result);
     return result;
   } catch (error) {
     return error;
@@ -92,21 +93,22 @@ apiFetchData.interceptors.request.use((req) => {
 
 apiFetchData.interceptors.response.use(
   (response) => {
-    console.log(response);
+    // console.log(response);
     if (response?.data?.RETNDATA != null) {
       return response;
     }
-    store.dispatch(logout());
-    store.dispatch(clearCart());
-    store.dispatch(openAppNotify({ link: "33432" }));
+    // store.dispatch(logout());
+    // store.dispatch(clearCart());
+    // store.dispatch(openAppNotify({ link: "33432" }));
   },
   (error) => {
+    console.log(error);
     if (error.response?.status === 401) {
       store.dispatch(openAppNotify({ link: "33432" }));
     } else if (error.response?.status === 500) {
       // console.log(error);
-      store.dispatch(logout());
-      store.dispatch(clearCart());
+      // store.dispatch(logout());
+      // store.dispatch(clearCart());
       // window.location.href = "http://localhost:5173/error";
     }
     return error;
@@ -168,7 +170,7 @@ export const updateData = (body) => {
       "/Api/data/runApi_Data?run_Code=DTA008",
       body
     );
-
+    console.log(result);
     return result;
   } catch (error) {
     return error;

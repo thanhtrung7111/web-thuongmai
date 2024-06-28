@@ -22,6 +22,10 @@ import {
   openEvaluateProduct,
   openManify,
 } from "../../redux/reducer/popupReducer";
+import LoadingView from "../../pages/LoadingView";
+import ImageFetch from "../ImageFetch";
+import { fetchImage } from "../../helper/ImageHelper";
+import { addToCart, updateAmountProduct } from "../../redux/actions/cartAction";
 let pageSize = 4;
 const images = [
   {
@@ -183,14 +187,17 @@ const productDetailDemo = {
 const ProductDetailComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
-  const { productDetail } = useSelector((state) => state.product);
+  const { productDetail, isLoadingProduct } = useSelector(
+    (state) => state.product
+  );
+  const { currentUser } = useSelector((state) => state.user);
+  const { productCarts } = useSelector((state) => state.cart);
   const [product, setProduct] = useState(null);
   const [indexImage, setIndexImage] = useState({ ...images[0] });
-  const [mainImage, setMainImage] = useState(null);
+  const [mainImage, setMainImage] = useState("");
   const [amountProduct, setAmountProduct] = useState(1);
   const navigationPrevRef = React.useRef(null);
   const navigationNextRef = React.useRef(null);
-
   const onChangeTagRam = (value) => {
     console.log(value);
   };
@@ -199,54 +206,72 @@ const ProductDetailComponent = () => {
     setIndexImage(images.find((item) => item.id == id));
     setMainImage(images.find((item) => item.id == id).image);
   };
+  console.log(productCarts);
 
-  const addToCart = (prd) => {
-    dispatch(
-      addToCart({
-        id: prd.PRDCCODE,
-        name: "",
-        image: prd?.DETAIL_4.at(0).IMGE_URL,
-        price: prd.PRCEDSCN,
-        sale: prd.DSCNRATE,
-        reviews: "",
-        stars: 0,
-        sold: "",
-      })
+  const addCart = async (prdc) => {
+    const productFind = productCarts.find(
+      (item) => item.PRDCCODE == product.PRDCCODE
     );
+    if (productFind) {
+      dispatch(
+        updateAmountProduct({
+          DCMNCODE: "APPCARTPRDC",
+          HEADER: [
+            {
+              ...productFind,
+              QUOMQTTY: amountProduct + productFind.QUOMQTTY,
+            },
+          ],
+        })
+      );
+    } else {
+      console.log(prdc.PRCEDSCN);
+      dispatch(
+        addToCart({
+          COMPCODE: prdc.COMPCODE,
+          LCTNCODE: "001",
+          USERLOGIN: currentUser?.USERLGIN,
+          PRDCCODE: prdc.PRDCCODE,
+          QUOMQTTY: amountProduct,
+          // QUOMCODE: item["QUOMCODE"],
+          SALEPRCE: prdc.PRCEDSCN,
+          DSCNRATE: prdc.DSCNRATE,
+          PRDCNAME: prdc.PRDCNAME,
+          PRDCIMAGE: prdc.DETAIL_4[0]?.IMGE_URL,
+        })
+      );
+    }
   };
 
   useEffect(() => {
-    setProduct(productDetailDemo);
-  }, [productDetailDemo]);
+    setProduct(productDetail);
+    console.log(productDetail);
+  }, [productDetail]);
 
   useEffect(() => {
-    async function fetchImage() {
-      await fetch(product?.DETAIL_4[0]?.IMGE_URL, {
-        method: "GET",
-        headers: {
-          TOKEN: localStorage.getItem("tokenUser"),
-        },
-      })
-        .then((response) => {
-          // console.log(response);
-          return response.blob();
-        })
-        .then((blob) => {
-          const imageUrl = URL.createObjectURL(blob);
-          setMainImage(imageUrl);
-          console.log(imageUrl);
-        });
+    async function fetchDataImage() {
+      const img = await fetchImage(
+        product?.DETAIL_4[0]?.IMGE_URL,
+        sessionStorage.getItem("tokenUser")
+      );
+      setMainImage(img);
     }
-    fetchImage();
+    fetchDataImage();
+    // }
   }, [product]);
   console.log(productDetail);
   const showManify = () => {
     dispatch(openManify());
   };
 
+  useEffect(() => {
+    console.log(mainImage);
+  }, [mainImage]);
+
   const showEvaludate = () => {
     dispatch(openEvaluateProduct({ productID: "0000" }));
   };
+
   return (
     <div className="product-detail">
       <InfoPage data={["Sản phẩm", "Laptop Asus"]} />
@@ -261,10 +286,11 @@ const ProductDetailComponent = () => {
                   className="h-96 w-full border border-gray-100 p-2 cursor-zoom-in"
                   onClick={showManify}
                 >
+                  {/* <ImageFetch url={product?.DETAIL_4[0]?.IMGE_URL}></ImageFetch> */}
                   <img
                     src={mainImage}
                     alt=""
-                    className="w-full h-full object-contain object-center"
+                    className="w-full h-full object-contain object-top"
                   />
                 </div>
                 <div className="min-w-full">
@@ -373,25 +399,28 @@ const ProductDetailComponent = () => {
                   {/* STAR  */}
                   <div className="flex items-center gap-x-2">
                     <div className="flex items-center gap-x-1">
-                      {product?.DETAIL_3.length > 0 &&
-                        [
-                          ...Array(
-                            Math.floor(
-                              product?.DETAIL_3.reduce(
-                                (accumulator, currentValue) =>
-                                  accumulator + currentValue.PRDCMARK,
-                                0
-                              ) / product?.DETAIL_3.length
-                            )
-                          ),
-                        ].map((star) => {
-                          return (
-                            <i className="ri-star-fill text-yellow-400 text-xl"></i>
-                          );
-                        })}
+                      {
+                        product?.DETAIL_3?.length > 0
+                        // &&
+                        // [
+                        //   ...Array(
+                        //     Math.floor(
+                        //       product?.DETAIL_3?.reduce(
+                        //         (accumulator, currentValue) =>
+                        //           accumulator + currentValue.PRDCMARK,
+                        //         0
+                        //       ) / product?.DETAIL_3.length
+                        //     )
+                        //   ),
+                        // ].map((star) => {
+                        //   return (
+                        //     <i className="ri-star-fill text-yellow-400 text-xl"></i>
+                        //   );
+                        // })
+                      }
                     </div>
                     <span className="text-sm text-gray-dark">
-                      ({product?.DETAIL_3.length} đánh giá)
+                      ({product?.DETAIL_3?.length} đánh giá)
                     </span>
                   </div>
 
@@ -401,7 +430,7 @@ const ProductDetailComponent = () => {
                 </div>
 
                 {/* OPTION  */}
-                <div className="border-y py-4 flex flex-col gap-y-5 hidden">
+                <div className="border-y py-4 flex flex-col gap-y-5 ">
                   {/* RAM  */}
                   <div className="flex items-center gap-x-2">
                     <span className="font-semibold text-gray-dark text-lg">
@@ -443,22 +472,26 @@ const ProductDetailComponent = () => {
                           }
                           setAmountProduct(amountProduct - 1);
                         }}
-                        className="text-gray-light w-8 h-8 text-lg border flex items-center justify-center"
+                        className="text-gray-darked w-8 h-8 text-lg border flex items-center justify-center"
                       >
                         -
                       </button>
-                      <div className="text-gray-light w-10 h-8 text-base border flex items-center justify-center">
-                        <input
-                          type="text"
-                          placeholder={1}
-                          value={amountProduct}
-                          className="w-full text-center outline-none"
-                        />
-                      </div>
+                      {/* <div className="text-gray-light w-10 h-8 text-base border flex items-center justify-center"> */}
+                      <input
+                        type="number"
+                        placeholder={1}
+                        min={1}
+                        value={amountProduct}
+                        onChange={(e) =>
+                          setAmountProduct(Number(e.target.value))
+                        }
+                        className="w-24 text-center outline-none border h-8"
+                      />
+                      {/* </div> */}
 
                       <button
                         onClick={() => setAmountProduct(amountProduct + 1)}
-                        className="text-gray-light w-8 h-8 text-lg border flex items-center justify-center"
+                        className="text-gray-darked w-8 h-8 text-lg border flex items-center justify-center"
                       >
                         +
                       </button>
@@ -471,7 +504,7 @@ const ProductDetailComponent = () => {
                   <div className="flex items-center gap-x-2">
                     <button
                       className="bg-second text-white rounded-md px-3 py-2"
-                      onClick={() => addToCart(product)}
+                      onClick={() => addCart(product)}
                     >
                       Thêm vào giỏ
                     </button>
@@ -751,16 +784,16 @@ const ProductDetailComponent = () => {
               <div className="flex flex-col md:flex-row  items-center md:items-start gap-10 px-5 py-5">
                 <div className="flex flex-col items-center justify-center w-fit md:pr-10 md:border-r">
                   <span className="text-9xl font-normal text-gray-dark">
-                    {(
+                    {/* {(
                       product?.DETAIL_3.reduce(
                         (value, currentValue) => value + currentValue.PRDCMARK,
                         0
                       ) / product?.DETAIL_3.length
-                    ).toFixed(1)}
+                    ).toFixed(1)} */}
                   </span>
                   <div>
                     <div className="flex items-center gap-x-1">
-                      {product?.DETAIL_3 &&
+                      {/* {product?.DETAIL_3 &&
                         [
                           ...Array(
                             Math.ceil(
@@ -775,11 +808,11 @@ const ProductDetailComponent = () => {
                           return (
                             <i className="ri-star-fill text-yellow-400 text-xl"></i>
                           );
-                        })}
+                        })} */}
                     </div>
                   </div>
                   <span className="text-gray-light">
-                    ( {product?.DETAIL_3.length} Đánh giá )
+                    ( {product?.DETAIL_3?.length} Đánh giá )
                   </span>
                 </div>
 
@@ -792,10 +825,10 @@ const ProductDetailComponent = () => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (product?.DETAIL_3.filter(
+                          (product?.DETAIL_3?.filter(
                             (item) => item.PRDCMARK == 5
                           ).length /
-                            product?.DETAIL_3.length) *
+                            product?.DETAIL_3?.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -803,10 +836,10 @@ const ProductDetailComponent = () => {
                         }`}
                         style={{
                           width: `${
-                            (product?.DETAIL_3.filter(
+                            (product?.DETAIL_3?.filter(
                               (item) => item.PRDCMARK == 5
                             ).length /
-                              product?.DETAIL_3.length) *
+                              product?.DETAIL_3?.length) *
                             100
                           }%`,
                         }}
@@ -821,10 +854,10 @@ const ProductDetailComponent = () => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (product?.DETAIL_3.filter(
+                          (product?.DETAIL_3?.filter(
                             (item) => item.PRDCMARK == 4
                           ).length /
-                            product?.DETAIL_3.length) *
+                            product?.DETAIL_3?.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -832,10 +865,10 @@ const ProductDetailComponent = () => {
                         }`}
                         style={{
                           width: `${
-                            (product?.DETAIL_3.filter(
+                            (product?.DETAIL_3?.filter(
                               (item) => item.PRDCMARK == 4
                             ).length /
-                              product?.DETAIL_3.length) *
+                              product?.DETAIL_3?.length) *
                             100
                           }%`,
                         }}
@@ -850,10 +883,10 @@ const ProductDetailComponent = () => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (product?.DETAIL_3.filter(
+                          (product?.DETAIL_3?.filter(
                             (item) => item.PRDCMARK == 3
                           ).length /
-                            product?.DETAIL_3.length) *
+                            product?.DETAIL_3?.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -861,10 +894,10 @@ const ProductDetailComponent = () => {
                         }`}
                         style={{
                           width: `${
-                            (product?.DETAIL_3.filter(
+                            (product?.DETAIL_3?.filter(
                               (item) => item.PRDCMARK == 3
                             ).length /
-                              product?.DETAIL_3.length) *
+                              product?.DETAIL_3?.length) *
                             100
                           }%`,
                         }}
@@ -879,10 +912,10 @@ const ProductDetailComponent = () => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (product?.DETAIL_3.filter(
+                          (product?.DETAIL_3?.filter(
                             (item) => item.PRDCMARK == 2
                           ).length /
-                            product?.DETAIL_3.length) *
+                            product?.DETAIL_3?.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -890,10 +923,10 @@ const ProductDetailComponent = () => {
                         }`}
                         style={{
                           width: `${
-                            (product?.DETAIL_3.filter(
+                            (product?.DETAIL_3?.filter(
                               (item) => item.PRDCMARK == 2
                             ).length /
-                              product?.DETAIL_3.length) *
+                              product?.DETAIL_3?.length) *
                             100
                           }%`,
                         }}
@@ -908,10 +941,10 @@ const ProductDetailComponent = () => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0  w-1/4 h-full ${
-                          (product?.DETAIL_3.filter(
+                          (product?.DETAIL_3?.filter(
                             (item) => item.PRDCMARK == 1
                           ).length /
-                            product?.DETAIL_3.length) *
+                            product?.DETAIL_3?.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -919,10 +952,10 @@ const ProductDetailComponent = () => {
                         }`}
                         style={{
                           width: `${
-                            (product?.DETAIL_3.filter(
+                            (product?.DETAIL_3?.filter(
                               (item) => item.PRDCMARK == 1
                             ).length /
-                              product?.DETAIL_3.length) *
+                              product?.DETAIL_3?.length) *
                             100
                           }%`,
                         }}
@@ -951,8 +984,8 @@ const ProductDetailComponent = () => {
               </div>
 
               <div className="flex flex-col gap-y-4 mb-16 min-h-[550px]">
-                {product?.DETAIL_3.length > 0 &&
-                  product?.DETAIL_3.slice(
+                {product?.DETAIL_3?.length > 0 &&
+                  product?.DETAIL_3?.slice(
                     (currentPage - 1) * pageSize,
                     pageSize * (currentPage - 1) + pageSize
                   ).map((item) => {
@@ -966,10 +999,10 @@ const ProductDetailComponent = () => {
                     );
                   })}
               </div>
-              {product?.DETAIL_3.length > 0 && (
+              {product?.DETAIL_3?.length > 0 && (
                 <Panigation
                   currentPage={currentPage}
-                  totalCount={product.DETAIL_3?.length}
+                  totalCount={product?.DETAIL_3?.length}
                   pageSize={pageSize}
                   scrollTo="evaluate"
                   onPageChange={(page) => {

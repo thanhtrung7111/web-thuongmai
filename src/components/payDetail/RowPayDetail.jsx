@@ -19,6 +19,7 @@ const RowPayDetail = ({
   handleDelete,
   handleBlurAmount,
   handleChangeAmount,
+  handleSubstract,
   handleChoose,
 }) => {
   const [disabled, setDisabled] = useState(false);
@@ -38,6 +39,16 @@ const RowPayDetail = ({
   const openNotify = () => {
     dispatch(openBlock());
     setNotifyDelete(true);
+  };
+
+  const notifyHandleSubtract = () => {
+    if (item[quantity] == 1) {
+      dispatch(openBlock());
+      setNotifyDelete(true);
+      return;
+    }
+    setDisabled(true);
+    handleSubstract(item[id]);
   };
   return (
     <>
@@ -104,41 +115,44 @@ const RowPayDetail = ({
           </div>
         </td>
         <td class="px-6 py-4">
-          <div className="flex items-center w-fit gap-x-1">
-            <button
-              type="button"
-              disabled={disabled}
-              // onClick={() => handleSubstract(item["PRDCCODE"])}
-              className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark disabled:bg-slate-100"
-            >
-              -
-            </button>
-            <input
-              disabled={disabled}
-              type="number"
-              min={1}
-              onBlur={(e) => {
-                setDisabled(true);
-                handleBlurAmount(e, item[id]);
-              }}
-              id={item[id]}
-              value={item[quantity]}
-              onChange={(e) => {
-                handleChangeAmount(e, item[id]);
-              }}
-              className="border pl-2 w-14 h-6 rounded-md  outline-none text-xs text-gray-dark disabled:bg-slate-100"
-            />
-            <button
-              disabled={disabled}
-              type="button"
-              onClick={() => {
-                setDisabled(true);
-                handlePlus(item[id]);
-              }}
-              className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark disabled:bg-slate-100"
-            >
-              +
-            </button>
+          <div>
+            <div className="flex items-center w-fit gap-x-1">
+              <button
+                type="button"
+                disabled={disabled}
+                onClick={() => notifyHandleSubtract()}
+                className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark disabled:bg-slate-100"
+              >
+                -
+              </button>
+              <input
+                disabled={disabled}
+                type="number"
+                min={1}
+                onBlur={(e) => {
+                  setDisabled(true);
+                  handleBlurAmount(e, item[id]);
+                }}
+                id={item[id]}
+                value={item[quantity]}
+                onChange={(e) => {
+                  handleChangeAmount(e, item[id]);
+                }}
+                className="border pl-2 w-14 h-6 rounded-md  outline-none text-xs text-gray-dark disabled:bg-slate-100"
+              />
+              <button
+                disabled={disabled}
+                type="button"
+                onClick={() => {
+                  setDisabled(true);
+                  handlePlus(item[id]);
+                }}
+                className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark disabled:bg-slate-100"
+              >
+                +
+              </button>
+            </div>
+            {/* <div>{item[]}</div> */}
           </div>
         </td>
         <td class="px-6 py-4">

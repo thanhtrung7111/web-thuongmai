@@ -17,12 +17,25 @@ export const loadCart = createAsyncThunk(
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async (data, { rejectWithValue }) => {
+    console.log(data);
     const result = await postData({
       DCMNCODE: "APPCARTPRDC",
       HEADER: [{ ...data }],
     });
     if (result?.data.RETNCODE !== false) {
-      return result;
+      return result?.data?.RETNDATA[0];
+    } else {
+      return rejectWithValue(data);
+    }
+  }
+);
+
+export const updateAmountProduct = createAsyncThunk(
+  "cart/updateAmountProduct",
+  async (data, { rejectWithValue }) => {
+    const result = await updateData(data);
+    if (result?.data?.RETNCODE) {
+      return result?.data?.RETNDATA[0];
     } else {
       return rejectWithValue(data);
     }
@@ -32,8 +45,10 @@ export const addToCart = createAsyncThunk(
 export const increamentAmountProduct = createAsyncThunk(
   "cart/increamentAmoutProduct",
   async (data, { rejectWithValue }) => {
+    console.log(data);
     const result = await updateData(data);
     if (result?.data?.RETNCODE == true) {
+      console.log(result);
       return data;
     } else {
       return rejectWithValue(data);

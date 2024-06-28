@@ -84,6 +84,7 @@ const commonSlice = createSlice({
 
     builder.addMatcher(isPending, (state) => {
       state.isLoadingCommon = true;
+      state.errorMessageCommon = false;
     });
 
     builder.addMatcher(isFulfilled, (state) => {

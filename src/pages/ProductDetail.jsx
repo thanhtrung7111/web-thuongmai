@@ -6,9 +6,20 @@ import { fetchProductDetail } from "@redux/actions/productAction";
 import LoadingView from "./LoadingView";
 const ProductDetail = () => {
   const { id } = useParams();
+  const { productDetail, isLoadingProduct } = useSelector(
+    (state) => state.product
+  );
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
-  const { isLoadingProduct } = useSelector((state) => state.product);
+
   useEffect(() => {
+    if (isLoadingProduct == false && productDetail != null) {
+      setIsLoading(false);
+    }
+  }, [isLoadingProduct]);
+
+  useEffect(() => {
+    setIsLoading(true);
     dispatch(
       fetchProductDetail({
         DCMNCODE: "appPrdcDetl",
@@ -16,9 +27,9 @@ const ProductDetail = () => {
         KEY_CODE: id,
       })
     );
-  }, []);
-  return isLoadingProduct ? (
-    <LoadingView />
+  }, [id]);
+  return isLoading ? (
+    <LoadingView></LoadingView>
   ) : (
     <ProductDetailComponent></ProductDetailComponent>
   );
