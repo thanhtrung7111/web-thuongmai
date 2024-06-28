@@ -234,7 +234,7 @@ const ProductDetailComponent = () => {
           PRDCCODE: prdc.PRDCCODE,
           QUOMQTTY: amountProduct,
           // QUOMCODE: item["QUOMCODE"],
-          SALEPRCE: prdc.PRCEDSCN,
+          SALEPRCE: prdc.PRCESALE,
           DSCNRATE: prdc.DSCNRATE,
           PRDCNAME: prdc.PRDCNAME,
           PRDCIMAGE: prdc.DETAIL_4[0]?.IMGE_URL,

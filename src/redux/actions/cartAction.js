@@ -88,7 +88,8 @@ export const deleteProductFromCart = createAsyncThunk(
       DCMNCODE: "appCartPrdc",
       KEY_CODE: data.id,
     });
-    if (result?.data.RETNCODE == true) {
+    // console.log(result);
+    if (result?.data?.RETNCODE == true) {
       return data;
     } else {
       return rejectWithValue(data);
