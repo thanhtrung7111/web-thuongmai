@@ -1,10 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import HomeComponent from "@components/home/HomeComponent";
 import { loadProduct } from "@redux/actions/commonAction";
 import AppContext from "../context/AppContext";
+import LoadingView from "./LoadingView";
+import HomeSkeleton from "../components/home/HomeSkeleton";
 const Home = () => {
   const dispatch = useDispatch();
+  const { products, isLoadingCommon } = useSelector((state) => state.common);
+  const [loading, setLoading] = useState(true);
   const { token } = useContext(AppContext);
   useEffect(() => {
     dispatch(
@@ -23,11 +27,14 @@ const Home = () => {
     );
     console.log("HOme");
   }, []);
-  return (
-    <>
-      <HomeComponent></HomeComponent>;
-    </>
-  );
+  useEffect(() => {
+    if (products?.length != null && isLoadingCommon == false) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
+  }, [products]);
+  return loading ? <HomeSkeleton /> : <HomeComponent></HomeComponent>;
 };
 
 export default Home;

@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { closeAppNotify } from "../../redux/reducer/popupReducer";
-import { logout } from "../../redux/reducer/userReducer";
+import { logout, saveCurrentUrl } from "../../redux/reducer/userReducer";
 
 const AppNotifycation = ({}) => {
   const dispatch = useDispatch();
@@ -12,7 +12,6 @@ const AppNotifycation = ({}) => {
     dispatch(closeAppNotify());
     dispatch(logout());
     navigate("/login");
-    window.location.reload();
   };
   return (
     <div

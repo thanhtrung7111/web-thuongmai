@@ -9,36 +9,39 @@ const ProductSuggestion = ({ keyword }) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const { products, isLoadingCommon } = useSelector((state) => state.common);
-  const [lstProduct, setLstProduct] = useState([]);
+  const [lstProduct, setLstProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    setLstProduct(
-      products.filter((item) => item.PRDCNAME.indexOf(keyword) >= 0)
-    );
-  }, [products.length, keyword]);
+    products?.length > 0 &&
+      setLstProduct(
+        products.filter((item) => item.PRDCNAME.indexOf(keyword) >= 0)
+      );
+  }, [keyword]);
 
   useEffect(() => {
-    dispatch(
-      loadProduct({
-        DCMNCODE: "appPrdcList",
-        PARACODE: "001",
-        LCTNCODE: "001",
-        LGGECODE: "{{0302}}",
-        SCTNCODE: 1,
-        JSTFDATE: "1990-01-01",
-        KEY_WORD: "%",
-        SHOPCODE: "%",
-        CUSTCODE: "%",
-      })
-    );
-  }, [open == true]);
+    if (open == true) {
+      dispatch(
+        loadProduct({
+          DCMNCODE: "appPrdcList",
+          PARACODE: "001",
+          LCTNCODE: "001",
+          LGGECODE: "{{0302}}",
+          SCTNCODE: 1,
+          JSTFDATE: "1990-01-01",
+          KEY_WORD: "%",
+          SHOPCODE: "%",
+          CUSTCODE: "%",
+        })
+      );
+    }
+  }, [open]);
 
   useEffect(() => {
-    setTimeout(() => {
+    if (lstProduct != null) {
       setIsLoading(false);
-    }, 1000);
-  }, [lstProduct?.length > 0]);
+    }
+  }, [lstProduct]);
   return (
     <>
       <span

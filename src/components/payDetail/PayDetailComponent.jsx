@@ -70,7 +70,6 @@ const PayDetailComponent = () => {
   const [loading, setLoading] = useState(true);
   // console.log(productCarts);
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: {
       COMPCODE: "PMC", //Công ty
       LCTNCODE: "001", //Chi nhánh
@@ -477,46 +476,51 @@ const PayDetailComponent = () => {
 
   useEffect(() => {
     // if (productCarts?.length > 0) {
-    const detail = productCarts?.map((item) => {
-      return {
-        checked: formik.values.DETAIL?.find((i) => i.PRDCCODE == item.PRDCCODE)
-          ?.checked
-          ? formik.values.DETAIL?.find((i) => i.PRDCCODE == item.PRDCCODE)
-              ?.checked
-          : false,
-        PRDCCODE: item.PRDCCODE, //Mã sản phẩm
-        PRDCNAME: item.PRDCNAME,
-        ORGNCODE: "1", //Nguồn sản phẩm
-        SORTCODE: "1", //Phân loại sản phẩm
-        QUOMCODE: item.QUOMCODE, //Đơn vị tính
-        QUOMQTTY: 1, //Số lượng
-        CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
-        MNEYCRAM: item.PRCEDSCN, //Thành tiền
-        PRDCIMGE: item.PRDCIMAGE,
-        DISCRATE: 0, //%Chiết khấu
-        DCPRCRAM: 0, //Tiền giảm CK
-        PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
-        SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
-        MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
-        DCPRAMNT: 0, //Tiền giảm CK qui đổi
-        DSCNRATE: item.DSCNRATE,
-        KKKK0000: item["KKKK0000"],
-        COMPCODE: item["COMPCODE"],
-        LCTNCODE: item["LCTNCODE"],
-      };
-    });
-    formik.values.DETAIL = [...detail];
-    if (detail.find((item) => item.checked == false)) {
-      setChooseAll(false);
-    } else {
-      setChooseAll(true);
+    async function loadDetailCart() {
+      const detail = await productCarts?.map((item) => {
+        return {
+          checked: formik.values.DETAIL?.find(
+            (i) => i.PRDCCODE == item.PRDCCODE
+          )?.checked
+            ? formik.values.DETAIL?.find((i) => i.PRDCCODE == item.PRDCCODE)
+                ?.checked
+            : false,
+          PRDCCODE: item.PRDCCODE, //Mã sản phẩm
+          PRDCNAME: item.PRDCNAME,
+          ORGNCODE: "1", //Nguồn sản phẩm
+          SORTCODE: "1", //Phân loại sản phẩm
+          QUOMCODE: item.QUOMCODE, //Đơn vị tính
+          QUOMQTTY: 1, //Số lượng
+          CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
+          MNEYCRAM: item.PRCEDSCN, //Thành tiền
+          PRDCIMGE: item.PRDCIMAGE,
+          DISCRATE: 0, //%Chiết khấu
+          DCPRCRAM: 0, //Tiền giảm CK
+          PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
+          SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
+          MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
+          DCPRAMNT: 0, //Tiền giảm CK qui đổi
+          DSCNRATE: item.DSCNRATE,
+          KKKK0000: item["KKKK0000"],
+          COMPCODE: item["COMPCODE"],
+          LCTNCODE: item["LCTNCODE"],
+        };
+      });
+      console.log(detail);
+      formik.values.DETAIL = detail ? [...detail] : [];
+      if (detail && detail.find((item) => item.checked == false)) {
+        setChooseAll(false);
+      } else {
+        setChooseAll(true);
+      }
+      console.log(">>>>>>>>>>>>" + "load data");
+      // }
+      updateFormik();
     }
-    console.log(">>>>>>>>>>>>" + "load data");
-    // }
-    updateFormik();
-  }, [productCarts?.length, formik.values.DETAIL == null]);
+    loadDetailCart();
+  }, [productCarts?.length]);
 
-  // console.log();
+ 
 
   return (
     <div className="product-detail">
@@ -531,12 +535,7 @@ const PayDetailComponent = () => {
       <img src="" alt="" />
       <InfoPage data={["Giỏ hàng", "Thanh toán và đặt hàng"]} />
       <FormikProvider value={formik}>
-        <Form
-          onSubmit={formik.handleSubmit}
-          onChange={() => {
-            changeForm();
-          }}
-        >
+        <Form onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
             <div
               style={{ marginBottom: "10px" }}

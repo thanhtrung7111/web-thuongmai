@@ -26,6 +26,7 @@ import LoadingView from "../../pages/LoadingView";
 import ImageFetch from "../ImageFetch";
 import { fetchImage } from "../../helper/ImageHelper";
 import { addToCart, updateAmountProduct } from "../../redux/actions/cartAction";
+import ProductDetailSkeleton from "./ProductDetailSkeleton";
 let pageSize = 4;
 const images = [
   {
@@ -273,8 +274,9 @@ const ProductDetailComponent = () => {
   };
 
   return (
+    // <ProductDetailSkeleton />
     <div className="product-detail">
-      <InfoPage data={["Sản phẩm", "Laptop Asus"]} />
+      <InfoPage data={["Sản phẩm", product?.PRDCNAME]} />
       <ImageMagnifier image={mainImage}></ImageMagnifier>
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>

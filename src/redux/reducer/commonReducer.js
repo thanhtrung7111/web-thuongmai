@@ -26,7 +26,7 @@ const commonSlice = createSlice({
   initialState: {
     isLoadingCommon: true,
     errorMessageCommon: false,
-    products: [],
+    products: null,
     lstWareHouse: [],
     lstLocations: [],
     lstCUOM: [],
@@ -45,6 +45,7 @@ const commonSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(loadProduct.fulfilled, (state, action) => {
       state.products = action.payload;
+      console.log(action.payload);
       // console.log(cache.match(data));
     });
 

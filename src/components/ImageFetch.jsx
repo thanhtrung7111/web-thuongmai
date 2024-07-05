@@ -5,7 +5,7 @@ const ImageFetch = ({ url, className }) => {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     async function fetchImage() {
-      await fetch(url, {
+      const imgeUrl = await fetch(url, {
         method: "GET",
         headers: {
           TOKEN: sessionStorage.getItem("tokenUser"),
@@ -17,14 +17,16 @@ const ImageFetch = ({ url, className }) => {
         })
         .then((blob) => {
           // console.log(URL.createObjectURL(blob));
-          setImage(URL.createObjectURL(blob));
+          return URL.createObjectURL(blob);
         });
+
+      setImage(imgeUrl);
     }
     fetchImage();
     setTimeout(() => {
       setIsLoading(false);
     }, 500);
-  }, [url]);
+  }, []);
   // console.log(image);
   return (
     <img

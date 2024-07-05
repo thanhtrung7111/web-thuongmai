@@ -11,7 +11,7 @@ import CheckBoxList from "../CheckBoxList";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import LoadingView from "../../pages/LoadingView";
 import { loadProduct } from "../../redux/actions/commonAction";
-
+import ProductListSkeleton from "./ProductListSkeleton";
 let pageSize = 20;
 const tagsSort = [
   {
@@ -149,7 +149,9 @@ const ProductListComponent = ({ search }) => {
       isLoadingCommon === false &&
       productList?.length >= 0
     ) {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1500);
     }
   }, [productList?.length, products]);
 
@@ -182,8 +184,9 @@ const ProductListComponent = ({ search }) => {
   }, [listSearch]);
 
   return loading ? (
-    <LoadingView></LoadingView>
+    <ProductListSkeleton />
   ) : (
+    // <ProductListSkeleton />
     <>
       <div
         className="fixed top-0 right-0 w-screen h-screen bg-black bg-opacity-10 z-40 md:hidden invisible"

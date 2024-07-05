@@ -21,7 +21,7 @@ import session from "redux-persist/lib/storage/session";
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
-    productCarts: [],
+    productCarts: null,
     isLoadingCart: false,
     errorMessageCart: "",
     isError: false,

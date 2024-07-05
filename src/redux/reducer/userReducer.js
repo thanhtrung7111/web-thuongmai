@@ -10,6 +10,7 @@ let stateUser = {
   currentUser: null,
   locations: {},
   productSearchs: [],
+  currentUrl: "",
 };
 
 const userSlice = createSlice({
@@ -21,7 +22,8 @@ const userSlice = createSlice({
     logout: (state, action) => {
       console.log(state);
       console.log(current(state));
-      return stateUser;
+
+      return { ...stateUser, currentUrl: state.currentUrl };
     },
 
     saveSearch: (state, action) => {
@@ -31,6 +33,11 @@ const userSlice = createSlice({
 
     clearSearch: (state, action) => {
       state.productSearchs = [];
+    },
+
+    saveCurrentUrl: (state, action) => {
+      console.log(action.payload.url);
+      state.currentUrl = action.payload.url;
     },
   },
 
@@ -63,5 +70,6 @@ const userSlice = createSlice({
     });
   },
 });
-export const { logout, saveSearch, clearSearch } = userSlice.actions;
+export const { logout, saveSearch, clearSearch, saveCurrentUrl } =
+  userSlice.actions;
 export default userSlice.reducer;

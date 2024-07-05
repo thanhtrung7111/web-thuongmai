@@ -5,7 +5,7 @@ import {
   openAppNotify,
   openEvaluateProduct,
 } from "../redux/reducer/popupReducer";
-import { logout } from "../redux/reducer/userReducer";
+import { logout, saveCurrentUrl } from "../redux/reducer/userReducer";
 import { clearCart } from "../redux/reducer/cartReducer";
 // import store from "../redux/store/store";
 // import
@@ -75,21 +75,27 @@ const apiFetchData = axios.create({
   baseURL: "https://api-dev.firstems.com",
   timeout: 10000,
 });
-apiFetchData.interceptors.request.use((req) => {
-  if (
-    sessionStorage.getItem("tokenUser") ||
-    sessionStorage.getItem("tokenInitial")
-  ) {
-    req.headers["TOKEN"] =
+apiFetchData.interceptors.request.use(
+  (req) => {
+    if (
       sessionStorage.getItem("tokenUser") ||
-      sessionStorage.getItem("tokenInitial");
-  } else {
-    store.dispatch(openAppNotify({ link: "33432" }));
-    return;
+      sessionStorage.getItem("tokenInitial")
+    ) {
+      req.headers["TOKEN"] =
+        sessionStorage.getItem("tokenUser") ||
+        sessionStorage.getItem("tokenInitial");
+    } else {
+      req.headers["TOKEN"] = "";
+      return;
+    }
+    // console.log(localStorage.getItem("tokenUser"));
+    return req;
+  },
+  (error) => {
+    console.log(error);
+    return Promise.reject(error);
   }
-  // console.log(localStorage.getItem("tokenUser"));
-  return req;
-});
+);
 
 apiFetchData.interceptors.response.use(
   (response) => {
@@ -104,6 +110,7 @@ apiFetchData.interceptors.response.use(
   (error) => {
     console.log(error);
     if (error.response?.status === 401) {
+      store.dispatch(saveCurrentUrl({ url: location.href }));
       store.dispatch(openAppNotify({ link: "33432" }));
     } else if (error.response?.status === 500) {
       // console.log(error);

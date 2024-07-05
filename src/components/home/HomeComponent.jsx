@@ -11,16 +11,12 @@ import Wrapper from "@components/Wrapper";
 import CategorySlider from "@components/CategorySlider";
 import { useSelector } from "react-redux";
 import LoadingView from "../../pages/LoadingView";
+import HomeSkeleton from "./HomeSkeleton";
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomeComponent = () => {
   const { products, isLoadingCommon } = useSelector((state) => state.common);
   const [loading, setLoading] = useState(true);
   const [lstProduct, setLstProduct] = useState(null);
-  useEffect(() => {
-    if (products?.length >= 0 && lstProduct != null) {
-      setLoading(false);
-    }
-  }, [isLoadingCommon]);
 
   useEffect(() => {
     setLstProduct(products);
@@ -32,9 +28,7 @@ const HomeComponent = () => {
     console.log(products);
   }, []);
 
-  return loading ? (
-    <LoadingView></LoadingView>
-  ) : (
+  return (
     <>
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper padding={0}>

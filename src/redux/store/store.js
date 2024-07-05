@@ -40,7 +40,7 @@ const userPersistConfig = {
   key: "user",
   storage: session,
   version: 1,
-  whitelist: ["currentUser"],
+  whitelist: ["currentUser", "currentUrl"],
   stateReconciler: autoMergeLevel2,
 };
 

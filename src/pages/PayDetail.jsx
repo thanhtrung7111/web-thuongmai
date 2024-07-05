@@ -59,6 +59,7 @@ const PayDetail = () => {
   useEffect(() => {
     if (isLoadingCommon == false) {
       setIsLoading(false);
+      console.log(isLoadingCommon);
     }
   }, [isLoadingCommon]);
   return isLoading ? (

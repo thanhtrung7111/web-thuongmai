@@ -6,9 +6,11 @@ import { NavLink, useNavigate } from "react-router-dom";
 import RowCart from "@components/menu/RowCart";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import { loadCart } from "../../redux/actions/cartAction";
+import AnimateSkeleton from "../AnimateSkeleton";
 const Cart = () => {
   const dispatch = useDispatch();
   const { productCarts } = useSelector((state) => state.cart);
+  const [loading, setLoading] = useState(true);
   const { currentUser } = useSelector((state) => state.user);
   const [overlay, setOverlay] = useState(false);
   const navigate = useNavigate();
@@ -48,7 +50,17 @@ const Cart = () => {
     }
     console.log(currentUser);
   }, [currentUser]);
-  return (
+
+  useEffect(() => {
+    if (productCarts != null) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1500);
+    }
+  }, [productCarts]);
+  return loading ? (
+    <AnimateSkeleton className={"w-20 h-5"}></AnimateSkeleton>
+  ) : (
     <>
       {overlay && (
         <div

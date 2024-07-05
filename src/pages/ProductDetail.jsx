@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductDetail } from "@redux/actions/productAction";
 import LoadingView from "./LoadingView";
+import ProductDetailSkeleton from "../components/productDetail/ProductDetailSkeleton";
 const ProductDetail = () => {
   const { id } = useParams();
   const { productDetail, isLoadingProduct } = useSelector(
@@ -29,7 +30,7 @@ const ProductDetail = () => {
     );
   }, [id]);
   return isLoading ? (
-    <LoadingView></LoadingView>
+    <ProductDetailSkeleton />
   ) : (
     <ProductDetailComponent></ProductDetailComponent>
   );

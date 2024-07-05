@@ -7,6 +7,7 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   base: "/web-thuongmai/",
+  build: { chunkSizeWarningLimit: 1600 },
   resolve: {
     alias: {
       "@actions": "/src/actions",
