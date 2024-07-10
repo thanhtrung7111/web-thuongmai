@@ -22,6 +22,7 @@ export const addToCart = createAsyncThunk(
       DCMNCODE: "APPCARTPRDC",
       HEADER: [{ ...data }],
     });
+    console.log(result);
     if (result?.data.RETNCODE !== false) {
       return result?.data?.RETNDATA[0];
     } else {
@@ -83,16 +84,21 @@ export const changeAmoutProduct = createAsyncThunk(
 export const deleteProductFromCart = createAsyncThunk(
   "cart/deleteProductFromCart",
   async (data, { rejectWithValue }) => {
-    console.log(data);
-    const result = await deleteData({
-      DCMNCODE: "appCartPrdc",
-      KEY_CODE: data.id,
-    });
-    // console.log(result);
-    if (result?.data?.RETNCODE == true) {
-      return data;
-    } else {
-      return rejectWithValue(data);
+    try {
+      console.log(data);
+      const result = await deleteData({
+        DCMNCODE: "appCartPrdc",
+        KEY_CODE: data.id,
+      });
+      console.log(result);
+      if (result?.data?.RETNCODE == true) {
+        return data;
+      } else {
+        return rejectWithValue(data);
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error);
     }
   }
 );

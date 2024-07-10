@@ -45,6 +45,7 @@ const ProductCard = ({
     } else {
       toast.warning("Bạn cần phải đăng nhập để thêm sản phẩm vào giỏ hàng!", {
         autoClose: 1500,
+        position: "top-center",
       });
     }
   };

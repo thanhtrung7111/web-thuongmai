@@ -117,7 +117,7 @@ const PayDetailComponent = () => {
     }),
     onSubmit: (value) => {
       console.log(value.SMPRQTTY);
-      if (value.SMPRQTTY == undefined) {
+      if (value.SMPRQTTY == 0) {
         toast.warning("Bạn chưa chọn sản phẩm thanh toán!", {
           autoClose: 1500,
           hideProgressBar: true,
@@ -153,7 +153,9 @@ const PayDetailComponent = () => {
 
   const handleQR = async function () {
     if (infoVietQR == null) {
-      const id = toast.loading("Đang tạo VietQR");
+      const id = toast.loading("Đang tạo VietQR", {
+        position: "top-center",
+      });
       const body = {
         orderCode: new Date(Date.now()).getTime(),
         amount: formik.values.SUM_AMNT,
@@ -519,8 +521,6 @@ const PayDetailComponent = () => {
     }
     loadDetailCart();
   }, [productCarts?.length]);
-
- 
 
   return (
     <div className="product-detail">

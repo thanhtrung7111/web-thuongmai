@@ -77,6 +77,7 @@ const apiFetchData = axios.create({
 });
 apiFetchData.interceptors.request.use(
   (req) => {
+    console.log(req.headers["TOKEN"]);
     if (
       sessionStorage.getItem("tokenUser") ||
       sessionStorage.getItem("tokenInitial")
@@ -85,10 +86,14 @@ apiFetchData.interceptors.request.use(
         sessionStorage.getItem("tokenUser") ||
         sessionStorage.getItem("tokenInitial");
     } else {
-      req.headers["TOKEN"] = "";
+      store.dispatch(
+        openAppNotify({
+          link: "/login",
+          message: "Lỗi đăng nhập! Đăng nhập lại hệ thống",
+        })
+      );
       return;
     }
-    // console.log(localStorage.getItem("tokenUser"));
     return req;
   },
   (error) => {
@@ -99,9 +104,11 @@ apiFetchData.interceptors.request.use(
 
 apiFetchData.interceptors.response.use(
   (response) => {
-    // console.log(response);
-    if (response?.data?.RETNDATA != null) {
+    console.log(response);
+    if (response?.data?.RETNCODE != false) {
       return response;
+    } else {
+      return null;
     }
     // store.dispatch(logout());
     // store.dispatch(clearCart());
@@ -111,7 +118,12 @@ apiFetchData.interceptors.response.use(
     console.log(error);
     if (error.response?.status === 401) {
       store.dispatch(saveCurrentUrl({ url: location.href }));
-      store.dispatch(openAppNotify({ link: "33432" }));
+      store.dispatch(
+        openAppNotify({
+          link: "/login",
+          message: "Lỗi đăng nhập! Đăng nhập lại hệ thống",
+        })
+      );
     } else if (error.response?.status === 500) {
       // console.log(error);
       // store.dispatch(logout());
@@ -190,7 +202,7 @@ export const deleteData = (body) => {
       "/Api/data/runApi_Data?run_Code=DTA009",
       body
     );
-
+    console.log(result);
     return result;
   } catch (error) {
     return error;

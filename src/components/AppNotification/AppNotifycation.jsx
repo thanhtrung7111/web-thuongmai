@@ -11,7 +11,8 @@ const AppNotifycation = ({}) => {
   const handleClose = () => {
     dispatch(closeAppNotify());
     dispatch(logout());
-    navigate("/login");
+    navigate(`${showAppNotify.link}`);
+    window.location.reload();
   };
   return (
     <div
@@ -29,7 +30,9 @@ const AppNotifycation = ({}) => {
           Thông báo
         </h5>
         <div className="p-3 flex flex-col items-center">
-          <p className="text-sm text-gray-dark mb-5">Bạn hết phiên đăng nhập</p>
+          <p className="text-sm text-gray-dark mb-5 text-center">
+            {showAppNotify.message}
+          </p>
           {/* {showAppNotify?.link && (
               <NavLink
                 to={`/${showAppNotify?.link}`}

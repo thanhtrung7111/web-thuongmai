@@ -6,7 +6,7 @@ const manifySlice = createSlice({
     showManify: false,
     showEvaluateProduct: { open: false, productID: "" },
     showDetailOrder: { open: false, orderDetail: null },
-    showAppNotify: { open: false, link: "" },
+    showAppNotify: { open: false, link: "", message: "" },
     showAlert: { open: false, content: "" },
     block: false,
   },
@@ -40,6 +40,7 @@ const manifySlice = createSlice({
     openAppNotify: (state, action) => {
       state.showAppNotify.open = true;
       state.showAppNotify.link = action.payload?.link;
+      state.showAppNotify.message = action.payload?.message;
     },
 
     closeAppNotify: (state, action) => {

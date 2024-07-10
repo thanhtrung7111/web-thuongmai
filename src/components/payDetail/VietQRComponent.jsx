@@ -18,8 +18,10 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: value?.orderCode,
-    onAfterPrint: () => toast.success("In QR Code thành công"),
-    onPrintError: () => toast.error("In QR Code thất bại"),
+    onAfterPrint: () =>
+      toast.success("In QR Code thành công", { position: "top-center" }),
+    onPrintError: () =>
+      toast.error("In QR Code thất bại", { position: "top-center" }),
     // pageStyle: "{ size: 2.5in 4in }",
   });
 
@@ -43,7 +45,10 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
 
   const copyClipboard = (value, content) => {
     navigator.clipboard.writeText(value);
-    toast.success("Copy " + content + " thành công!", { autoClose: 1000 });
+    toast.success("Copy " + content + " thành công!", {
+      autoClose: 1000,
+      position: "top-center",
+    });
   };
 
   const changeFile = (e) => {
@@ -171,6 +176,7 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
     const metadata = {
       contentType: "image/png",
     };
+
     const storageRef = ref(storage, `images/${value?.orderCode}`);
     const uploadTask = uploadBytesResumable(storageRef, img, metadata);
     console.log(URL.createObjectURL(img));

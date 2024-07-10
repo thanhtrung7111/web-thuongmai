@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import { saveSearch } from "@redux/reducer/userReducer";
+import { saveSearch, removeKeyword } from "@redux/reducer/userReducer";
+
 const data = [
   { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },
   { name: "Cửa kéo 2", img: "https://picsum.photos/seed/picsum/200/300" },
@@ -10,13 +11,13 @@ const data = [
     name: "Sản phẩm dùng thử",
     img: "https://picsum.photos/seed/picsum/200/300",
   },
-  { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },
-  { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },
-  { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },
-  { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },
-  { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },
-  { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },
-  { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },
+  { name: "Sản phẩm 2", img: "https://picsum.photos/seed/picsum/200/300" },
+  { name: "Sản phẩm 3", img: "https://picsum.photos/seed/picsum/200/300" },
+  { name: "Sản phẩm 4", img: "https://picsum.photos/seed/picsum/200/300" },
+  { name: "Sản phẩm 5", img: "https://picsum.photos/seed/picsum/200/300" },
+  { name: "Sản phẩm 6", img: "https://picsum.photos/seed/picsum/200/300" },
+  { name: "Sản phẩm 7", img: "https://picsum.photos/seed/picsum/200/300" },
+  { name: "Sản phẩm 8", img: "https://picsum.photos/seed/picsum/200/300" },
 ];
 const SearchMenu = () => {
   const dispatch = useDispatch();
@@ -27,64 +28,105 @@ const SearchMenu = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { productSearchs } = useSelector((state) => state.user);
   const [disable, setDisable] = useState(false);
+  const [indexMove, setIndexMove] = useState(-1);
+  const { isLoadingCommon } = useSelector((state) => state.common);
   useEffect(() => {
     setIsLoading(true);
     if (keyWord !== "") {
+      // console.log("Run block ");
+      // console.log(keyWord);
       setDataFind([
-        ...data.filter((item) =>
-          item?.name?.toLowerCase().includes(keyWord?.toLowerCase())
-        ),
-        ...productSearchs
-          .filter((item) => item.toLowerCase().includes(keyWord?.toLowerCase()))
-          .map((item) => ({ name: item, img: null })),
+        ...new Set([
+          ...data
+            .filter(
+              (item) =>
+                item?.name?.toLowerCase().indexOf(keyWord?.toLowerCase()) > -1
+            )
+            .map((i) => i.name),
+          ...productSearchs.filter(
+            (item) => item.toLowerCase().indexOf(keyWord?.toLowerCase()) > -1
+          ),
+        ]),
       ]);
+    } else {
+      setDataFind([...productSearchs]);
     }
+    setIndexMove(-1);
     setIsLoading(false);
-  }, [keyWord]);
+    console.log(productSearchs);
+  }, [keyWord, productSearchs?.length]);
 
   const handleClick = (value) => {
-    // console.log(value);
     setKeyWord(value);
-    // if (value !== "") {
-    //   if (productSearchs.includes(value)) {
-    //     return;
-    //   }
-    //   dispatch(saveSearch(value));
-    window.scroll(0, 0);
-    setDisable(true);
-    navigate("/products?search=" + value);
-    // } else {
-    //   return;
-    // }
+    handleSearch(value);
   };
 
   const handleChangeSearch = (e) => {
-    console.log(e.target.value);
     setKeyWord(e.target.value);
-    console.log(keyWord);
   };
-  const handlePress = (event) => {
-    if (event.key == "Enter") {
-      if (keyWord == "" || keyWord.trim() == "" || keyWord == null) {
-        return;
-      }
 
-      if (!productSearchs.includes(keyWord)) {
-        dispatch(saveSearch(keyWord));
+  const handlePress = async (event) => {
+    // console.log(indexMove);
+    if (event.key == "Enter") {
+      if (indexMove > -1) {
+        setKeyWord(dataFind[indexMove]);
+        handleSearch(dataFind[indexMove]);
       }
-      setDisable(true);
-      window.scroll(0, 0);
-      navigate("/products?search=" + keyWord);
-      setFocus(false);
-      event.target.blur();
+      handleSearch(keyWord);
+    }
+    if (event.key == "ArrowDown") {
+      console.log(event);
+      console.log(indexMove);
+      if (indexMove <= -1) {
+        setIndexMove(0);
+      } else {
+        !(indexMove + 1 >= dataFind.length) && setIndexMove(indexMove + 1);
+      }
+    }
+    if (event.key == "ArrowUp") {
+      if (indexMove - 1 <= -1) {
+        setIndexMove(-1);
+        return;
+      } else {
+        setIndexMove(indexMove - 1);
+      }
     }
   };
 
+  const handleSearch = (keySearch) => {
+    if (keySearch == "" || keySearch.trim() == "" || keySearch == null) {
+      return;
+    }
+    console.log(productSearchs.indexOf(keySearch));
+    if (productSearchs.indexOf(keySearch) <= -1) {
+      dispatch(saveSearch(keySearch));
+    }
+    setDisable(true);
+    window.scroll(0, 0);
+    navigate("/products?search=" + keySearch);
+    setFocus(false);
+    event.target.blur();
+  };
+
+  const removeSearch = (keyword) => {
+    console.log(productSearchs);
+    dispatch(removeKeyword(keyword));
+  };
+
+  // useEffect(() => {
+  //   if (indexMove == -1) {
+  //     return;
+  //   }
+  //   setKeyWord(dataFind[indexMove]);
+  // }, [indexMove]);
+
   useEffect(() => {
-    setTimeout(() => {
-      setDisable(false);
-    }, 2000);
-  }, [disable == true]);
+    if (isLoadingCommon == false) {
+      setTimeout(() => {
+        setDisable(false);
+      }, 1000);
+    }
+  }, [isLoadingCommon, disable == true]);
   return (
     <div className="relative w-[400px] items-center border-b justify-between px-0 pr-4 pl-3 h-10 hidden lg:flex">
       <input
@@ -93,7 +135,9 @@ const SearchMenu = () => {
         placeholder="Tìm sản phẩm, thương hiệu..."
         onChange={handleChangeSearch}
         onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
+        onBlur={(e) => {
+          setFocus(false);
+        }}
         onKeyUp={(event) => handlePress(event)}
         value={keyWord}
         disabled={disable}
@@ -118,65 +162,83 @@ const SearchMenu = () => {
           </svg>
         </div>
       ) : (
-        <i className="ri-search-line cursor-pointer text-gray-dark"></i>
+        <i
+          onClick={handleSearch}
+          className="ri-search-line cursor-pointer text-gray-dark"
+        ></i>
       )}
-      <div
-        className={`${
-          (keyWord != "" || productSearchs?.length > 0) &&
-          focus &&
-          "h-56 !border"
-        } h-0 overflow-hidden transition-[height] ease-in-out duration-200 delay-100  border-gray-200 absolute w-full bg-white top-[100%] left-0 shadow-md rounded-sm`}
-      >
-        {(keyWord != "" || productSearchs?.length) > 0 ? (
-          <div className="overflow-y-scroll">
-            {productSearchs?.length > 0 && keyWord == "" && (
-              <div>
-                <h5 className="text-sm font-medium px-2 py-1 sticky top-0 bg-white">
-                  Lịch sử tìm kiếm
-                </h5>
-                <div className="flex flex-col">
-                  {productSearchs.map((item) => {
-                    return (
-                      <div
-                        className="flex items-center gap-x-2 px-2 py-1 hover:bg-gray-50"
-                        onClick={() => handleClick(item)}
-                      >
-                        {/* <img src={item.img} alt="" className="size-8" /> */}
-                        <h5 className="text-sm text-gray-dark">{item}</h5>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {isLoading
-              ? "..."
-              : dataFind?.length > 0 &&
-                keyWord != "" && (
+      {!disable && (
+        <div
+          className={`${
+            (keyWord != "" || productSearchs?.length > 0) &&
+            focus &&
+            "h-56 !border"
+          } h-0 overflow-hidden transition-[height] ease-in-out duration-200 delay-100  border-gray-200 absolute w-full bg-white top-[100%] left-0 shadow-md rounded-sm`}
+        >
+          {dataFind?.length > 0 ? (
+            <div className="overflow-y-scroll h-full">
+              {productSearchs?.length > 0 && keyWord == "" && (
+                <div>
+                  <h5 className="text-sm font-medium px-2 py-1 sticky top-0 bg-white">
+                    Lịch sử tìm kiếm
+                  </h5>
                   <div className="flex flex-col">
-                    {dataFind.map((item) => {
+                    {dataFind.map((item, index) => {
                       return (
                         <div
-                          className="flex items-center gap-x-2 px-2 py-1 hover:bg-gray-50"
-                          onClick={() => handleClick(item.name)}
+                          onKeyUp={(event) => handlePress(event)}
+                          className={`${
+                            indexMove == index ? "bg-gray-50" : ""
+                          } group  flex items-center justify-between gap-x-2 px-2 py-1 hover:bg-gray-50`}
+                          onClick={() => handleClick(item)}
                         >
                           {/* <img src={item.img} alt="" className="size-8" /> */}
-                          <h5 className="text-sm text-gray-dark">
-                            {item.name}
-                          </h5>
+                          <h5 className="text-sm text-gray-dark">{item}</h5>
+                          <i
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeSearch(item);
+                            }}
+                            class={`opacity-0 group-hover:opacity-100 ri-close-line closeSearch cursor-pointer ${
+                              indexMove == index ? "opacity-100" : "opacity-0"
+                            }`}
+                          ></i>
                         </div>
                       );
                     })}
                   </div>
-                )}
-          </div>
-        ) : (
-          <div className="text-gray-dark text-sm p-3">
-            Không có sản phẩm bạn tìm...
-          </div>
-        )}
-      </div>
+                </div>
+              )}
+
+              {isLoading
+                ? "..."
+                : dataFind?.length > 0 &&
+                  keyWord != "" && (
+                    <div className="flex flex-col">
+                      {dataFind.map((item, index) => {
+                        return (
+                          <div
+                            onKeyUp={(event) => handlePress(event)}
+                            className={`${
+                              indexMove == index ? "bg-gray-50" : ""
+                            } flex items-center gap-x-2 px-2 py-1 hover:bg-gray-50 cursor-pointer`}
+                            onClick={() => handleClick(item)}
+                          >
+                            {/* <img src={item.img} alt="" className="size-8" /> */}
+                            <h5 className="text-sm text-gray-dark">{item}</h5>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+            </div>
+          ) : (
+            <div className="text-gray-dark text-sm p-3">
+              Không có sản phẩm bạn tìm...
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

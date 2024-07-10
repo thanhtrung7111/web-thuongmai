@@ -29,7 +29,7 @@ const ProductSuggestion = ({ keyword }) => {
           LGGECODE: "{{0302}}",
           SCTNCODE: 1,
           JSTFDATE: "1990-01-01",
-          KEY_WORD: "%",
+          KEY_WORD: "keyword",
           SHOPCODE: "%",
           CUSTCODE: "%",
         })

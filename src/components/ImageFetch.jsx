@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import AnimateSkeleton from "./AnimateSkeleton";
 const ImageFetch = ({ url, className }) => {
   const [image, setImage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -23,19 +23,18 @@ const ImageFetch = ({ url, className }) => {
       setImage(imgeUrl);
     }
     fetchImage();
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
   }, []);
+  useEffect(() => {
+    if (image != "") {
+      setIsLoading(false);
+    }
+  }, [image]);
   // console.log(image);
-  return (
+  return isLoading ? (
+    <AnimateSkeleton className={`size-36  ${className}`}></AnimateSkeleton>
+  ) : (
     <img
-      loading="lazy"
-      src={
-        !isLoading && url != ""
-          ? image
-          : "https://www.4me.com/wp-content/uploads/2018/01/4me-icon-product.png"
-      }
+      src={image}
       className={`size-36 object-top object-cover ${className}`}
     />
   );

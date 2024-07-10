@@ -28,7 +28,12 @@ const userSlice = createSlice({
 
     saveSearch: (state, action) => {
       state.productSearchs.push(action.payload);
-      return state;
+    },
+
+    removeKeyword: (state, action) => {
+      state.productSearchs = state.productSearchs.filter(
+        (item) => item != action.payload
+      );
     },
 
     clearSearch: (state, action) => {
@@ -70,6 +75,11 @@ const userSlice = createSlice({
     });
   },
 });
-export const { logout, saveSearch, clearSearch, saveCurrentUrl } =
-  userSlice.actions;
+export const {
+  logout,
+  saveSearch,
+  clearSearch,
+  saveCurrentUrl,
+  removeKeyword,
+} = userSlice.actions;
 export default userSlice.reducer;

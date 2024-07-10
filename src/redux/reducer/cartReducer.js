@@ -67,6 +67,7 @@ const cartSlice = createSlice({
       });
       toast.success("Thêm sản phẩm vào giỏ thành công", {
         autoClose: 2000,
+        position: "top-center",
       });
     });
 
@@ -79,6 +80,7 @@ const cartSlice = createSlice({
         ).QUOMQTTY = action.payload.QUOMQTTY;
         toast.success("Thêm sản phẩm vào giỏ thành công", {
           autoClose: 2000,
+          position: "top-center",
         });
       } catch (error) {
         console.log(error);
@@ -90,6 +92,7 @@ const cartSlice = createSlice({
       state.isLoadingCart = false;
       toast.warning("Sản phẩm đã có trong giỏ hàng!", {
         autoClose: 2000,
+        position: "top-center",
       });
     });
 
@@ -137,6 +140,7 @@ const cartSlice = createSlice({
       state.isLoadingCart = false;
       toast.warning("Xóa sản phẩm không thành công!", {
         autoClose: 2000,
+        position: "top-center",
       });
     });
 
