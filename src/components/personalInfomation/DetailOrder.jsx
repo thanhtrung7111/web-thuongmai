@@ -143,52 +143,52 @@ const DetailOrder = () => {
                   <div className="flex flex-col gap-y-2">
                     <p>
                       <span>Tên khách hàng: </span>
-                      {orderDetail?.MCUSTNME}
+                      {orderDetail.data?.MCUSTNME}
                     </p>
                     <p>
                       <span>Loại tiền tệ: </span>
                       {
-                        lstCUOM?.find(
+                        lstCUOM.data?.find(
                           (item) => item.ITEMCODE == orderDetail?.CUOMCODE
                         )?.ITEMNAME
                       }
                     </p>
                     <p>
                       <span>Tỉ giá: </span>
-                      {orderDetail?.CUOMRATE}
+                      {orderDetail.data?.CUOMRATE}
                     </p>
                     <p>
                       <span>Phương thức vận chuyển: </span>
                       {
-                        lstDlvrType?.find(
+                        lstDlvrType.data?.find(
                           (item) => item.ITEMCODE == orderDetail?.DLVRTYPE
                         )?.ITEMNAME
                       }
                     </p>
                     <p>
                       <span>Ngày giao hàng: </span>
-                      {moment(orderDetail?.DLVRDATE).format("DD/MM/yyyy")}
+                      {moment(orderDetail.data?.DLVRDATE).format("DD/MM/yyyy")}
                     </p>
                     <p>
                       <span>Nơi giao hàng: </span>
-                      {orderDetail?.DLVRPLCE}
+                      {orderDetail.data?.DLVRPLCE}
                     </p>{" "}
                     <p>
                       <span>Chu kì thanh toán: </span>
                       {
-                        lstTimeType?.find(
+                        lstTimeType.data?.find(
                           (item) => item.ITEMCODE == orderDetail?.PYMNPERD
                         )?.ITEMNAME
                       }
                     </p>
                     <p>
                       <span>Thời hạn thanh toán: </span>
-                      {orderDetail?.PYMNNUMB}
+                      {orderDetail.data?.PYMNNUMB}
                     </p>
                     <p>
                       <span>Phương thức giao hàng: </span>
                       {
-                        lstDlvrMthd?.find(
+                        lstDlvrMthd.data?.find(
                           (item) => item.ITEMCODE == orderDetail?.DLVRMTHD
                         )?.ITEMNAME
                       }
@@ -197,17 +197,17 @@ const DetailOrder = () => {
                   <div className="flex flex-col gap-y-2">
                     <p>
                       <span>Mã số thuế: </span>
-                      {orderDetail?.TAX_CODE}
+                      {orderDetail.data?.TAX_CODE}
                     </p>
                     <p>
                       <span>Người nhận hàng: </span>
-                      {orderDetail?.RCVREMPL}
+                      {orderDetail.data?.RCVREMPL}
                     </p>
 
                     <p>
                       <span>Giờ giao: </span>
                       {
-                        lstListHour?.find(
+                        lstListHour.data?.find(
                           (item) => item.ITEMCODE == orderDetail?.DLVRHOUR
                         )?.ITEMNAME
                       }
@@ -216,7 +216,7 @@ const DetailOrder = () => {
                     <p>
                       <span>Phương thức thanh toán: </span>
                       {
-                        lstinpCustOdMtPayMthd2?.find(
+                        lstinpCustOdMtPayMthd2.data?.find(
                           (item) => item.ITEMCODE == orderDetail?.PAY_MTHD
                         )?.ITEMNAME
                       }
@@ -224,22 +224,22 @@ const DetailOrder = () => {
                     <p>
                       <span>Loại bán hàng: </span>
                       {
-                        lstDcmnSbCd?.find(
+                        lstDcmnSbCd.data?.find(
                           (item) => item.ITEMCODE == orderDetail?.DCMNSBCD
                         )?.ITEMNAME
                       }
                     </p>
                     <p>
                       <span>Địa chỉ khách hàng: </span>
-                      {orderDetail?.CUSTADDR}
+                      {orderDetail.data?.CUSTADDR}
                     </p>
                     <p>
                       <span>%Huê hồng: </span>
-                      {orderDetail?.CSCMRATE}%
+                      {orderDetail.data?.CSCMRATE}%
                     </p>
                     <p>
                       <span>%Chiết khấu: </span>
-                      {orderDetail?.RDTNRATE}%
+                      {orderDetail.data?.RDTNRATE}%
                     </p>
                   </div>
                 </div>
@@ -253,11 +253,11 @@ const DetailOrder = () => {
                   <div className="flex flex-col gap-y-1">
                     <p>
                       <span>Địa chỉ: </span>
-                      {orderDetail?.DLVRADDR}
+                      {orderDetail.data?.DLVRADDR}
                     </p>
                     <p>
                       <span>SĐT người nhận: </span>
-                      {orderDetail?.RCVR_TEL}
+                      {orderDetail.data?.RCVR_TEL}
                     </p>
                   </div>
                 </div>
@@ -269,7 +269,7 @@ const DetailOrder = () => {
                 </h5>
                 <div className="flex text-gray-dark text-sm gap-x-2 ml-10">
                   <div className="flex flex-col gap-y-1 w-full">
-                    {orderDetail?.DETAIL?.map((item) => {
+                    {orderDetail.data?.DETAIL?.map((item) => {
                       return (
                         <div className="flex gap-x-2 border-b border-gray-100 py-2">
                           <div>
@@ -305,7 +305,7 @@ const DetailOrder = () => {
                       <i class="ri-money-dollar-circle-line"></i> Thuế(VAT):
                     </span>
                     <span className="text-second">
-                      {orderDetail?.VAT_CRAM?.toLocaleString("vi", {
+                      {orderDetail.data?.VAT_CRAM?.toLocaleString("vi", {
                         style: "currency",
                         currency: "VND",
                       })}{" "}
@@ -316,7 +316,7 @@ const DetailOrder = () => {
                       <i class="ri-money-dollar-circle-line"></i> Giao hàng:
                     </span>
                     <span className="text-second">
-                      {orderDetail?.SUM_AMNT?.toLocaleString("vi", {
+                      {orderDetail.data?.SUM_AMNT?.toLocaleString("vi", {
                         style: "currency",
                         currency: "VND",
                       })}
@@ -328,7 +328,7 @@ const DetailOrder = () => {
                       voucher:
                     </span>
                     <span className="text-second">
-                      {orderDetail?.SUM_AMNT?.toLocaleString("vi", {
+                      {orderDetail.data?.SUM_AMNT?.toLocaleString("vi", {
                         style: "currency",
                         currency: "VND",
                       })}
@@ -339,7 +339,7 @@ const DetailOrder = () => {
                       <i class="ri-money-dollar-circle-line"></i> Thành tiền:
                     </span>
                     <span className="text-second">
-                      {orderDetail?.SUM_AMNT?.toLocaleString("vi", {
+                      {orderDetail.data?.SUM_AMNT?.toLocaleString("vi", {
                         style: "currency",
                         currency: "VND",
                       })}

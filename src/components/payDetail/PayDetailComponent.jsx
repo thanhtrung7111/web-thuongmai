@@ -57,8 +57,6 @@ const PayDetailComponent = () => {
   const [infoVietQR, setInfoVietQR] = useState(null);
   let timer = useRef(null);
   const {
-    isLoadingCommon,
-    products,
     lstWareHouse,
     lstDcmnSbCd,
     lstDlvrMthd,
@@ -66,6 +64,7 @@ const PayDetailComponent = () => {
     lstListHour,
     lstinpCustOdMtPayMthd2,
     lstTimeType,
+    lstCUOM,
   } = useSelector((state) => state.common);
   const [loading, setLoading] = useState(true);
   // console.log(productCarts);
@@ -73,7 +72,7 @@ const PayDetailComponent = () => {
     initialValues: {
       COMPCODE: "PMC", //Công ty
       LCTNCODE: "001", //Chi nhánh
-      DCMNSBCD: lstDcmnSbCd?.at(0)?.ITEMCODE, // phân loại
+      DCMNSBCD: lstDcmnSbCd.data?.at(0)?.ITEMCODE, // phân loại
       ODERCODE: "", //Mã đơn hàng
       ODERDATE: moment(new Date()).format("yyyy-MM-DD"), //Ngày đơn hàng
       CUSTCODE: currentUser?.CUSTCODE, //Mã khách hàng
@@ -89,16 +88,16 @@ const PayDetailComponent = () => {
       TAX_CODE: "", //Mã số thuế
       VAT_RATE: 0, //THuế suất
       VAT_CRAM: 0, //Tiền thuế
-      DLVRMTHD: lstDlvrMthd?.at(0)?.ITEMCODE, //Phương thức giao hàng
-      DLVRTYPE: lstDlvrType?.at(0)?.ITEMCODE, //PHương thức vận chuyển
+      DLVRMTHD: lstDlvrMthd.data?.at(0)?.ITEMCODE, //Phương thức giao hàng
+      DLVRTYPE: lstDlvrType.data?.at(0)?.ITEMCODE, //PHương thức vận chuyển
       DLVRDATE: moment(new Date()).format("yyyy-MM-DD"), //Ngày giao hàng
-      DLVRHOUR: lstListHour?.at(0)?.ITEMCODE, //Giờ giao hàng
+      DLVRHOUR: lstListHour.data?.at(0)?.ITEMCODE, //Giờ giao hàng
       DLVRPLCE: "", //Nơi giao hàng
       DLVRADDR: "", //Địa chỉ giao
       RCVREMPL: "", //Người nhận hàng
       RCVR_TEL: "", //Điện thoại
-      PAY_MTHD: lstinpCustOdMtPayMthd2?.at(0)?.ITEMCODE, //Phương thức thanh toán
-      PYMNPERD: lstTimeType?.at(0)?.ITEMCODE, //Chu kì thanh toán
+      PAY_MTHD: lstinpCustOdMtPayMthd2.data?.at(0)?.ITEMCODE, //Phương thức thanh toán
+      PYMNPERD: lstTimeType.data?.at(0)?.ITEMCODE, //Chu kì thanh toán
       PYMNNUMB: "", //Thời hạn thanh toán
       SRC_DATA: "3", //Window hoặc web
       EMPLCODE: "", //Mã nhân viên
@@ -520,9 +519,18 @@ const PayDetailComponent = () => {
       updateFormik();
     }
     loadDetailCart();
-  }, [productCarts?.length]);
+  }, [productCarts]);
 
-  return (
+  return lstCUOM?.isLoading &&
+    lstDcmnSbCd?.isLoading &&
+    lstDlvrMthd?.isLoading &&
+    lstDlvrType?.isLoading &&
+    lstListHour?.isLoading &&
+    lstTimeType?.isLoading &&
+    lstWareHouse?.isLoading &&
+    lstinpCustOdMtPayMthd2?.isLoading ? (
+    <LoadingView></LoadingView>
+  ) : (
     <div className="product-detail">
       <VietQRComponent
         open={openVietQR}
@@ -773,7 +781,7 @@ const PayDetailComponent = () => {
 
                       {/* Phương thức giao hàng  */}
                       <Combobox
-                        data={lstDlvrMthd}
+                        data={lstDlvrMthd.data ? lstDlvrMthd.data : []}
                         itemKey={"ITEMCODE"}
                         itemName="ITEMNAME"
                         name="DLVRMTHD"
@@ -783,7 +791,7 @@ const PayDetailComponent = () => {
 
                       {/* Phương thức vận chuyển */}
                       <Combobox
-                        data={lstDlvrType}
+                        data={lstDlvrType.data ? lstDlvrType.data : []}
                         value={formik.values.DLVRTYPE}
                         name="DLVRTYPE"
                         itemKey={"ITEMCODE"}
@@ -800,7 +808,7 @@ const PayDetailComponent = () => {
 
                       {/* Thời gian giao hàng */}
                       <Combobox
-                        data={lstListHour}
+                        data={lstListHour.data ? lstListHour.data : []}
                         value={formik.values.DLVRHOUR}
                         name="DLVRHOUR"
                         itemKey={"ITEMCODE"}
@@ -841,7 +849,11 @@ const PayDetailComponent = () => {
                       ></Input>
                       {/* Phương thức thanh toán  */}
                       <Combobox
-                        data={lstinpCustOdMtPayMthd2}
+                        data={
+                          lstinpCustOdMtPayMthd2.data
+                            ? lstinpCustOdMtPayMthd2.data
+                            : []
+                        }
                         value={formik.values.PAY_MTHD}
                         itemKey={"ITEMCODE"}
                         itemName={"ITEMNAME"}
@@ -851,7 +863,7 @@ const PayDetailComponent = () => {
 
                       {/*Chu kì thanh toán  */}
                       <Combobox
-                        data={lstTimeType}
+                        data={lstTimeType.data ? lstTimeType.data : []}
                         value={formik.values.PYMNPERD}
                         itemKey={"ITEMCODE"}
                         itemName={"ITEMNAME"}
@@ -935,7 +947,7 @@ const PayDetailComponent = () => {
                       stateButton == "vnpay"
                         ? "border-second shadow-sm shadow-second"
                         : "border-gray-300 shadow-lg"
-                    } rounded-xl border-gray-300 h-28 w-28 p-3 cursor-pointe transition-colors duration-300`}
+                    } border-gray-300 h-28 w-28 p-3 cursor-pointe transition-colors duration-300`}
                     onClick={() => setStateButton("vnpay")}
                   >
                     <img
@@ -949,7 +961,7 @@ const PayDetailComponent = () => {
                       stateButton == "vietqr"
                         ? "border-second shadow-sm shadow-second"
                         : "border-gray-300 shadow-lg"
-                    } rounded-xl w-28 h-28 p-3 cursor-pointer  transition-colors duration-300`}
+                    } w-28 h-28 p-3 cursor-pointer  transition-colors duration-300`}
                     onClick={() => setStateButton("vietqr")}
                   >
                     <img

@@ -18,15 +18,19 @@ export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async (data, { rejectWithValue }) => {
     console.log(data);
-    const result = await postData({
-      DCMNCODE: "APPCARTPRDC",
-      HEADER: [{ ...data }],
-    });
-    console.log(result);
-    if (result?.data.RETNCODE !== false) {
-      return result?.data?.RETNDATA[0];
-    } else {
-      return rejectWithValue(data);
+    try {
+      const result = await postData({
+        DCMNCODE: "APPCARTPRDC",
+        HEADER: [{ ...data }],
+      });
+      console.log(result);
+      if (result?.data.RETNCODE !== false) {
+        return result?.data?.RETNDATA[0];
+      } else {
+        return rejectWithValue("Thêm sản phẩm thất bại!");
+      }
+    } catch (error) {
+      return rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -34,11 +38,15 @@ export const addToCart = createAsyncThunk(
 export const updateAmountProduct = createAsyncThunk(
   "cart/updateAmountProduct",
   async (data, { rejectWithValue }) => {
-    const result = await updateData(data);
-    if (result?.data?.RETNCODE) {
-      return result?.data?.RETNDATA[0];
-    } else {
-      return rejectWithValue(data);
+    try {
+      const result = await updateData(data);
+      if (result?.data?.RETNCODE) {
+        return result?.data?.RETNDATA[0];
+      } else {
+        return rejectWithValue("Cập nhật thất bại!");
+      }
+    } catch (error) {
+      return rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -46,25 +54,33 @@ export const updateAmountProduct = createAsyncThunk(
 export const increamentAmountProduct = createAsyncThunk(
   "cart/increamentAmoutProduct",
   async (data, { rejectWithValue }) => {
-    console.log(data);
-    const result = await updateData(data);
-    if (result?.data?.RETNCODE == true) {
-      console.log(result);
-      return data;
-    } else {
-      return rejectWithValue(data);
+    try {
+      console.log(data);
+      const result = await updateData(data);
+      if (result?.data?.RETNCODE == true) {
+        console.log(result);
+        return data;
+      } else {
+        return rejectWithValue("Cập nhật thất bại!");
+      }
+    } catch (error) {
+      return rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
 export const decreamentAmountProduct = createAsyncThunk(
   "cart/decreamentAmountProduct",
   async (data, { rejectWithValue }) => {
-    console.log(data);
-    const result = await updateData(data);
-    if (result?.data?.RETNCODE == true) {
-      return data;
-    } else {
-      return rejectWithValue(data);
+    try {
+      console.log(data);
+      const result = await updateData(data);
+      if (result?.data?.RETNCODE == true) {
+        return data;
+      } else {
+        return rejectWithValue("Cập nhật thất bại!");
+      }
+    } catch (error) {
+      return rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -72,12 +88,16 @@ export const decreamentAmountProduct = createAsyncThunk(
 export const changeAmoutProduct = createAsyncThunk(
   "cart/changeAmoutProduct",
   async (data, { rejectWithValue }) => {
-    console.log(data);
-    const result = await updateData(data);
-    if (result?.data?.RETNCODE == true) {
-      return data;
-    } else {
-      return rejectWithValue(data);
+    try {
+      console.log(data);
+      const result = await updateData(data);
+      if (result?.data?.RETNCODE == true) {
+        return data;
+      } else {
+        return rejectWithValue("Cập nhật thất bại!");
+      }
+    } catch (error) {
+      return rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -94,11 +114,11 @@ export const deleteProductFromCart = createAsyncThunk(
       if (result?.data?.RETNCODE == true) {
         return data;
       } else {
-        return rejectWithValue(data);
+        return rejectWithValue("Xóa thất bại!");
       }
     } catch (error) {
       console.log(error);
-      return rejectWithValue(error);
+      return rejectWithValue("Lỗi hệ thống!");
     }
   }
 );

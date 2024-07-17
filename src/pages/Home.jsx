@@ -7,8 +7,20 @@ import LoadingView from "./LoadingView";
 import HomeSkeleton from "../components/home/HomeSkeleton";
 const Home = () => {
   const dispatch = useDispatch();
-  const { products, isLoadingCommon } = useSelector((state) => state.common);
-  const [loading, setLoading] = useState(true);
+  const {
+    products,
+    lstWareHouse,
+    lstLocations,
+    lstCUOM,
+    lstTimeType,
+    lstDlvrType,
+    lstDcmnSbCd,
+    lstDlvrMthd,
+    lstListHour,
+    lstinpCustOdMtPayMthd2,
+    lstQUOM,
+    lstPmtPmtnPrgr,
+  } = useSelector((state) => state.common);
   const { token } = useContext(AppContext);
   useEffect(() => {
     dispatch(
@@ -27,14 +39,8 @@ const Home = () => {
     );
     console.log("HOme");
   }, []);
-  useEffect(() => {
-    if (products?.length != null && isLoadingCommon == false) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
-    }
-  }, [products]);
-  return loading ? <HomeSkeleton /> : <HomeComponent></HomeComponent>;
+
+  return <HomeComponent></HomeComponent>;
 };
 
 export default Home;

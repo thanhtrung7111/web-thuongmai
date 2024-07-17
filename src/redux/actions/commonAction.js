@@ -40,7 +40,7 @@ export const loadProduct = createAsyncThunk(
       }
     } catch (error) {
       console.log(error);
-      return rejectWithValue(error);
+      return rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -61,11 +61,11 @@ export const loadWareHouse = createAsyncThunk(
           await setCacheData("lstWareHouse", result);
           return result;
         } else {
-          rejectWithValue(result);
+          rejectWithValue("Không có dữ liệu!");
         }
       }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -85,11 +85,11 @@ export const loadLocations = createAsyncThunk(
           await setCacheData("lstLocation", result);
           return result;
         } else {
-          rejectWithValue(result);
+          rejectWithValue("Không có dữ liệu!");
         }
       }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -109,11 +109,11 @@ export const loadCUOM = createAsyncThunk(
           await setCacheData("lstCUOM", result);
           return result;
         } else {
-          rejectWithValue(result);
+          rejectWithValue("Không có dữ liệu!");
         }
       }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -133,11 +133,11 @@ export const loadTimeType = createAsyncThunk(
           await setCacheData("lstTimeType", result);
           return result;
         } else {
-          rejectWithValue(result);
+          rejectWithValue("Tải dữ liệu thất bại!");
         }
       }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -157,11 +157,11 @@ export const loadDlvrType = createAsyncThunk(
         // await setCacheData("lstDlvrType", result);
         return result;
       } else {
-        rejectWithValue(result);
+        rejectWithValue("Tải dữ liệu thất bại!");
       }
       // }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -182,11 +182,11 @@ export const loadDcmnSbCd = createAsyncThunk(
           await setCacheData("lstDcmnSbCd", result);
           return result;
         } else {
-          rejectWithValue(result);
+          rejectWithValue("Tải dữ liệu thất bại!");
         }
       }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -206,11 +206,11 @@ export const loadDlvrMthd = createAsyncThunk(
           await setCacheData("lstDlvrMthd", result);
           return result;
         } else {
-          rejectWithValue(result);
+          rejectWithValue("Tải dữ liệu thất bại!");
         }
       }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -230,11 +230,11 @@ export const loadListHour = createAsyncThunk(
           await setCacheData("lstListHour", result);
           return result;
         } else {
-          rejectWithValue(result);
+          rejectWithValue("Tải dữ liệu thất bại!");
         }
       }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -254,11 +254,11 @@ export const loadinpCustOdMtPayMthd2 = createAsyncThunk(
           await setCacheData("lst_inpCustOdMt_Pay_Mthd_2", result);
           return result;
         } else {
-          rejectWithValue(result);
+          rejectWithValue("Tải dữ liệu thất bại!");
         }
       }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -278,11 +278,11 @@ export const loadLstQUOM = createAsyncThunk(
           await setCacheData("lstQUOM", result);
           return result;
         } else {
-          rejectWithValue(result);
+          rejectWithValue("Tải dữ liệu thất bại!");
         }
       }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -306,10 +306,10 @@ export const loadPmtPmtnPrgr = createAsyncThunk(
       if (result) {
         return result;
       } else {
-        rejectWithValue(result);
+        rejectWithValue("Tải dữ liệu thất bại!");
       }
     } catch (e) {
-      rejectWithValue(e);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );

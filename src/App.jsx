@@ -29,6 +29,7 @@ import { closeBlock } from "./redux/reducer/popupReducer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PaySuccessVietQR } from "./pages/PaySuccessVietQR";
+import ProductSearch from "./pages/ProductSearch";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -74,6 +75,10 @@ function App() {
             <Route
               path="/products/:id"
               element={<ProductDetail></ProductDetail>}
+            ></Route>
+            <Route
+              path="/products/search"
+              element={<ProductSearch></ProductSearch>}
             ></Route>
             <Route
               path="/products"

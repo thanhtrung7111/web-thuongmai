@@ -5,6 +5,7 @@ const ImageFetch = ({ url, className }) => {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     async function fetchImage() {
+      setIsLoading(false);
       const imgeUrl = await fetch(url, {
         method: "GET",
         headers: {
@@ -21,9 +22,10 @@ const ImageFetch = ({ url, className }) => {
         });
 
       setImage(imgeUrl);
+      setIsLoading(true);
     }
     fetchImage();
-  }, []);
+  }, [url]);
   useEffect(() => {
     if (image != "") {
       setIsLoading(false);

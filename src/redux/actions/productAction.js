@@ -10,10 +10,10 @@ export const fetchProductDetail = createAsyncThunk(
       if (productDetail) {
         return productDetail;
       } else {
-        rejectWithValue(productDetail);
+        rejectWithValue("Không tải được dữ liệu!");
       }
     } catch (error) {
-      rejectWithValue(error);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );

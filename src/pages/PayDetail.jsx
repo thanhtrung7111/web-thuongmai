@@ -16,19 +16,6 @@ import {
 import LoadingView from "./LoadingView";
 const PayDetail = () => {
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-  const {
-    isLoadingCommon,
-    products,
-    lstWareHouse,
-    lstDcmnSbCd,
-    lstDlvrMthd,
-    lstDlvrType,
-    lstListHour,
-    lstinpCustOdMtPayMthd2,
-    lstTimeType,
-    lstCUOM,
-  } = useSelector((state) => state.common);
   useEffect(() => {
     async function loadData() {
       // dispatch(
@@ -56,17 +43,8 @@ const PayDetail = () => {
     }
     loadData();
   }, []);
-  useEffect(() => {
-    if (isLoadingCommon == false) {
-      setIsLoading(false);
-      console.log(isLoadingCommon);
-    }
-  }, [isLoadingCommon]);
-  return isLoading ? (
-    <LoadingView></LoadingView>
-  ) : (
-    <PayDetailComponent></PayDetailComponent>
-  );
+
+  return <PayDetailComponent></PayDetailComponent>;
 };
 
 export default PayDetail;

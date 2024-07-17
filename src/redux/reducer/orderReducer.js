@@ -13,43 +13,86 @@ import {
 const orderSlice = createSlice({
   name: "order",
   initialState: {
-    listOrder: [],
-    orderDetail: null,
-    isLoadingOrder: false,
-    isErrorOrder: false,
-    resultOrder: "",
+    listOrder: {
+      data: null,
+      isLoading: false,
+      isError: false,
+      errorMessage: "",
+    },
+    orderDetail: {
+      data: null,
+      isLoading: false,
+      isError: false,
+      errorMessage: "",
+    },
+    resultOrder: {
+      data: null,
+      isLoading: false,
+      isError: false,
+      errorMessage: "",
+    },
   },
 
   extraReducers: (builder) => {
-    builder.addCase(getAllOrder.fulfilled, (state, action) => {
-      state.listOrder = action.payload;
-    });
+    builder
+      .addCase(getAllOrder.pending, (state, action) => {
+        state.listOrder.data = null;
+        state.listOrder.isLoading = true;
+        state.listOrder.isError = false;
+        state.listOrder.errorMessage = "";
+      })
+      .addCase(getAllOrder.fulfilled, (state, action) => {
+        state.listOrder.data = action.payload;
+        state.listOrder.isLoading = false;
+        state.listOrder.isError = false;
+        state.listOrder.errorMessage = "";
+      })
+      .addCase(getAllOrder.rejected, (state, action) => {
+        state.listOrder.data = null;
+        state.listOrder.isLoading = false;
+        state.listOrder.isError = true;
+        state.listOrder.errorMessage = action.payload;
+      });
 
-    builder.addCase(getAllOrder.rejected, (state, action) => {
-      state.isErrorOrder = true;
-    });
+    builder
+      .addCase(postOrder.pending, (state, action) => {
+        state.resultOrder.data = null;
+        state.resultOrder.isLoading = true;
+        state.resultOrder.isError = false;
+        state.resultOrder.errorMessage = "";
+      })
+      .addCase(postOrder.fulfilled, (state, action) => {
+        state.resultOrder.data = action.payload;
+        state.resultOrder.isLoading = false;
+        state.resultOrder.isError = false;
+        state.resultOrder.errorMessage = "";
+      })
+      .addCase(postOrder.rejected, (state, action) => {
+        state.resultOrder.data = null;
+        state.resultOrder.isLoading = false;
+        state.resultOrder.isError = true;
+        state.resultOrder.errorMessage = action.payload;
+      });
 
-    builder.addCase(postOrder.fulfilled, (state, action) => {
-      state.resultOrder = action.payload;
-    });
-
-    builder.addCase(postOrder.rejected, (state, action) => {
-      state.isErrorOrder = true;
-    });
-
-    builder.addCase(getOrderDetail.fulfilled, (state, action) => {
-      state.orderDetail = action.payload?.RETNDATA[0];
-    });
-
-    builder.addMatcher(isPending, (state, action) => {
-      state.isLoadingOrder = true;
-    });
-    builder.addMatcher(isRejected, (state, action) => {
-      state.isLoadingOrder = false;
-    });
-    builder.addMatcher(isFulfilled, (state, action) => {
-      state.isLoadingOrder = false;
-    });
+    builder
+      .addCase(getOrderDetail.pending, (state, action) => {
+        state.orderDetail.data = false;
+        state.orderDetail.isLoading = true;
+        state.orderDetail.isError = false;
+        state.orderDetail.errorMessage = "";
+      })
+      .addCase(getOrderDetail.fulfilled, (state, action) => {
+        state.orderDetail.data = action.payload;
+        state.orderDetail.isLoading = false;
+        state.orderDetail.isError = false;
+        state.orderDetail.errorMessage = "";
+      })
+      .addCase(getOrderDetail.rejected, (state, action) => {
+        state.orderDetail.data = null;
+        state.orderDetail.isLoading = false;
+        state.orderDetail.isError = true;
+        state.orderDetail.errorMessage = action.payload;
+      });
   },
 });
 

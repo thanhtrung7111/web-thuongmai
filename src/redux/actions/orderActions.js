@@ -12,10 +12,10 @@ export const getAllOrder = createAsyncThunk(
       if (listOrder) {
         return listOrder;
       } else {
-        return rejectWithValue(listOrder);
+        return rejectWithValue("Không tải được dữ liệu!");
       }
     } catch (error) {
-      rejectWithValue(error);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -29,11 +29,11 @@ export const postOrder = createAsyncThunk(
       if (listOrder) {
         return listOrder;
       } else {
-        return rejectWithValue(listOrder);
+        return rejectWithValue("Không tải được dữ liệu!");
       }
     } catch (error) {
       console.log(error);
-      rejectWithValue(error);
+      rejectWithValue("Lỗi hệ thống!");
     }
   }
 );
@@ -45,12 +45,12 @@ export const getOrderDetail = createAsyncThunk(
       const result = await fetchDataDetail(data).then((res) => res?.data);
       console.log(result);
       if (result) {
-        return result;
+        return result?.RETNDATA[0];
       } else {
-        return rejectWithValue(result);
+        return rejectWithValue("Không tải được dữ liệu!");
       }
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue("Lỗi hệ thống!");
     }
   }
 );

@@ -11,30 +11,31 @@ const productSlice = createSlice({
   initialState: {
     isLoadingProduct: true,
     errorMessageProduct: "",
+    isErrorProduct: false,
     productDetail: {},
     productImageDetail: null,
   },
 
-
   extraReducers: (builder) => {
-    builder.addCase(fetchProductDetail.fulfilled, (state, action) => {
-      state.productDetail = action.payload?.data?.RETNDATA[0];
-    });
-
-    builder.addCase(fetchProductDetail.rejected, (state, action) => {
-      state.errorMessageProduct = action.payload;
-    });
-    builder.addMatcher(isPending, (state) => {
-      state.isLoadingProduct = true;
-    });
-
-    builder.addMatcher(isFulfilled, (state) => {
-      state.isLoadingProduct = false;
-    });
-
-    builder.addMatcher(isRejected, (state) => {
-      state.isLoadingProduct = false;
-    });
+    builder
+      .addCase(fetchProductDetail.fulfilled, (state, action) => {
+        state.productDetail = action.payload?.data?.RETNDATA[0];
+        state.isErrorProduct = false;
+        state.errorMessageProduct = "";
+        state.isLoadingProduct = false;
+      })
+      .addCase(fetchProductDetail.pending, (state, action) => {
+        state.productDetail = null;
+        state.isErrorProduct = false;
+        state.errorMessageProduct = "";
+        state.isLoadingProduct = true;
+      })
+      .addCase(fetchProductDetail.rejected, (state, action) => {
+        state.productDetail = null;
+        state.isErrorProduct = true;
+        state.errorMessageProduct = action.payload;
+        state.isLoadingProduct = false;
+      });
   },
 });
 

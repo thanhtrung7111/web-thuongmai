@@ -27,6 +27,7 @@ import ImageFetch from "../ImageFetch";
 import { fetchImage } from "../../helper/ImageHelper";
 import { addToCart, updateAmountProduct } from "../../redux/actions/cartAction";
 import ProductDetailSkeleton from "./ProductDetailSkeleton";
+import { Link, useNavigate } from "react-router-dom";
 let pageSize = 4;
 const images = [
   {
@@ -187,13 +188,13 @@ const productDetailDemo = {
 };
 const ProductDetailComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { productDetail, isLoadingProduct } = useSelector(
     (state) => state.product
   );
   const { currentUser } = useSelector((state) => state.user);
   const { productCarts } = useSelector((state) => state.cart);
-  const [product, setProduct] = useState(null);
   const [indexImage, setIndexImage] = useState({ ...images[0] });
   const [mainImage, setMainImage] = useState("");
   const [amountProduct, setAmountProduct] = useState(1);
@@ -211,7 +212,7 @@ const ProductDetailComponent = () => {
 
   const addCart = async (prdc) => {
     const productFind = productCarts.find(
-      (item) => item.PRDCCODE == product.PRDCCODE
+      (item) => item.PRDCCODE == productDetail.PRDCCODE
     );
     if (productFind) {
       dispatch(
@@ -245,21 +246,16 @@ const ProductDetailComponent = () => {
   };
 
   useEffect(() => {
-    setProduct(productDetail);
-    console.log(productDetail);
-  }, [productDetail]);
-
-  useEffect(() => {
     async function fetchDataImage() {
       const img = await fetchImage(
-        product?.DETAIL_4[0]?.IMGE_URL,
+        productDetail?.DETAIL_4[0]?.IMGE_URL,
         sessionStorage.getItem("tokenUser")
       );
       setMainImage(img);
     }
     fetchDataImage();
     // }
-  }, [product]);
+  }, [productDetail]);
   console.log(productDetail);
   const showManify = () => {
     dispatch(openManify());
@@ -273,10 +269,12 @@ const ProductDetailComponent = () => {
     dispatch(openEvaluateProduct({ productID: "0000" }));
   };
 
-  return (
+  return isLoadingProduct ? (
+    <ProductDetailSkeleton />
+  ) : (
     // <ProductDetailSkeleton />
     <div className="product-detail">
-      <InfoPage data={["Sản phẩm", product?.PRDCNAME]} />
+      <InfoPage data={["Sản phẩm", productDetail?.PRDCNAME]} />
       <ImageMagnifier image={mainImage}></ImageMagnifier>
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>
@@ -360,8 +358,8 @@ const ProductDetailComponent = () => {
                 <ul>
                   <li className="text-gray-dark text-xs flex items-center">
                     <i className="ri-check-fill text-first font-extrabold text-xl"></i>
-                    <span className="font-bold">Mô tả:</span>:{" "}
-                    {product?.DESCFULL}
+                    <span className="font-bold">Mô tả:</span>{" "}
+                    {productDetail?.DESCFULL}
                   </li>
 
                   <li className="text-xs flex items-center mt-3">
@@ -376,25 +374,25 @@ const ProductDetailComponent = () => {
               <div className="flex flex-col gap-y-5">
                 <div className="flex flex-col gap-y-2">
                   <h2 className="text-2xl text-gray-dark font-bold">
-                    {product?.PRDCNAME}
+                    {productDetail?.PRDCNAME}
                   </h2>
 
                   {/* PRICE  */}
                   <div className="flex gap-x-2">
                     <div className="text-second text-3xl font-bold flex justify-start">
-                      {product?.PRCEDSCN?.toLocaleString("vi", {
+                      {productDetail?.PRCEDSCN?.toLocaleString("vi", {
                         style: "currency",
                         currency: "VND",
                       })}
                     </div>
                     <div className="text-gray-light line-through flex justify-start text-lg">
-                      {product?.PRCESALE?.toLocaleString("vi", {
+                      {productDetail?.PRCESALE?.toLocaleString("vi", {
                         style: "currency",
                         currency: "VND",
                       })}
                     </div>
                     <div className="text-white bg-second w-fit h-fit px-1 text-sm py-1">
-                      Giảm {product?.DSCNRATE}%
+                      Giảm {productDetail?.DSCNRATE}%
                     </div>
                   </div>
 
@@ -402,7 +400,7 @@ const ProductDetailComponent = () => {
                   <div className="flex items-center gap-x-2">
                     <div className="flex items-center gap-x-1">
                       {
-                        product?.DETAIL_3?.length > 0
+                        productDetail?.DETAIL_3?.length > 0
                         // &&
                         // [
                         //   ...Array(
@@ -422,7 +420,7 @@ const ProductDetailComponent = () => {
                       }
                     </div>
                     <span className="text-sm text-gray-dark">
-                      ({product?.DETAIL_3?.length} đánh giá)
+                      ({productDetail?.DETAIL_3?.length} đánh giá)
                     </span>
                   </div>
 
@@ -432,8 +430,8 @@ const ProductDetailComponent = () => {
                 </div>
 
                 {/* OPTION  */}
-                <div className="border-y py-4 flex flex-col gap-y-5 ">
-                  {/* RAM  */}
+                {/* <div className="border-y py-4 flex flex-col gap-y-5 ">
+          
                   <div className="flex items-center gap-x-2">
                     <span className="font-semibold text-gray-dark text-lg">
                       RAM:
@@ -446,7 +444,7 @@ const ProductDetailComponent = () => {
                     ></TagList>
                   </div>
 
-                  {/* MÀU SẮC  */}
+         
                   <div className="flex items-center gap-x-2">
                     <span className="font-semibold text-gray-dark text-lg">
                       MÀU SẮC:
@@ -458,7 +456,7 @@ const ProductDetailComponent = () => {
                       onChange={onChangeTagRam}
                     ></TagList>
                   </div>
-                </div>
+                </div> */}
 
                 {/* ACTION  */}
                 <div className="flex flex-col gap-y-5">
@@ -506,11 +504,17 @@ const ProductDetailComponent = () => {
                   <div className="flex items-center gap-x-2">
                     <button
                       className="bg-second text-white rounded-md px-3 py-2"
-                      onClick={() => addCart(product)}
+                      onClick={() => addCart(productDetail)}
                     >
                       Thêm vào giỏ
                     </button>
-                    <button className="bg-[#f24c4c] text-white rounded-md px-3 py-2">
+                    <button
+                      onClick={() => {
+                        addCart(productDetail);
+                        navigate("/pay");
+                      }}
+                      className="bg-[#f24c4c] text-white rounded-md px-3 py-2"
+                    >
                       Mua ngay
                     </button>
                   </div>
@@ -814,7 +818,7 @@ const ProductDetailComponent = () => {
                     </div>
                   </div>
                   <span className="text-gray-light">
-                    ( {product?.DETAIL_3?.length} Đánh giá )
+                    ( {productDetail?.DETAIL_3?.length} Đánh giá )
                   </span>
                 </div>
 
@@ -827,10 +831,10 @@ const ProductDetailComponent = () => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (product?.DETAIL_3?.filter(
+                          (productDetail?.DETAIL_3?.filter(
                             (item) => item.PRDCMARK == 5
                           ).length /
-                            product?.DETAIL_3?.length) *
+                            productDetail?.DETAIL_3?.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -838,10 +842,10 @@ const ProductDetailComponent = () => {
                         }`}
                         style={{
                           width: `${
-                            (product?.DETAIL_3?.filter(
+                            (productDetail?.DETAIL_3?.filter(
                               (item) => item.PRDCMARK == 5
                             ).length /
-                              product?.DETAIL_3?.length) *
+                              productDetail?.DETAIL_3?.length) *
                             100
                           }%`,
                         }}
@@ -856,10 +860,10 @@ const ProductDetailComponent = () => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (product?.DETAIL_3?.filter(
+                          (productDetail?.DETAIL_3?.filter(
                             (item) => item.PRDCMARK == 4
                           ).length /
-                            product?.DETAIL_3?.length) *
+                            productDetail?.DETAIL_3?.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -867,10 +871,10 @@ const ProductDetailComponent = () => {
                         }`}
                         style={{
                           width: `${
-                            (product?.DETAIL_3?.filter(
+                            (productDetail?.DETAIL_3?.filter(
                               (item) => item.PRDCMARK == 4
                             ).length /
-                              product?.DETAIL_3?.length) *
+                              productDetail?.DETAIL_3?.length) *
                             100
                           }%`,
                         }}
@@ -885,10 +889,10 @@ const ProductDetailComponent = () => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (product?.DETAIL_3?.filter(
+                          (productDetail?.DETAIL_3?.filter(
                             (item) => item.PRDCMARK == 3
                           ).length /
-                            product?.DETAIL_3?.length) *
+                            productDetail?.DETAIL_3?.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -896,10 +900,10 @@ const ProductDetailComponent = () => {
                         }`}
                         style={{
                           width: `${
-                            (product?.DETAIL_3?.filter(
+                            (productDetail?.DETAIL_3?.filter(
                               (item) => item.PRDCMARK == 3
                             ).length /
-                              product?.DETAIL_3?.length) *
+                              productDetail?.DETAIL_3?.length) *
                             100
                           }%`,
                         }}
@@ -914,10 +918,10 @@ const ProductDetailComponent = () => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (product?.DETAIL_3?.filter(
+                          (productDetail?.DETAIL_3?.filter(
                             (item) => item.PRDCMARK == 2
                           ).length /
-                            product?.DETAIL_3?.length) *
+                            productDetail?.DETAIL_3?.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -925,10 +929,10 @@ const ProductDetailComponent = () => {
                         }`}
                         style={{
                           width: `${
-                            (product?.DETAIL_3?.filter(
+                            (productDetail?.DETAIL_3?.filter(
                               (item) => item.PRDCMARK == 2
                             ).length /
-                              product?.DETAIL_3?.length) *
+                              productDetail?.DETAIL_3?.length) *
                             100
                           }%`,
                         }}
@@ -943,10 +947,10 @@ const ProductDetailComponent = () => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0  w-1/4 h-full ${
-                          (product?.DETAIL_3?.filter(
+                          (productDetail?.DETAIL_3?.filter(
                             (item) => item.PRDCMARK == 1
                           ).length /
-                            product?.DETAIL_3?.length) *
+                            productDetail?.DETAIL_3?.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -954,10 +958,10 @@ const ProductDetailComponent = () => {
                         }`}
                         style={{
                           width: `${
-                            (product?.DETAIL_3?.filter(
+                            (productDetail?.DETAIL_3?.filter(
                               (item) => item.PRDCMARK == 1
                             ).length /
-                              product?.DETAIL_3?.length) *
+                              productDetail?.DETAIL_3?.length) *
                             100
                           }%`,
                         }}
@@ -986,8 +990,8 @@ const ProductDetailComponent = () => {
               </div>
 
               <div className="flex flex-col gap-y-4 mb-16 min-h-[550px]">
-                {product?.DETAIL_3?.length > 0 &&
-                  product?.DETAIL_3?.slice(
+                {productDetail?.DETAIL_3?.length > 0 &&
+                  productDetail?.DETAIL_3?.slice(
                     (currentPage - 1) * pageSize,
                     pageSize * (currentPage - 1) + pageSize
                   ).map((item) => {
@@ -1001,10 +1005,10 @@ const ProductDetailComponent = () => {
                     );
                   })}
               </div>
-              {product?.DETAIL_3?.length > 0 && (
+              {productDetail?.DETAIL_3?.length > 0 && (
                 <Panigation
                   currentPage={currentPage}
-                  totalCount={product?.DETAIL_3?.length}
+                  totalCount={productDetail?.DETAIL_3?.length}
                   pageSize={pageSize}
                   scrollTo="evaluate"
                   onPageChange={(page) => {
@@ -1029,7 +1033,7 @@ const ProductDetailComponent = () => {
               </a>
             </div>
             <ProductSlider
-              data={product?.DETAIL_2}
+              data={productDetail?.DETAIL_2}
               id={"PRDCCODE"}
               name={"PRDCNAME"}
               image={"PRDCIMGE"}

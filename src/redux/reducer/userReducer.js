@@ -1,4 +1,10 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  current,
+  isFulfilled,
+  isPending,
+  isRejected,
+} from "@reduxjs/toolkit";
 import { users } from "../../data";
 import { login, loginLCTN } from "../actions/userAction";
 import storage from "redux-persist/lib/storage";
@@ -7,6 +13,7 @@ import session from "redux-persist/lib/storage/session";
 let stateUser = {
   isLoadingUser: false,
   errorMessageUser: "",
+  isErrorMessagesUser: false,
   currentUser: null,
   locations: {},
   productSearchs: [],
@@ -47,12 +54,6 @@ const userSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addCase(login.pending, (state) => {
-      console.log(state);
-      console.log(current(state));
-      state.isLoadingUser = true;
-    });
-
     builder.addCase(login.fulfilled, (state, action) => {
       const { TOKEN, COMPLIST, USERLGIN } = action.payload;
       sessionStorage.setItem("tokenUser", TOKEN);
@@ -69,8 +70,21 @@ const userSlice = createSlice({
       state.isLoadingUser = false;
     });
 
-    builder.addCase(login.rejected, (state, action) => {
+    builder.addMatcher(isPending, (state) => {
+      state.errorMessageUser = "";
+      state.isLoadingUser = true;
+      state.isErrorMessagesUser = false;
+    });
+
+    builder.addMatcher(isRejected, (state, action) => {
       state.errorMessageUser = action.payload;
+      state.isErrorMessagesUser = true;
+      state.isLoadingUser = false;
+    });
+
+    builder.addMatcher(isFulfilled, (state, action) => {
+      state.errorMessageUser = "";
+      state.isErrorMessagesUser = false;
       state.isLoadingUser = false;
     });
   },

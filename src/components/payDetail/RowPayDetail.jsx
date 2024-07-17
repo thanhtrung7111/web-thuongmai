@@ -194,7 +194,7 @@ const RowPayDetail = ({
             </button>
 
             <ProductSuggestion
-              keyword={item[name]?.substring(0, 10)}
+              keyword={item[name]?.substring(0, item[name]?.length - 8)}
             ></ProductSuggestion>
           </div>
         </td>

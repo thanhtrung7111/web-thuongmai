@@ -14,21 +14,16 @@ import LoadingView from "../../pages/LoadingView";
 import HomeSkeleton from "./HomeSkeleton";
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomeComponent = () => {
-  const { products, isLoadingCommon } = useSelector((state) => state.common);
-  const [loading, setLoading] = useState(true);
+  const { products } = useSelector((state) => state.common);
   const [lstProduct, setLstProduct] = useState(null);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    setLstProduct(products);
+    setLstProduct(products?.data);
   }, [products]);
 
-  useEffect(() => {
-    const getAllCacheData = async () => {};
-    getAllCacheData();
-    console.log(products);
-  }, []);
-
-  return (
+  return products?.isLoading ? (
+    <HomeSkeleton />
+  ) : (
     <>
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper padding={0}>
@@ -97,7 +92,7 @@ const HomeComponent = () => {
               </a>
             </div>
             <ProductSlider
-              data={lstProduct?.slice(0, 15)}
+              data={products.data?.slice(0, 15)}
               id={"PRDCCODE"}
               name={"PRDCNAME"}
               image={"PRDCIMGE"}
@@ -163,7 +158,7 @@ const HomeComponent = () => {
             </div>
 
             <ProductSlider
-              data={lstProduct?.slice(0, 15)}
+              data={products.data?.slice(0, 15)}
               id={"PRDCCODE"}
               name={"PRDCNAME"}
               image={"PRDCIMGE"}

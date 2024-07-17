@@ -9,7 +9,7 @@ import { loadCart } from "../../redux/actions/cartAction";
 import AnimateSkeleton from "../AnimateSkeleton";
 const Cart = () => {
   const dispatch = useDispatch();
-  const { productCarts } = useSelector((state) => state.cart);
+  const { productCarts, loadingCart } = useSelector((state) => state.cart);
   const [loading, setLoading] = useState(true);
   const { currentUser } = useSelector((state) => state.user);
   const [overlay, setOverlay] = useState(false);
@@ -51,14 +51,7 @@ const Cart = () => {
     console.log(currentUser);
   }, [currentUser]);
 
-  useEffect(() => {
-    if (productCarts != null) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1500);
-    }
-  }, [productCarts]);
-  return loading ? (
+  return loadingCart?.isLoading ? (
     <AnimateSkeleton className={"w-20 h-5"}></AnimateSkeleton>
   ) : (
     <>
@@ -110,7 +103,7 @@ const Cart = () => {
           </h3>
           {productCarts?.length != 0 ? (
             <div className={`flex flex-col overflow-y-scroll h-96  shadow-sm`}>
-              {productCarts?.map((item) => {
+              {(productCarts ? productCarts : []).map((item) => {
                 return (
                   <div key={item.PRDCCODE}>
                     <RowCart

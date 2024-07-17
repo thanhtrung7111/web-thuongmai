@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Wrapper from "@components/Wrapper";
 import ProductCard from "@components/ProductCard";
+import ProductCardHorizon from "@components/ProductCardHorizon";
 import ProductSlider from "@components/ProductSlider";
 import { tagsRam } from "../../data";
 import TagList from "@components/TagList";
@@ -32,9 +33,10 @@ const ProductListComponent = ({ search }) => {
   const minPrice = useRef();
   const maxPrice = useRef();
   const [currentPage, setCurrentPage] = useState(1);
-  const { products, lstQUOM, isLoadingCommon } = useSelector(
-    (state) => state.common
-  );
+  const [displayVertical, setDisplayVertical] = useState(true);
+  const [desc, setDesc] = useState(false);
+  const [changeTagSort, setChangeTagSort] = useState(tagsSort[0]);
+  const { products, lstQUOM } = useSelector((state) => state.common);
   const [productList, setProductList] = useState(null);
   const [listSearch, setListSearch] = useState({
     nameSearch: "",
@@ -100,34 +102,17 @@ const ProductListComponent = ({ search }) => {
   };
 
   const onChangeTag = (value) => {
-    console.log(value);
-    switch (value?.id) {
-      case 3:
-        setProductList([...productList?.reverse()]);
-        break;
-      case 1:
-        setProductList([
-          ...productList?.sort((a, b) =>
-            a.PRDCNAME.toLowerCase().localeCompare(b.PRDCNAME.toLowerCase())
-          ),
-        ]);
-        break;
-      case 2:
-        setProductList([
-          ...productList?.sort((a, b) => a.PRCEDSCN - b.PRCEDSCN),
-        ]);
-        break;
-    }
+    setChangeTagSort(value);
   };
 
   const filterPrice = () => {
     if (minPrice.current.value && maxPrice.current.value == null) {
-      products.filter((item) => item.PRCEDSCN >= minPrice.current.value);
+      products.data.filter((item) => item.PRCEDSCN >= minPrice.current.value);
       return;
     }
 
     if (minPrice.current.value == null && maxPrice.current.value) {
-      products.filter((item) => item.PRCEDSCN <= maxPrice.current.value);
+      products.data.filter((item) => item.PRCEDSCN <= maxPrice.current.value);
       return;
     }
     if (minPrice.current.value > maxPrice.current.value) {
@@ -135,7 +120,7 @@ const ProductListComponent = ({ search }) => {
     }
 
     setProductList(
-      products.filter(
+      products.data.filter(
         (item) =>
           item.PRCEDSCN >= minPrice.current.value &&
           item.PRCEDSCN <= maxPrice.current.value
@@ -145,20 +130,20 @@ const ProductListComponent = ({ search }) => {
 
   useEffect(() => {
     if (
-      products?.length >= 0 &&
-      isLoadingCommon === false &&
+      products.data?.length >= 0 &&
+      products.isLoading === false &&
       productList?.length >= 0
     ) {
       setTimeout(() => {
         setLoading(false);
       }, 1500);
     }
-  }, [productList?.length, products]);
+  }, [productList?.length, products.data]);
 
   useEffect(() => {
-    setProductList(products);
+    setProductList(products.data);
     setCurrentPage(1);
-  }, [products]);
+  }, [products.data]);
 
   useEffect(() => {
     setLoading(true);
@@ -166,7 +151,7 @@ const ProductListComponent = ({ search }) => {
 
   useEffect(() => {
     async function search() {
-      let productSearch = await products;
+      let productSearch = await products.data;
       if (listSearch.lstQUOMSearch.length > 0) {
         productSearch = await productSearch?.filter((item) => {
           return listSearch.lstQUOMSearch.includes(item.QUOMCODE + "");
@@ -182,6 +167,42 @@ const ProductListComponent = ({ search }) => {
     }
     search();
   }, [listSearch]);
+
+  useEffect(() => {
+    if (productList?.length > 0) {
+      let sortList = productList.slice();
+      switch (changeTagSort?.id) {
+        case 3:
+          setProductList([...sortList?.reverse()]);
+          break;
+        case 1:
+          setProductList([
+            ...sortList?.sort((a, b) => {
+              if (a.PRDCNAME.toLowerCase() > b.PRDCNAME.toLowerCase()) {
+                return desc ? -1 : 1;
+              } else if (a.PRDCNAME.toLowerCase() < b.PRDCNAME.toLowerCase()) {
+                return desc ? 1 : -1;
+              } else return 0;
+            }),
+          ]);
+          break;
+        case 2:
+          setProductList([
+            ...sortList?.sort((a, b) => {
+              if (a.PRCEDSCN - b.PRCEDSCN > 0) {
+                return desc ? -1 : 1;
+              } else if (a.PRCEDSCN - b.PRCEDSCN < 0) {
+                return desc ? 1 : -1;
+              } else {
+                return 0;
+              }
+            }),
+          ]);
+          break;
+      }
+      setCurrentPage(1);
+    }
+  }, [changeTagSort, desc]);
 
   return loading ? (
     <ProductListSkeleton />
@@ -242,7 +263,7 @@ const ProductListComponent = ({ search }) => {
                 <CheckBoxList
                   onRefresh={refresh}
                   title={"Đơn vị tính"}
-                  data={lstQUOM}
+                  data={lstQUOM?.data}
                   itemName={"ITEMNAME"}
                   itemKey={"ITEM_KEY"}
                   onChange={onchangeQUOM}
@@ -291,7 +312,20 @@ const ProductListComponent = ({ search }) => {
                 <div className="px-5 py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-x-3 flex-wrap">
-                      <span className="text-gray-dark">Sắp xếp:</span>
+                      <button
+                        className="text-gray-dark text-sm cursor-pointer"
+                        onClick={() => {
+                          setDesc(!desc);
+                        }}
+                      >
+                        Sắp xếp
+                        {desc ? (
+                          <i class="ri-arrow-down-line"></i>
+                        ) : (
+                          <i class="ri-arrow-up-line"></i>
+                        )}
+                        :
+                      </button>
                       <TagList
                         data={tagsSort}
                         tagName={"name"}
@@ -306,12 +340,34 @@ const ProductListComponent = ({ search }) => {
                         {(currentPage - 1) * pageSize + 1} -{" "}
                         {(currentPage - 1) * pageSize + pageSize}
                       </div>
-                      <div className="flex items-center gap-x-2">
-                        <div>
-                          <i class="ri-grid-line text-lg"></i>
+                      <div className="flex items-center">
+                        <div
+                          onClick={() => setDisplayVertical(true)}
+                          className={`cursor-pointer py-1 px-2 rounded-md border  ${
+                            displayVertical
+                              ? "border-second"
+                              : "border-transparent"
+                          }`}
+                        >
+                          <i
+                            class={`ri-grid-line text-lg ${
+                              displayVertical ? "text-second" : "text-gray-600"
+                            }`}
+                          ></i>
                         </div>
-                        <div>
-                          <i class="ri-list-check text-lg"></i>
+                        <div
+                          onClick={() => setDisplayVertical(false)}
+                          className={`cursor-pointer py-1 px-2 rounded-md border  ${
+                            !displayVertical
+                              ? "border-second"
+                              : "border-transparent"
+                          }`}
+                        >
+                          <i
+                            class={`ri-list-check text-lg ${
+                              !displayVertical ? "text-second" : "text-gray-600"
+                            }`}
+                          ></i>
                         </div>
                       </div>
                     </div>
@@ -326,6 +382,31 @@ const ProductListComponent = ({ search }) => {
                       {" "}
                       Không có sản phẩm bạn tìm thấy!{" "}
                     </p>
+                  ) : !displayVertical ? (
+                    <div className="grid grid-cols-2 gap-4 mb-10 lg:grid-cols-3  xl:grid-cols-2 ">
+                      {productList
+                        ?.slice(
+                          (currentPage - 1) * pageSize,
+                          (currentPage - 1) * pageSize + pageSize
+                        )
+                        .map((item) => {
+                          return (
+                            <ProductCardHorizon
+                              item={item}
+                              unit={"QUOMNAME"}
+                              id={"PRDCCODE"}
+                              name={"PRDCNAME"}
+                              // reviews={""}
+                              image={"PRDCIMGE"}
+                              price={"PRCESALE"}
+                              discount={"DSCNRATE"}
+                              // stars={item.rating.rate}
+                              saleOff={"PRCEDSCN"}
+                              sold={0}
+                            ></ProductCardHorizon>
+                          );
+                        })}
+                    </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-4 mb-10 lg:grid-cols-3  xl:grid-cols-5 ">
                       {productList
@@ -381,7 +462,7 @@ const ProductListComponent = ({ search }) => {
                 </a>
               </div>
               <ProductSlider
-                data={products?.slice(0, 10)}
+                data={products.data?.slice(0, 10)}
                 id={"PRDCCODE"}
                 name={"PRDCNAME"}
                 unit={"QUOMNAME"}

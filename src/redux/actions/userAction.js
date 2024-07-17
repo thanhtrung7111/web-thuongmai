@@ -14,10 +14,10 @@ export const login = createAsyncThunk(
         return user;
       } else {
         // console.log("Sa");
-        return rejectWithValue("Người dùng không tồn tại!");
+        return rejectWithValue("Lỗi đăng nhập!");
       }
     } catch (error) {
-      return rejectWithValue("Lỗi đăng nhập");
+      return rejectWithValue("Lỗi đăng nhập!");
     }
   }
 );
@@ -33,10 +33,10 @@ export const loginLCTN = createAsyncThunk(
         return result;
       } else {
         // console.log("Sa");
-        return rejectWithValue("Người dùng không tồn tại!");
+        return rejectWithValue("Lỗi hệ thống!");
       }
     } catch (error) {
-      return rejectWithValue("Lỗi");
+      return rejectWithValue("Lỗi hệ thống!");
     }
   }
 );

@@ -4,18 +4,18 @@ import ProductCard from "@components/ProductCard";
 import Panigation from "@components/panigation/Panigation";
 import { loadProduct } from "../../redux/actions/commonAction";
 import LoadingView from "../../pages/LoadingView";
+import AnimateSkeleton from "../AnimateSkeleton";
 let pageSize = 4;
 const ProductSuggestion = ({ keyword }) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const { products, isLoadingCommon } = useSelector((state) => state.common);
+  const { products } = useSelector((state) => state.common);
   const [lstProduct, setLstProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    products?.length > 0 &&
+    products.data?.length > 0 &&
       setLstProduct(
-        products.filter((item) => item.PRDCNAME.indexOf(keyword) >= 0)
+        products.data?.filter((item) => item.PRDCNAME.indexOf(keyword) >= 0)
       );
   }, [keyword]);
 
@@ -37,11 +37,6 @@ const ProductSuggestion = ({ keyword }) => {
     }
   }, [open]);
 
-  useEffect(() => {
-    if (lstProduct != null) {
-      setIsLoading(false);
-    }
-  }, [lstProduct]);
   return (
     <>
       <span
@@ -65,8 +60,12 @@ const ProductSuggestion = ({ keyword }) => {
             onClick={() => setOpen(false)}
           ></i>
         </div>
-        {isLoading ? (
-          <LoadingView></LoadingView>
+        {products.isLoading ? (
+          <div className="p-5 pt-1 min-h-96">
+            {[1, 2, 3, 4].forEach((item) => {
+              return <AnimateSkeleton className={"h-72 w-full"} />;
+            })}
+          </div>
         ) : (
           <div>
             <div className="p-5 pt-1 min-h-96">
