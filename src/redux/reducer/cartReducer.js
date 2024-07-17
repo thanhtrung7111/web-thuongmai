@@ -94,6 +94,10 @@ const cartSlice = createSlice({
         state.actionCart.isLoading = true;
         state.actionCart.isError = false;
         state.actionCart.errorMessage = "";
+        toast.success("Thêm sản phẩm vào giỏ thành công", {
+          autoClose: 2000,
+          position: "top-center",
+        });
       })
       .addCase(addToCart.fulfilled, (state, action) => {
         state.productCarts.push({
@@ -123,10 +127,6 @@ const cartSlice = createSlice({
         state.actionCart.isLoading = false;
         state.actionCart.isError = false;
         state.actionCart.errorMessage = "";
-        toast.success("Thêm sản phẩm vào giỏ thành công", {
-          autoClose: 2000,
-          position: "top-center",
-        });
       })
       .addCase(updateAmountProduct.rejected, (state, action) => {
         state.actionCart.isLoading = false;

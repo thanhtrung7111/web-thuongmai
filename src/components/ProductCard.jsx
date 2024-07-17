@@ -29,25 +29,20 @@ const ProductCard = ({
     e.preventDefault();
     setDisableAction(true);
     console.log(item[id]);
-    console.log(currentUser?.USERLGIN);
 
-    const findProduct = productCarts?.find((item) => {
-      console.log(item.USERLOGIN, "ZZ");
-      console.log(item.PRDCCODE, "ZZ");
-      return (
-        item.USERLOGIN == currentUser?.USERLGIN && item.PRDCCODE == item[id]
-      );
-    });
-    console.log(findProduct);
-
-    if (findProduct) {
-      toast.warning("Sản phẩm đã có trong giỏ hàng!", {
-        autoClose: 1500,
-        position: "top-center",
-      });
-      return;
-    }
     if (currentUser !== null) {
+      const findProduct = productCarts?.find((item) => {
+        return item?.PRDCCODE !== item[id];
+      });
+      console.log(findProduct);
+
+      if (findProduct) {
+        toast.warning("Sản phẩm đã có trong giỏ hàng!", {
+          autoClose: 1500,
+          position: "top-center",
+        });
+        return;
+      }
       dispatch(
         addToCart({
           COMPCODE: item["COMPCODE"],
