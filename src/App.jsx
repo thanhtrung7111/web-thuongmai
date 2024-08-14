@@ -24,8 +24,6 @@ import Promotion from "./pages/Promotion";
 import AppNotifycation from "./components/AppNotification/AppNotifycation";
 import ErrorServer from "./pages/ErrorServer";
 import PaymentSuccess from "./pages/PaymentSuccess";
-import LoadingView from "./pages/LoadingView";
-import { closeBlock } from "./redux/reducer/popupReducer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PaySuccessVietQR } from "./pages/PaySuccessVietQR";
@@ -34,7 +32,6 @@ import ProductSearch from "./pages/ProductSearch";
 function App() {
   const [count, setCount] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
   const {
     showManify,
     showEvaluateProduct,

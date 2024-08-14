@@ -56,7 +56,7 @@ const Menu = () => {
               }}
               className="md:h-16 h-14 cursor-pointer"
             >
-              <img src={Logo} alt="" className="h-full" />
+              <img loading="lazy" src={Logo} alt="" className="h-full" />
             </div>
 
             <div className="flex gap-x-2 flex-auto md:gap-x-8 justify-end">

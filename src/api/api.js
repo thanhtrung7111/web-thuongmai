@@ -7,16 +7,16 @@ import {
 } from "../redux/reducer/popupReducer";
 import { logout, saveCurrentUrl } from "../redux/reducer/userReducer";
 import { clearCart } from "../redux/reducer/cartReducer";
-// import store from "../redux/store/store";
-// import
+
 export let store;
 export const injectStore = (_store) => {
   store = _store;
 };
 
+
 export const api = axios.create({
   baseURL: "https://api-dev.firstems.com",
-  timeout: 10000,
+  timeout: 5000,
   headers: {
     token:
       "CmzFIKFr7UvPe6zBPBtn3nkrWOY3UYSLLnTfii/H9QG56Ur6b9XtFty3M9tBEKV1l3d+0mGEXmfQyuGFjrNHYGSODDy+ihkBmsHYUNPgD44=",
@@ -64,25 +64,28 @@ export const loginCustom = (body) => {
       "/Api/data/runApi_Syst?run_Code=SYS010",
       body
     );
-    // console.log(result);
+    console.log(result);
     return result;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
 
 const apiFetchData = axios.create({
   baseURL: "https://api-dev.firstems.com",
-  timeout: 10000,
+  timeout: 15000,
 });
 apiFetchData.interceptors.request.use(
   (req) => {
     console.log(req.headers["TOKEN"]);
     if (
+      sessionStorage.getItem("tokenLocation") ||
       sessionStorage.getItem("tokenUser") ||
       sessionStorage.getItem("tokenInitial")
     ) {
       req.headers["TOKEN"] =
+        sessionStorage.getItem("tokenLocation") ||
         sessionStorage.getItem("tokenUser") ||
         sessionStorage.getItem("tokenInitial");
     } else {
@@ -107,12 +110,15 @@ apiFetchData.interceptors.response.use(
     console.log(response);
     if (response?.data?.RETNCODE != false) {
       return response;
-    } else {
-      return null;
     }
     // store.dispatch(logout());
-    // store.dispatch(clearCart());
-    // store.dispatch(openAppNotify({ link: "33432" }));
+    store.dispatch(clearCart());
+    store.dispatch(
+      openAppNotify({
+        link: "/login",
+        message: response?.data?.RETNMSSG,
+      })
+    );
   },
   (error) => {
     console.log(error);

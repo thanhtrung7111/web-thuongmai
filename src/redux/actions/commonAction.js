@@ -11,16 +11,8 @@ export const loadProduct = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       let dataa = await getCacheData("products");
-      console.log(dataa);
-      if (dataa !== null && dataa?.length > 0 && !data.reload) {
-        return data.KEY_WORD !== "%"
-          ? dataa.filter(
-              (item) =>
-                item.PRDCNAME.toLowerCase().indexOf(
-                  data.KEY_WORD.toLowerCase()
-                ) !== -1
-            )
-          : dataa;
+      if (dataa !== null && data.reload == false) {
+        return dataa;
       } else {
         const products = await fetchDataCommon(data);
         console.log(products);
@@ -28,11 +20,44 @@ export const loadProduct = createAsyncThunk(
           await setCacheData(
             "products",
             products?.data?.RETNDATA.filter(
-              (item) => item.PRDCNAME.indexOf("Tấm Trần Pima") >= 0
+              (item) =>
+                item.PRDCNAME.toLowerCase().indexOf("tấm trần pima") >= 0
             )
           );
           return products?.data?.RETNDATA.filter(
-            (item) => item.PRDCNAME.indexOf("Tấm Trần Pima") >= 0
+            (item) => item.PRDCNAME.toLowerCase().indexOf("tấm trần pima") >= 0
+          );
+        } else {
+          return rejectWithValue("Không có dữ liệu!");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Lỗi hệ thống!");
+    }
+  }
+);
+
+export const searchProduct = createAsyncThunk(
+  "common/searchProduct",
+  async (data, { rejectWithValue }) => {
+    try {
+      let dataa = await getCacheData("products");
+      if (dataa !== null && data.reload == false) {
+        return dataa;
+      } else {
+        const products = await fetchDataCommon(data);
+        console.log(products);
+        if (products?.data?.RETNDATA?.length > 0) {
+          await setCacheData(
+            "products",
+            products?.data?.RETNDATA.filter(
+              (item) =>
+                item.PRDCNAME.toLowerCase().indexOf("tấm trần pima") >= 0
+            )
+          );
+          return products?.data?.RETNDATA.filter(
+            (item) => item.PRDCNAME.toLowerCase().indexOf("tấm trần pima") >= 0
           );
         } else {
           return rejectWithValue("Không có dữ liệu!");

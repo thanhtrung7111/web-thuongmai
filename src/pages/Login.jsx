@@ -1,18 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import Footer from "@components/Footer";
-import Logo from "@assets/img/Icon.png";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "@redux/actions/userAction";
 import { NavLink, useNavigate } from "react-router-dom";
 import Branch from "../components/branch/Branch";
-import { loginLCTN } from "../redux/actions/userAction";
-import { Keyboard } from "swiper/modules";
 const Login = () => {
   const [compCode, setCompCode] = useState("");
   const navigate = useNavigate();
   const dispath = useDispatch();
-  const { isLoadingUser, errorMessageUser, currentUser, locations } =
-    useSelector((state) => state.user);
+  const {
+    isLoadingUser,
+    errorMessageUser,
+    isErrorMessagesUser,
+    locations,
+    tokenUser,
+  } = useSelector((state) => state.user);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [visiblePassword, setVisiblePassword] = useState(false);
@@ -72,6 +73,7 @@ const Login = () => {
   };
 
   useEffect(() => {
+    console.log("hello");
     if (locations?.LCTNLIST?.length > 0) {
       setCompCode(locations?.LCTNLIST.LCTNCODE);
     }
@@ -100,7 +102,7 @@ const Login = () => {
           <h2 className="font-semibold text-3xl text-second text-center mb-8">
             Đăng nhập
           </h2>
-          {currentUser == null ? (
+          {tokenUser.data == null ? (
             <>
               <div className="flex flex-col gap-y-2">
                 <div className="flex flex-col gap-y-4">
@@ -108,9 +110,10 @@ const Login = () => {
                     <label>Tài khoản</label>
                     <input
                       value={username}
+                      disabled={isLoadingUser}
                       onChange={(e) => setUsername(e.target.value)}
                       type="text"
-                      className="border py-2 px-3 outline-second"
+                      className="border disabled:opacity-90 py-2 px-3 outline-second"
                       placeholder="Tài khoản của bạn!"
                       onKeyDown={(e) => handlePressKey(e)}
                     />
@@ -119,10 +122,11 @@ const Login = () => {
                     <label>Mật khẩu</label>
                     <div className="flex items-center gap-x-2 w-full border py-2 px-3 outline-second">
                       <input
+                        disabled={isLoadingUser}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         type={visiblePassword ? "text" : "password"}
-                        className="outline-none bg-white flex-auto"
+                        className="outline-none disabled:opacity-90 bg-white flex-auto"
                         placeholder="Mật khẩu của bạn!"
                         onKeyDown={(e) => handlePressKey(e)}
                       />
@@ -141,20 +145,21 @@ const Login = () => {
                 </div>
                 <div className="text-gray-dark flex gap-x-1 text-xs">
                   <input
+                    disabled={isLoadingUser}
                     id="remember"
                     type="checkbox"
                     checked={remember}
                     onChange={() => {
                       setRemember(!remember);
                     }}
-                    className="w-4 h-4 accent-first"
+                    className="w-4 h-4 disabled:opacity-90 accent-first"
                   />
                   <label htmlFor="remember" className="cursor-pointer">
                     Ghi nhớ
                   </label>
                 </div>
               </div>
-              {errorMessageUser && (
+              {isErrorMessagesUser && (
                 <div className="text-red-600 text-xs">{errorMessageUser}</div>
               )}
               <button

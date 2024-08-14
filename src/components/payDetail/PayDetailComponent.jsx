@@ -49,7 +49,6 @@ const PayDetailComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [stateButton, setStateButton] = useState("");
-  const [chooseAll, setChooseAll] = useState(false);
   const { productCarts } = useSelector((state) => state.cart);
   const { currentUser } = useSelector((state) => state.user);
   const { showAlert } = useSelector((state) => state.popup);
@@ -215,7 +214,7 @@ const PayDetailComponent = () => {
           setInfoVietQR({ ...data, ...resp.data.data });
 
           toast.update(id, {
-            render: "Tạo VietQR hoàn tất",
+            render: "Tạo VietQR hoàn tất!",
             type: "success",
             isLoading: false,
             autoClose: 1500,
@@ -294,130 +293,7 @@ const PayDetailComponent = () => {
     navigate("/");
   };
 
-  const handlePlus = (id) => {
-    const productFind = formik.values.DETAIL.find(
-      (item) => item.PRDCCODE == id
-    );
-    console.log(id);
-    productFind.PRDCQTTY += 1;
-    productFind.MNEYAMNT = productFind.PRDCQTTY * productFind.SALEPRCE;
-    const body = {
-      DCMNCODE: "APPCARTPRDC",
-      HEADER: [
-        {
-          ...productFind,
-          QUOMQTTY: productFind.PRDCQTTY,
-          USERLOGIN: currentUser?.USERLGIN,
-          PRDCIMAGE: productFind.PRDCIMGE,
-        },
-      ],
-    };
-    try {
-      dispatch(increamentAmountProduct(body));
-    } catch (error) {
-      return;
-    }
-    updateFormik();
-  };
-
-  const handleSubstract = async (id) => {
-    const productFind = formik.values.DETAIL.find(
-      (item) => item.PRDCCODE == id
-    );
-    console.log(id);
-    productFind.MNEYAMNT = productFind.PRDCQTTY * productFind.SALEPRCE;
-    const body = {
-      DCMNCODE: "APPCARTPRDC",
-      HEADER: [
-        {
-          ...productFind,
-          QUOMQTTY: productFind.PRDCQTTY - 1,
-          USERLOGIN: currentUser?.USERLGIN,
-          PRDCIMAGE: productFind.PRDCIMGE,
-        },
-      ],
-    };
-    try {
-      await dispatch(decreamentAmountProduct(body));
-      productFind.PRDCQTTY -= 1;
-    } catch (error) {
-      return;
-    }
-    updateFormik();
-  };
-
-  const handleChangeChoose = (id) => {
-    formik.values.DETAIL.find((item) => item.PRDCCODE == id).checked =
-      !formik.values.DETAIL.find((item) => item.PRDCCODE == id).checked;
-    if (formik.values.DETAIL.find((item) => item.checked == false)) {
-      const detailCheckedTrue = formik.values.DETAIL;
-      setChooseAll(false);
-      formik.values.DETAIL = detailCheckedTrue;
-    } else {
-      setChooseAll(true);
-    }
-
-    updateFormik();
-  };
-
-  const handleClickAllProduct = () => {
-    setChooseAll(!chooseAll);
-    if (!chooseAll) {
-      formik.values.DETAIL = formik.values.DETAIL.map((item) => ({
-        ...item,
-        checked: true,
-      }));
-    } else {
-      formik.values.DETAIL = formik.values.DETAIL.map((item) => ({
-        ...item,
-        checked: false,
-      }));
-      formik.values.SUM_CRAM = 0;
-    }
-    updateFormik();
-  };
-
   // useEffect(() => {}, [chooseAll]);
-
-  const handleDeleteProduct = (prdcCode, id) => {
-    dispatch(deleteProductFromCart({ PRDCCODE: prdcCode, id: id }));
-    // formik.values.DETAIL = result;
-    // if (result.length == 0) {
-    //   setChooseAll(false);
-    // }
-    // console.log(result.length);
-    // updateFormik();
-  };
-
-  const handleBlurAmount = (e, id) => {
-    console.log("Hllo");
-    const productFind = formik.values.DETAIL.find(
-      (item) => item.PRDCCODE == id
-    );
-    if (parseInt(e.target.value) == 0) {
-      let result = formik.values.DETAIL.filter(
-        (item) => item.PRDCCODE != productFind.PRDCCODE
-      );
-      formik.values.DETAIL = result;
-      handleDeleteProduct(productFind.PRDCCODE, productFind.KKKK0000);
-    } else {
-      productFind.PRDCQTTY = parseInt(e.target.value);
-      productFind.MNEYAMNT = productFind.PRDCQTTY * productFind.SALEPRCE;
-      const body = {
-        DCMNCODE: "APPCARTPRDC",
-        HEADER: [
-          {
-            ...productFind,
-            QUOMQTTY: productFind.PRDCQTTY,
-            USERLOGIN: currentUser?.USERLGIN,
-            PRDCIMAGE: productFind.PRDCIMGE,
-          },
-        ],
-      };
-      dispatch(changeAmoutProduct(body));
-    }
-    updateFormik();
-  };
 
   const updateFormik = () => {
     const varFormik = formik.values.DETAIL?.filter(
@@ -466,55 +342,41 @@ const PayDetailComponent = () => {
           : 0,
     });
   };
-  const handleChangeAmount = (e, id) => {
-    console.log(e.target.value);
-    formik.values.DETAIL.find((item) => item.PRDCCODE == id).PRDCQTTY =
-      parseInt(e.target.value);
-    updateFormik();
-  };
 
   const changeForm = () => {};
 
   useEffect(() => {
     // if (productCarts?.length > 0) {
     async function loadDetailCart() {
-      const detail = await productCarts?.map((item) => {
-        return {
-          checked: formik.values.DETAIL?.find(
-            (i) => i.PRDCCODE == item.PRDCCODE
-          )?.checked
-            ? formik.values.DETAIL?.find((i) => i.PRDCCODE == item.PRDCCODE)
-                ?.checked
-            : false,
-          PRDCCODE: item.PRDCCODE, //Mã sản phẩm
-          PRDCNAME: item.PRDCNAME,
-          ORGNCODE: "1", //Nguồn sản phẩm
-          SORTCODE: "1", //Phân loại sản phẩm
-          QUOMCODE: item.QUOMCODE, //Đơn vị tính
-          QUOMQTTY: 1, //Số lượng
-          CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
-          MNEYCRAM: item.PRCEDSCN, //Thành tiền
-          PRDCIMGE: item.PRDCIMAGE,
-          DISCRATE: 0, //%Chiết khấu
-          DCPRCRAM: 0, //Tiền giảm CK
-          PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
-          SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
-          MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
-          DCPRAMNT: 0, //Tiền giảm CK qui đổi
-          DSCNRATE: item.DSCNRATE,
-          KKKK0000: item["KKKK0000"],
-          COMPCODE: item["COMPCODE"],
-          LCTNCODE: item["LCTNCODE"],
-        };
-      });
+      const detail = await Promise.all(
+        productCarts?.map((item) => {
+          return {
+            PRDCCODE: item.PRDCCODE, //Mã sản phẩm
+            PRDCNAME: item.PRDCNAME,
+            ORGNCODE: "1", //Nguồn sản phẩm
+            SORTCODE: "1", //Phân loại sản phẩm
+            QUOMCODE: item.QUOMCODE, //Đơn vị tính
+            QUOMQTTY: 1, //Số lượng
+            CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
+            MNEYCRAM: item.PRCEDSCN, //Thành tiền
+            PRDCIMGE: item.PRDCIMAGE,
+            DISCRATE: 0, //%Chiết khấu
+            DCPRCRAM: 0, //Tiền giảm CK
+            PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
+            SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
+            MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
+            DCPRAMNT: 0, //Tiền giảm CK qui đổi
+            DSCNRATE: item.DSCNRATE,
+            KKKK0000: item["KKKK0000"],
+            COMPCODE: item["COMPCODE"],
+            LCTNCODE: item["LCTNCODE"],
+            ...item,
+          };
+        })
+      );
       console.log(detail);
       formik.values.DETAIL = detail ? [...detail] : [];
-      if (detail && detail.find((item) => item.checked == false)) {
-        setChooseAll(false);
-      } else {
-        setChooseAll(true);
-      }
-      console.log(">>>>>>>>>>>>" + "load data");
+
       // }
       updateFormik();
     }
@@ -680,14 +542,7 @@ const PayDetailComponent = () => {
                   </tbody>
                 </table> */}
                 <TableDetailProduct
-                  handleBlurAmount={handleBlurAmount}
-                  handleChangeAmount={handleChangeAmount}
-                  handleDelete={handleDeleteProduct}
-                  handleClickAll={handleClickAllProduct}
-                  handleSubstract={handleSubstract}
-                  handleChoose={handleChangeChoose}
                   data={formik.values.DETAIL}
-                  handlePlus={handlePlus}
                   maincode={"KKKK0000"}
                   name={"PRDCNAME"}
                   id={"PRDCCODE"}
@@ -696,7 +551,6 @@ const PayDetailComponent = () => {
                   price={"SALEPRCE"}
                   quantity={"PRDCQTTY"}
                   choose={"checked"}
-                  chooseAll={chooseAll}
                 ></TableDetailProduct>
               </div>
             </div>

@@ -14,7 +14,6 @@ import ProductSlider from "@components/ProductSlider";
 import TagList from "@components/TagList";
 import CommentCard from "@components/CommentCard";
 import InfoPage from "@components/InfoPage";
-import ReactImageMagnify from "react-image-magnify";
 import ImageMagnifier from "@components/ImageMagnifier";
 import { useDispatch, useSelector } from "react-redux";
 import Panigation from "@components/panigation/Panigation";
@@ -28,6 +27,8 @@ import { fetchImage } from "../../helper/ImageHelper";
 import { addToCart, updateAmountProduct } from "../../redux/actions/cartAction";
 import ProductDetailSkeleton from "./ProductDetailSkeleton";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { chooseProduct } from "../../redux/reducer/cartReducer";
 let pageSize = 4;
 const images = [
   {
@@ -197,7 +198,7 @@ const ProductDetailComponent = () => {
   const { productCarts } = useSelector((state) => state.cart);
   const [indexImage, setIndexImage] = useState({ ...images[0] });
   const [mainImage, setMainImage] = useState("");
-  const [amountProduct, setAmountProduct] = useState(1);
+  const [qty, setQty] = useState(1);
   const navigationPrevRef = React.useRef(null);
   const navigationNextRef = React.useRef(null);
   const onChangeTagRam = (value) => {
@@ -210,7 +211,7 @@ const ProductDetailComponent = () => {
   };
   console.log(productCarts);
 
-  const addCart = async (prdc) => {
+  const addCart = (value) => {
     const productFind = productCarts.find(
       (item) => item.PRDCCODE == productDetail.PRDCCODE
     );
@@ -221,28 +222,39 @@ const ProductDetailComponent = () => {
           HEADER: [
             {
               ...productFind,
-              QUOMQTTY: amountProduct + productFind.QUOMQTTY,
+              QUOMQTTY: qty,
             },
           ],
         })
       );
+      toast.success("Thêm sản phẩm vào giỏ thành công!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: true,
+      });
     } else {
-      console.log(prdc.PRCEDSCN);
+      console.log(value.PRCEDSCN);
       dispatch(
         addToCart({
-          COMPCODE: prdc.COMPCODE,
+          COMPCODE: value.COMPCODE,
           LCTNCODE: "001",
           USERLOGIN: currentUser?.USERLGIN,
-          PRDCCODE: prdc.PRDCCODE,
-          QUOMQTTY: amountProduct,
+          PRDCCODE: value.PRDCCODE,
+          QUOMQTTY: qty,
           // QUOMCODE: item["QUOMCODE"],
-          SALEPRCE: prdc.PRCESALE,
-          DSCNRATE: prdc.DSCNRATE,
-          PRDCNAME: prdc.PRDCNAME,
-          PRDCIMAGE: prdc.DETAIL_4[0]?.IMGE_URL,
+          SALEPRCE: value.PRCESALE,
+          DSCNRATE: value.DSCNRATE,
+          PRDCNAME: value.PRDCNAME,
+          PRDCIMAGE: value.DETAIL_4[0]?.IMGE_URL,
         })
       );
     }
+  };
+
+  const handlePay = (value) => {
+    addCart(value);
+    dispatch(chooseProduct({ id: productDetail.PRDCCODE, checked: true }));
+    navigate("/pay");
   };
 
   useEffect(() => {
@@ -467,10 +479,10 @@ const ProductDetailComponent = () => {
                     <div className="flex items-center justify-start gap-x-1">
                       <button
                         onClick={() => {
-                          if (amountProduct == 1) {
+                          if (qty == 1) {
                             return;
                           }
-                          setAmountProduct(amountProduct - 1);
+                          setQty(qty - 1);
                         }}
                         className="text-gray-darked w-8 h-8 text-lg border flex items-center justify-center"
                       >
@@ -481,16 +493,14 @@ const ProductDetailComponent = () => {
                         type="number"
                         placeholder={1}
                         min={1}
-                        value={amountProduct}
-                        onChange={(e) =>
-                          setAmountProduct(Number(e.target.value))
-                        }
+                        value={qty}
+                        onChange={(e) => setQty(Number(e.target.value))}
                         className="w-24 text-center outline-none border h-8"
                       />
                       {/* </div> */}
 
                       <button
-                        onClick={() => setAmountProduct(amountProduct + 1)}
+                        onClick={() => setQty(qty + 1)}
                         className="text-gray-darked w-8 h-8 text-lg border flex items-center justify-center"
                       >
                         +
@@ -509,10 +519,7 @@ const ProductDetailComponent = () => {
                       Thêm vào giỏ
                     </button>
                     <button
-                      onClick={() => {
-                        addCart(productDetail);
-                        navigate("/pay");
-                      }}
+                      onClick={() => handlePay(productDetail)}
                       className="bg-[#f24c4c] text-white rounded-md px-3 py-2"
                     >
                       Mua ngay

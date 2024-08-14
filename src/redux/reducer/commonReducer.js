@@ -18,6 +18,7 @@ import {
   loadinpCustOdMtPayMthd2,
   loadLstQUOM,
   loadPmtPmtnPrgr,
+  searchProduct,
 } from "../actions/commonAction";
 
 const commonSlice = createSlice({
@@ -25,6 +26,7 @@ const commonSlice = createSlice({
 
   initialState: {
     products: {
+      actionPending: false,
       data: null,
       isError: false,
       errorMessage: "",
@@ -117,9 +119,30 @@ const commonSlice = createSlice({
       })
       .addCase(loadProduct.pending, (state, action) => {
         state.products.data = null;
-        (state.products.errorMessage = ""),
-          (state.products.isError = false),
-          (state.products.isLoading = true);
+        state.products.errorMessage = "";
+        state.products.isError = false;
+        state.products.isLoading = true;
+      });
+
+    //SEARCH PRODUCT
+    builder
+      .addCase(searchProduct.fulfilled, (state, action) => {
+        state.products.data = action.payload;
+        state.products.errorMessage = "";
+        state.products.isError = false;
+        state.products.actionPending = false;
+      })
+      .addCase(searchProduct.rejected, (state, action) => {
+        state.products.data = null;
+        state.products.errorMessage = action.payload;
+        state.products.isError = true;
+        state.products.actionPending = false;
+      })
+      .addCase(searchProduct.pending, (state, action) => {
+        state.products.data = null;
+        state.products.errorMessage = "";
+        state.products.isError = false;
+        state.products.actionPending = true;
       });
 
     //LOAD WAREHOUSE

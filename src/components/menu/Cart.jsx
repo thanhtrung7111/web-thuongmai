@@ -101,7 +101,7 @@ const Cart = () => {
           <h3 className="text-lg text-gray-500 font-normal text-start relative pb-2">
             Sản phẩm trong giỏ
           </h3>
-          {productCarts?.length != 0 ? (
+          {productCarts != null && productCarts?.length != 0 ? (
             <div className={`flex flex-col overflow-y-scroll h-96  shadow-sm`}>
               {(productCarts ? productCarts : []).map((item) => {
                 return (
@@ -135,7 +135,7 @@ const Cart = () => {
               </NavLink>
             </div>
           )}
-          {productCarts?.length != 0 && (
+          {productCarts != null && productCarts?.length != 0 && (
             <div className="flex items-center justify-between mt-3 text-gray-dark text-sm">
               <span>Tổng sản phẩm: {productCarts?.length}</span>
               <button

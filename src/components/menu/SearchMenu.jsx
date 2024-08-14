@@ -29,7 +29,7 @@ const SearchMenu = () => {
   const { productSearchs } = useSelector((state) => state.user);
   const [disable, setDisable] = useState(false);
   const [indexMove, setIndexMove] = useState(-1);
-  const { isLoadingCommon } = useSelector((state) => state.common);
+  const { products } = useSelector((state) => state.common);
   useEffect(() => {
     setIsLoading(true);
     if (keyWord !== "") {
@@ -103,7 +103,7 @@ const SearchMenu = () => {
     }
     setDisable(true);
     window.scroll(0, 0);
-    navigate("/products?search=" + keySearch);
+    navigate("/products/search?name=" + keySearch);
     setFocus(false);
     event.target.blur();
   };
@@ -119,14 +119,6 @@ const SearchMenu = () => {
   //   }
   //   setKeyWord(dataFind[indexMove]);
   // }, [indexMove]);
-
-  useEffect(() => {
-    if (isLoadingCommon == false) {
-      setTimeout(() => {
-        setDisable(false);
-      }, 1000);
-    }
-  }, [isLoadingCommon, disable == true]);
   return (
     <div className="relative w-[400px] items-center border-b justify-between px-0 pr-4 pl-3 h-10 hidden lg:flex">
       <input
@@ -140,9 +132,9 @@ const SearchMenu = () => {
         }}
         onKeyUp={(event) => handlePress(event)}
         value={keyWord}
-        disabled={disable}
+        disabled={products.actionPending}
       />
-      {disable ? (
+      {products.actionPending ? (
         <div role="status">
           <svg
             aria-hidden="true"
@@ -167,7 +159,7 @@ const SearchMenu = () => {
           className="ri-search-line cursor-pointer text-gray-dark"
         ></i>
       )}
-      {!disable && (
+      {!products.actionPending && (
         <div
           className={`${
             (keyWord != "" || productSearchs?.length > 0) &&

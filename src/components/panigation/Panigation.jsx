@@ -35,7 +35,7 @@ const Panigation = (props) => {
   };
 
   function scrollToElement() {
-    window.scrollTo(0, document.getElementById(scrollTo).offsetTop - 120);
+    window.scrollTo(0, document.getElementById(scrollTo).offsetTop - 125);
   }
   let lastPage = paginationRange[paginationRange.length - 1];
   return (

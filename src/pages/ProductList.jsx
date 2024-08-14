@@ -8,10 +8,6 @@ import { changeAmoutProduct } from "../redux/actions/cartAction";
 
 const ProductList = () => {
   const dispatch = useDispatch();
-  const [searchParam, setSearchParam] = useSearchParams();
-  const value = searchParam.get("search");
-  const [loading, setLoading] = useState(true);
-  console.log(value);
   useEffect(() => {
     dispatch(
       loadProduct({
@@ -21,15 +17,16 @@ const ProductList = () => {
         LGGECODE: "{{0302}}",
         SCTNCODE: 1,
         JSTFDATE: "1990-01-01",
-        KEY_WORD: value ? value : "%",
+        KEY_WORD: "%",
         SHOPCODE: "%",
         CUSTCODE: "%",
+        // reload: true,
       })
     );
     dispatch(loadLstQUOM());
-  }, [value]);
+  }, []);
 
-  return <ProductListComponent search={value}></ProductListComponent>;
+  return <ProductListComponent></ProductListComponent>;
 };
 
 export default ProductList;

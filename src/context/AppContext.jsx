@@ -3,8 +3,7 @@ import { api } from "../api/api";
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const [token, setToken] = useState("");
-
+  const [token, setToken] = useState(null);
   useEffect(() => {
     console.log("hello");
     api
@@ -17,8 +16,12 @@ export const AppProvider = ({ children }) => {
         }
       )
       .then((res) => {
-        setToken(res.data.RETNDATA.TOKEN);
-        sessionStorage.setItem("tokenInitial", res.data.RETNDATA.TOKEN);
+        // console.log("hello");
+        if (res.data?.RETNCODE == false) {
+          return;
+        }
+        setToken(res?.data?.RETNDATA?.TOKEN);
+        sessionStorage.setItem("tokenInitial", res?.data?.RETNDATA?.TOKEN);
       })
       .catch((e) => console.log(e));
   }, []);

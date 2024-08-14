@@ -37,7 +37,7 @@ const ProductSuggestion = ({ keyword }) => {
     }
   }, [open]);
 
-  return (
+  return  (
     <>
       <span
         onClick={() => setOpen(!open)}

@@ -28,8 +28,7 @@ const tagsSort = [
     name: "Sắp xếp theo giá",
   },
 ];
-const ProductListComponent = ({ search }) => {
-  const dispatch = useDispatch();
+const ProductListComponent = () => {
   const minPrice = useRef();
   const maxPrice = useRef();
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,25 +79,7 @@ const ProductListComponent = ({ search }) => {
   };
 
   const handleRefresh = () => {
-    dispatch(
-      loadProduct({
-        DCMNCODE: "appPrdcList",
-        PARACODE: "001",
-        LCTNCODE: "%",
-        LGGECODE: "{{0302}}",
-        SCTNCODE: 1,
-        JSTFDATE: "1990-01-01",
-        KEY_WORD: "%",
-        SHOPCODE: "%",
-        CUSTCODE: "%",
-      })
-    );
-    setLoading(true);
-    setRefresh(!refresh);
-    setListSearch({
-      nameSearch: "",
-      lstQUOMSearch: [],
-    });
+    setProductList(products.data);
   };
 
   const onChangeTag = (value) => {
@@ -129,16 +110,10 @@ const ProductListComponent = ({ search }) => {
   };
 
   useEffect(() => {
-    if (
-      products.data?.length >= 0 &&
-      products.isLoading === false &&
-      productList?.length >= 0
-    ) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1500);
+    if (products.data != null) {
+      setProductList(products.data);
     }
-  }, [productList?.length, products.data]);
+  }, [products.data]);
 
   useEffect(() => {
     setProductList(products.data);
@@ -146,8 +121,12 @@ const ProductListComponent = ({ search }) => {
   }, [products.data]);
 
   useEffect(() => {
-    setLoading(true);
-  }, [search]);
+    if (products.isLoading == false && lstQUOM.isLoading == false) {
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }, [products.isLoading, lstQUOM.isLoading]);
 
   useEffect(() => {
     async function search() {

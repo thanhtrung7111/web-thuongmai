@@ -1,27 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ImageFetch from "../ImageFetch";
 import RowPayDetail from "./RowPayDetail";
+import { useDispatch, useSelector } from "react-redux";
+import { chooseAllProduct } from "../../redux/reducer/cartReducer";
 
-const TableDetailProduct = ({
-  data,
-  name,
-  id,
-  image,
-  price,
-  choose,
-  total,
-  quantity,
-  saleoff,
-  maincode,
-  handleClickAll,
-  handlePlus,
-  handleBlurAmount,
-  handleChangeAmount,
-  handleSubstract,
-  handleDelete,
-  handleChoose,
-  chooseAll,
-}) => {
+const TableDetailProduct = () => {
+  const { productCarts } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const [chooseAll, setChooseAll] = useState(false);
+  const handleClickAllProduct = () => {
+    dispatch(chooseAllProduct(!chooseAll));
+    setChooseAll(!chooseAll);
+  };
+
+  useEffect(() => {
+    const find = productCarts?.find((item) => item.checked == false);
+    if (find) {
+      setChooseAll(false);
+      return;
+    }
+    setChooseAll(true);
+  }, [productCarts]);
   return (
     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
       <thead class="text-xs text-gray-600 z-10 bg-gray-200 dark:bg-gray-700 dark:text-gray-400 sticky top-0 right-0 ">
@@ -31,7 +30,7 @@ const TableDetailProduct = ({
               type="checkbox"
               id="chooseAll"
               className="w-5 h-5 accent-first border-gray-light"
-              onClick={handleClickAll}
+              onClick={handleClickAllProduct}
               checked={chooseAll}
             />{" "}
             <label for="chooseAll" className="cursor-pointer">
@@ -47,26 +46,20 @@ const TableDetailProduct = ({
         <th class="px-6 py-3 w-32 uppercase">Xóa tất cả</th>
       </thead>
       <tbody>
-        {data?.length >= 1
-          ? data?.map((i) => {
+        {productCarts?.length >= 1
+          ? productCarts?.map((i) => {
               return (
                 <RowPayDetail
-                  key={i[id]}
-                  handleBlurAmount={handleBlurAmount}
-                  handleChangeAmount={handleChangeAmount}
-                  handlePlus={handlePlus}
-                  handleDelete={handleDelete}
-                  handleChoose={handleChoose}
-                  handleSubstract={handleSubstract}
-                  id={id}
+                  key={i["PRDCCODE"]}
                   item={i}
-                  choose={choose}
-                  price={price}
-                  maincode={maincode}
-                  name={name}
-                  image={image}
-                  saleoff={saleoff}
-                  quantity={quantity}
+                  maincode={"KKKK0000"}
+                  name={"PRDCNAME"}
+                  id={"PRDCCODE"}
+                  image={"PRDCIMAGE"}
+                  saleoff={"DSCNRATE"}
+                  price={"SALEPRCE"}
+                  quantity={"QUOMQTTY"}
+                  choose={"checked"}
                 ></RowPayDetail>
               );
             })

@@ -6,7 +6,6 @@ import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import { closeBlock } from "../../redux/reducer/popupReducer";
 import { base64StringToBlob } from "blob-util";
-import fs from "fs";
 import { postImage } from "../../api/api";
 import { storage } from "../../firebase/firebase.config";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -239,34 +238,37 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
   };
 
   useEffect(() => {
-    const timeValue =
-      value?.expiredAt - Math.floor(new Date().getTime() / 1000);
-    let timeRemain = value?.expiredAt - Math.floor(new Date().getTime() / 1000);
-    // console.log(timeRemain);
-    let intervalTime = null;
-    if (timeRemain >= 0 && open) {
-      intervalTime = setInterval(() => {
-        document.getElementById("timeTranfer").textContent =
-          (Math.floor(timeRemain / 60) >= 10
-            ? Math.floor(timeRemain / 60)
-            : "0" + Math.floor(timeRemain / 60)) +
-          ":" +
-          (Math.floor(timeRemain % 60) >= 10
-            ? Math.floor(timeRemain % 60)
-            : "0" + Math.floor(timeRemain % 60));
-        timeRemain -= 1;
-        if (timeRemain == -1) {
-          clearInterval(intervalTime);
+    if (open == true) {
+      const timeValue =
+        value?.expiredAt - Math.floor(new Date().getTime() / 1000);
+      let timeRemain =
+        value?.expiredAt - Math.floor(new Date().getTime() / 1000);
+      // console.log(timeRemain);
+      let intervalTime = null;
+      if (timeRemain >= 0 && open) {
+        intervalTime = setInterval(() => {
           document.getElementById("timeTranfer").textContent =
-            "Hết hạn thanh toán";
-        }
-      }, 1000);
-    }
+            (Math.floor(timeRemain / 60) >= 10
+              ? Math.floor(timeRemain / 60)
+              : "0" + Math.floor(timeRemain / 60)) +
+            ":" +
+            (Math.floor(timeRemain % 60) >= 10
+              ? Math.floor(timeRemain % 60)
+              : "0" + Math.floor(timeRemain % 60));
+          timeRemain -= 1;
+          if (timeRemain == -1) {
+            clearInterval(intervalTime);
+            document.getElementById("timeTranfer").textContent =
+              "Hết hạn thanh toán";
+          }
+        }, 1000);
+      }
 
-    if (!open) {
-      for (var i = 1; i < 10000; i++) window.clearInterval(i);
+      if (!open) {
+        for (var i = 1; i < 10000; i++) window.clearInterval(i);
+      }
     }
-  }, [open == true]);
+  }, [open]);
   // console.log(open);
   return (
     <div

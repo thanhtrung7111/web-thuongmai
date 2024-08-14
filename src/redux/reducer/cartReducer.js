@@ -51,17 +51,23 @@ const cartSlice = createSlice({
       };
     },
     chooseProduct: (state, action) => {
+      if (action.payload.checked) {
+        state.productCarts.find(
+          (item) => item.PRDCCODE == action.payload.id
+        ).checked = action.checked;
+        return;
+      }
       state.productCarts.find(
         (item) => item.PRDCCODE == action.payload.id
-      ).choose = !state.productCarts.find(
+      ).checked = !state.productCarts.find(
         (item) => item.PRDCCODE == action.payload.id
-      ).choose;
+      ).checked;
     },
 
     chooseAllProduct: (state, action) => {
       console.log(action.payload);
       state.productCarts = state.productCarts.map((item) => {
-        return { ...item, choose: action.payload };
+        return { ...item, checked: action.payload };
       });
     },
   },
@@ -76,7 +82,10 @@ const cartSlice = createSlice({
         state.loadingCart.isLoading = true;
       })
       .addCase(loadCart.fulfilled, (state, action) => {
-        state.productCarts = action.payload?.data?.RETNDATA;
+        state.productCarts = action.payload?.data?.RETNDATA?.map((item) => ({
+          checked: false,
+          ...item,
+        }));
         state.loadingCart.errorMessage = "";
         state.loadingCart.isError = false;
         state.loadingCart.isLoading = false;
@@ -94,10 +103,6 @@ const cartSlice = createSlice({
         state.actionCart.isLoading = true;
         state.actionCart.isError = false;
         state.actionCart.errorMessage = "";
-        toast.success("Thêm sản phẩm vào giỏ thành công", {
-          autoClose: 2000,
-          position: "top-center",
-        });
       })
       .addCase(addToCart.fulfilled, (state, action) => {
         state.productCarts.push({
@@ -106,6 +111,11 @@ const cartSlice = createSlice({
         state.actionCart.isLoading = false;
         state.actionCart.isError = false;
         state.actionCart.errorMessage = "";
+        toast.success("Thêm sản phẩm vào giỏ thành công", {
+          autoClose: 2000,
+          position: "top-center",
+          hideProgressBar: true,
+        });
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.actionCart.isLoading = false;
