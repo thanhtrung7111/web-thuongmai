@@ -26,6 +26,7 @@ import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
 import sessionStorage from "redux-persist/es/storage/session";
 import { thunk } from "redux-thunk";
 import { version } from "react";
+import { commonApiSlice } from "../query/commonQuery";
 // import { GetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 
 const rootPersistConfig = {
@@ -33,7 +34,15 @@ const rootPersistConfig = {
   storage: session,
   version: 1,
   // whitelist: ["user", "cart"],
-  blacklist: ["user", "cart", "common", "product", "popup", "order"],
+  blacklist: [
+    "user",
+    "cart",
+    "common",
+    "product",
+    "popup",
+    "order",
+    "commonApi",
+  ],
   stateReconciler: autoMergeLevel2, // ADDED
 };
 const userPersistConfig = {
@@ -59,6 +68,7 @@ const rootReducer = combineReducers({
   product: productReducer,
   popup: popupReducer,
   order: orderReducer,
+  [commonApiSlice.reducerPath]: commonApiSlice.reducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
@@ -66,9 +76,7 @@ const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
+    getDefaultMiddleware().concat(commonApiSlice.middleware),
 });
 
 export default store;

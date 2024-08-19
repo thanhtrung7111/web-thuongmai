@@ -34,6 +34,7 @@ const ImageFetch = ({ url, className }) => {
     // }
 
     const fetchImage = async () => {
+      // console.log(url);
       setImage({ data: null, isLoading: true });
       try {
         const response = await axios.get(url, {

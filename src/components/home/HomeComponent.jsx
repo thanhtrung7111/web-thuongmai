@@ -12,16 +12,37 @@ import CategorySlider from "@components/CategorySlider";
 import { useSelector } from "react-redux";
 import LoadingView from "../../pages/LoadingView";
 import HomeSkeleton from "./HomeSkeleton";
+import {
+  useFetchProductsQuery,
+  useGetProductsMutation,
+} from "../../redux/query/commonQuery";
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomeComponent = () => {
-  const { products } = useSelector((state) => state.common);
-  const [lstProduct, setLstProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    setLstProduct(products?.data);
-  }, [products]);
+  const { data: products, refetch } = useFetchProductsQuery();
 
-  return products?.isLoading ? (
+  const [getProducts, { isLoading, isError }] = useGetProductsMutation();
+  // useEffect(() => {
+  //   setLstProduct(products?.data);
+  // }, [products]);
+
+  useEffect(() => {
+    if (!products) {
+      getProducts({
+        DCMNCODE: "appPrdcList",
+        PARACODE: "001",
+        LCTNCODE: "001",
+        LGGECODE: "{{0302}}",
+        SCTNCODE: 1,
+        JSTFDATE: "1990-01-01",
+        KEY_WORD: "%",
+        SHOPCODE: "%",
+        CUSTCODE: "%",
+        reload: true,
+      });
+    }
+  }, []);
+  console.log(products);
+  return isLoading ? (
     <HomeSkeleton />
   ) : (
     <>
@@ -92,7 +113,7 @@ const HomeComponent = () => {
               </a>
             </div>
             <ProductSlider
-              data={products.data?.slice(0, 15)}
+              data={products?.slice(0, 15)}
               id={"PRDCCODE"}
               name={"PRDCNAME"}
               image={"PRDCIMGE"}
@@ -158,7 +179,7 @@ const HomeComponent = () => {
             </div>
 
             <ProductSlider
-              data={products.data?.slice(0, 15)}
+              data={products?.slice(0, 15)}
               id={"PRDCCODE"}
               name={"PRDCNAME"}
               image={"PRDCIMGE"}
