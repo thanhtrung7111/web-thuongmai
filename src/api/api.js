@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useContext } from "react";
-import AppContext from "../context/AppContext";
 import {
   openAppNotify,
   openEvaluateProduct,
@@ -12,7 +11,6 @@ export let store;
 export const injectStore = (_store) => {
   store = _store;
 };
-
 
 export const api = axios.create({
   baseURL: "https://api-dev.firstems.com",
