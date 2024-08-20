@@ -93,7 +93,7 @@ function App() {
   }, [token.data]);
 
   return token.isLoading ? (
-    <div className="h-screen w-screen flex items-center justify-center">
+    <div className="h-screen w-screen flex items-center justify-center gap-x-5">
       <div role="status">
         <svg
           aria-hidden="true"
@@ -113,7 +113,7 @@ function App() {
         </svg>
         <span class="sr-only">Loading...</span>
       </div>{" "}
-      <span>Đang tải dữ liệu...</span>
+      <p className="text-2xl">Đang tải dữ liệu...</p>
     </div>
   ) : (
     <div>
