@@ -9,11 +9,11 @@ import LoadingView from "./pages/LoadingView.jsx";
 import { injectStore } from "./api/api.js";
 injectStore(store);
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
       <PersistGate persistor={persistor} loading={null}>
         <App />
       </PersistGate>
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
