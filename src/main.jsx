@@ -10,11 +10,11 @@ import { AppProvider } from "./context/AppContext.jsx";
 import { injectStore } from "./api/api.js";
 injectStore(store);
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <AppProvider>
+  <React.StrictMode>
     <Provider store={store}>
       <PersistGate persistor={persistor} loading={null}>
         <App />
       </PersistGate>
     </Provider>
-  </AppProvider>
+  </React.StrictMode>
 );
