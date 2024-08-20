@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Asus from "../assets/img/asus.jpg";
 import { NavLink, useNavigate } from "react-router-dom";
-import { addToCart } from "@redux/actions/cartAction.js";
 import { useDispatch, useSelector } from "react-redux";
-import NoImage from "@assets/img/noimage.png";
+import NoImage from "../assets/img/noimage.png";
 import ImageFetch from "./ImageFetch";
 import { toast } from "react-toastify";
+import { addToCart } from "../redux/actions/cartAction";
 const ProductCard = ({
   item,
   id,

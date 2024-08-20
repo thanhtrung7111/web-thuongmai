@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ProductCard from "@components/ProductCard";
-import Panigation from "@components/panigation/Panigation";
+import ProductCard from "../ProductCard";
+import Panigation from "../panigation/Panigation";
 import { loadProduct } from "../../redux/actions/commonAction";
 import LoadingView from "../../pages/LoadingView";
 import AnimateSkeleton from "../AnimateSkeleton";
@@ -37,7 +37,7 @@ const ProductSuggestion = ({ keyword }) => {
     }
   }, [open]);
 
-  return  (
+  return (
     <>
       <span
         onClick={() => setOpen(!open)}

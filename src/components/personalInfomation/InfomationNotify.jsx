@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import TabComponent from "../TabComponent";
 import { useDispatch } from "react-redux";
-import Panigation from "@components/panigation/Panigation";
+import Panigation from "./../panigation/Panigation";
 
 import RowNotify from "./RowNotify";
 const menu = [

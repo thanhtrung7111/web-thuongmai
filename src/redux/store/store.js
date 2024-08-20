@@ -1,17 +1,6 @@
-import {
-  combineReducers,
-  combineSlices,
-  configureStore,
-} from "@reduxjs/toolkit";
-import userReducer from "@redux/reducer/userReducer";
-import cartReducer from "@redux/reducer/cartReducer";
 import persistReducer from "redux-persist/lib/persistReducer";
 import storage from "redux-persist/lib/storage";
-import session from "redux-persist/lib/storage/session";
 import persistStore from "redux-persist/lib/persistStore";
-import { commonReducer } from "@redux/reducer/commonReducer";
-import productReducer from "@redux/reducer/productReducer";
-import { popupReducer } from "@redux/reducer/popupReducer";
 import {
   FLUSH,
   PAUSE,
@@ -20,50 +9,51 @@ import {
   REGISTER,
   REHYDRATE,
 } from "redux-persist";
-import { orderReducer } from "@redux/reducer/orderReducer";
 // import sessionStorage from "redux-persist/es/storage/session";
 import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
-import sessionStorage from "redux-persist/es/storage/session";
-import { thunk } from "redux-thunk";
-import { version } from "react";
 import { commonApiSlice } from "../query/commonQuery";
+import cartReducer from "../reducer/cartReducer";
+import userReducer from "../reducer/userReducer";
+import commonReducer from "../reducer/commonReducer";
+import productReducer from "../reducer/productReducer";
+import popupReducer from "../reducer/popupReducer";
+import orderReducer from "../reducer/orderReducer";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import sessionStorage from "redux-persist/es/storage/session";
 // import { GetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 
 const rootPersistConfig = {
   key: "root",
-  storage: session,
+  storage: sessionStorage,
   version: 1,
-  // whitelist: ["user", "cart"],
-  blacklist: [
-    "user",
-    "cart",
-    "common",
-    "product",
-    "popup",
-    "order",
-    "commonApi",
-  ],
-  stateReconciler: autoMergeLevel2, // ADDED
+  whitelist: ["user"],
+  // blacklist: [
+  //   "user",
+  //   "cart",
+  //   "common",
+  //   "product",
+  //   "popup",
+  //   "order",
+  //   commonApiSlice.reducerPath,
+  // ],
 };
 const userPersistConfig = {
   key: "user",
-  storage: session,
+  storage: sessionStorage,
   version: 1,
-  whitelist: ["currentUser", "currentUrl"],
-  stateReconciler: autoMergeLevel2,
+  whitelist: ["currentUser"],
 };
 
-const cartPersistConfig = {
-  key: "cart",
-  storage: session,
-  version: 1,
-  whitelist: ["productCarts"],
-  stateReconciler: autoMergeLevel2,
-};
+// const cartPersistConfig = {
+//   key: "cart",
+//   storage: session,
+//   version: 1,
+//   whitelist: ["productCarts"],
+// };
 
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
-  cart: persistReducer(cartPersistConfig, cartReducer),
+  cart: cartReducer,
   common: commonReducer,
   product: productReducer,
   popup: popupReducer,
@@ -76,7 +66,9 @@ const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(commonApiSlice.middleware),
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(commonApiSlice.middleware),
 });
 
 export default store;

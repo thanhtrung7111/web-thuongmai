@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Asus from "@assets/img/asus.jpg";
-import NoImage from "@assets/img/noimage.png";
+import Asus from "../../assets/img/asus.jpg";
+import NoImage from "../../assets/img/noimage.png";
 import moment from "moment";
 import { fetchDataDetail } from "../../api/api";
-import LoadingView from "@components/LoadingView";
+import LoadingView from "../LoadingView";
 const RowOrder = ({
   item,
   status,

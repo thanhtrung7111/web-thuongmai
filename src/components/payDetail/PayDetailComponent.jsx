@@ -1,15 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import Wrapper from "@components/Wrapper";
-import Asus from "@assets/img/asus.jpg";
-import ProductSlider from "@components/ProductSlider";
-import InfoPage from "@components/InfoPage";
+import Wrapper from "../Wrapper";
+import Asus from "../../assets/img/asus.jpg";
+import ProductSlider from "../ProductSlider";
+import InfoPage from "../InfoPage";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  decreamentAmountProduct,
-  increamentAmountProduct,
-} from "@redux/actions/cartAction";
-import { chooseProduct } from "@redux/reducer/cartReducer";
-import { chooseAllProduct } from "@redux/reducer/cartReducer";
 import {
   changeAmoutProduct,
   deleteProductFromCart,
@@ -37,11 +31,10 @@ import LoadingView from "../../pages/LoadingView";
 import axios from "axios";
 import { HmacSHA256 } from "crypto-js";
 import VietQRComponent from "./VietQRComponent";
-import VNPay from "@assets/img/vnpay.png";
-import VietQR from "@assets/img/vietqr.png";
+import VNPay from "../../assets/img/vnpay.png";
+import VietQR from "../../assets/img/vietqr.png";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import { toast } from "react-toastify";
-import { info } from "autoprefixer";
 import { base64StringToBlob } from "blob-util";
 import { postData } from "../../api/api";
 import TableDetailProduct from "./TableDetailProduct";

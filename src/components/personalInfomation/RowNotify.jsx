@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Asus from "@assets/img/asus.jpg";
+import Asus from "../../assets/img/asus.jpg";
 import {
   openDetailOrder,
   openEvaluateProduct,

@@ -1,16 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Wrapper from "@components/Wrapper";
-import ProductCard from "@components/ProductCard";
-import ProductSlider from "@components/ProductSlider";
-import { tagsRam } from "../../data";
-import TagList from "@components/TagList";
-import Panigation from "@components/panigation/Panigation";
-import InfoPage from "@components/InfoPage";
-import { useDispatch, useSelector } from "react-redux";
-import CheckBoxList from "../CheckBoxList";
-import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
-import LoadingView from "../../pages/LoadingView";
-import { loadProduct } from "../../redux/actions/commonAction";
+import Wrapper from "../Wrapper";
 import AnimateSkeleton from "../AnimateSkeleton";
 
 const ProductListComponent = ({ search }) => {

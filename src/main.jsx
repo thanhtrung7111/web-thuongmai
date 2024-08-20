@@ -12,7 +12,7 @@ injectStore(store);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <AppProvider>
     <Provider store={store}>
-      <PersistGate persistor={persistor} loading={<LoadingView></LoadingView>}>
+      <PersistGate persistor={persistor} loading={null}>
         <App />
       </PersistGate>
     </Provider>

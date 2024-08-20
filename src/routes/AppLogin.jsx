@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Logo from "@assets/img/Icon.png";
+import Logo from "../assets/img/Icon.png";
 const AppLogin = () => {
   return (
     <>

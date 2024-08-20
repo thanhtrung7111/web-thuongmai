@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Wrapper from "@components/Wrapper";
-import Asus from "@assets/img/asus.jpg";
+import Asus from "../../assets/img/asus.jpg";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
-import Avatar from "@assets/img/avatar.jpg";
+import Avatar from "../../assets/img/avatar.jpg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { products, tagsColor, tagsRam, tagsReview } from "../../data";
 // Import Swiper styles
@@ -10,13 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import ProductSlider from "@components/ProductSlider";
-import TagList from "@components/TagList";
-import CommentCard from "@components/CommentCard";
-import InfoPage from "@components/InfoPage";
-import ImageMagnifier from "@components/ImageMagnifier";
 import { useDispatch, useSelector } from "react-redux";
-import Panigation from "@components/panigation/Panigation";
 import {
   openEvaluateProduct,
   openManify,
@@ -29,6 +22,7 @@ import ProductDetailSkeleton from "./ProductDetailSkeleton";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { chooseProduct } from "../../redux/reducer/cartReducer";
+import ImageMagnifier from "../ImageMagnifier";
 let pageSize = 4;
 const images = [
   {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Navigate, useNavigate } from "react-router-dom";
-import NoImage from "@assets/img/noimage.png";
+import NoImage from "../../assets/img//noimage.png";
 import ImageFetch from "../ImageFetch";
 const RowCart = ({
   item,

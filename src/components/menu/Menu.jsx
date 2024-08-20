@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Logo from "@assets/img/Icon.png";
+import Logo from "../../assets/img/Icon.png";
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { current } from "@reduxjs/toolkit";
-import { loadCart } from "@redux/actions/cartAction";
-import { clearCart } from "@redux/reducer/cartReducer";
 import SearchMenu from "./SearchMenu";
-import Triangle from "@assets/img/triangle.png";
+import Triangle from "../../assets/img/triangle.png";
 import { openBlock } from "../../redux/reducer/popupReducer";
 import Notifycation from "./Notifycation";
 import Cart from "./Cart";
@@ -15,7 +13,7 @@ import SubMenu from "./SubMenu";
 import MenuChild from "./MenuChild";
 import { clearSearch, logout } from "../../redux/reducer/userReducer";
 import { PURGE } from "redux-persist/lib/constants";
-import { deleteCacheData } from "../../helper/CacheHelper";
+import { clearCart } from "../../redux/reducer/cartReducer";
 const Menu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -25,7 +23,6 @@ const Menu = () => {
   const handleLogout = async (e) => {
     e.preventDefault();
     await dispatch(clearCart());
-    await deleteCacheData();
     dispatch(clearSearch());
     dispatch(logout());
     sessionStorage.removeItem("tokenUser");

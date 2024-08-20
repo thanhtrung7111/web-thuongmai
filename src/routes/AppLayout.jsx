@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Menu from "@components/menu/Menu";
+import Menu from "../components/menu/Menu";
 
 const AppLayout = () => {
   return (

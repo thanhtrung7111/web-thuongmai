@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { closeDetailOrder } from "../../redux/reducer/popupReducer";
-import Asus from "@assets/img/asus.jpg";
+import Asus from "../../assets/img/asus.jpg";
 import {
   loadCUOM,
   loadDcmnSbCd,

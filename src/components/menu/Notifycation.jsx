@@ -1,5 +1,5 @@
 import React from "react";
-import Triangle from "@assets/img/triangle.png";
+import Triangle from "../../assets/img/triangle.png";
 import { useDispatch } from "react-redux";
 import { openEvaluateProduct } from "../../redux/reducer/popupReducer";
 const Notifycation = () => {

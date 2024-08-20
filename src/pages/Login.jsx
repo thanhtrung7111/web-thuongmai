@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "@redux/actions/userAction";
 import { NavLink, useNavigate } from "react-router-dom";
 import Branch from "../components/branch/Branch";
+import { login } from "../redux/actions/userAction";
 const Login = () => {
   const [compCode, setCompCode] = useState("");
   const navigate = useNavigate();
@@ -45,22 +45,22 @@ const Login = () => {
         // TKENDEVC: "",
       })
     );
-    const url = "http://localhost:5173";
-    const cacheUser = await caches.open("user");
-    console.log(remember);
-    if (remember == false) {
-      await cacheUser.delete(url);
-    } else {
-      console.log(username);
-      const data = new Response(
-        JSON.stringify({
-          username: username,
-          password: password,
-          remember: true,
-        })
-      );
-      await cacheUser.put(url, data);
-    }
+    // const url = "http://localhost:5173";
+    // const cacheUser = await caches.open("user");
+    // console.log(remember);
+    // if (remember == false) {
+    //   await cacheUser.delete(url);
+    // } else {
+    //   console.log(username);
+    //   const data = new Response(
+    //     JSON.stringify({
+    //       username: username,
+    //       password: password,
+    //       remember: true,
+    //     })
+    //   );
+    //   await cacheUser.put(url, data);
+    // }
     window.scroll(0, 0);
     // navigate("/branch");
   };
@@ -72,28 +72,28 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("hello");
-    if (locations?.LCTNLIST?.length > 0) {
-      setCompCode(locations?.LCTNLIST.LCTNCODE);
-    }
-  }, [locations]);
+  // useEffect(() => {
+  //   console.log("hello");
+  //   if (locations?.LCTNLIST?.length > 0) {
+  //     setCompCode(locations?.LCTNLIST.LCTNCODE);
+  //   }
+  // }, [locations?.LCTNLIST]);
 
-  useEffect(() => {
-    async function getRemember() {
-      const url = "http://localhost:5173";
-      const cacheUser = await caches.open("user");
-      const response = await cacheUser.match(url);
-      let data = await response?.json();
-      if (data != null && data?.remember != null && data.remember) {
-        console.log(data.remember);
-        setRemember(data.remember);
-        setUsername(data?.username);
-        setPassword(data?.password);
-      }
-    }
-    getRemember();
-  }, []);
+  // useEffect(() => {
+  //   async function getRemember() {
+  //     const url = "http://localhost:5173";
+  //     const cacheUser = await caches.open("user");
+  //     const response = await cacheUser.match(url);
+  //     let data = await response?.json();
+  //     if (data != null && data?.remember != null && data.remember) {
+  //       console.log(data.remember);
+  //       setRemember(data.remember);
+  //       setUsername(data?.username);
+  //       setPassword(data?.password);
+  //     }
+  //   }
+  //   getRemember();
+  // }, []);
 
   return (
     <div className="relative">

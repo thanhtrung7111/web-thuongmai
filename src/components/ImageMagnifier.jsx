@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Asus from "@assets/img/asus.jpg";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";

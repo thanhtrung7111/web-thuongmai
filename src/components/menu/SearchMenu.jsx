@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import { saveSearch, removeKeyword } from "@redux/reducer/userReducer";
+import { removeKeyword, saveSearch } from "../../redux/reducer/userReducer";
 
 const data = [
   { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },

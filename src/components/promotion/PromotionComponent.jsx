@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Wrapper from "@components/Wrapper";
-import InfoPage from "@components/InfoPage";
+import Wrapper from "../Wrapper";
+import InfoPage from "../InfoPage";
 import PromotionCard from "./PromotionCard";
 import { useSelector } from "react-redux";
 import LoadingView from "../../pages/LoadingView";

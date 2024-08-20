@@ -1,6 +1,6 @@
 import React from "react";
-import Asus from "@assets/img/asus.jpg";
-import Wrapper from "@components/Wrapper";
+import Asus from "../../assets/img/asus.jpg";
+import Wrapper from "../Wrapper";
 import moment from "moment";
 const PromotionCard = ({ item, title, desc, beginDate, endDate }) => {
   return (

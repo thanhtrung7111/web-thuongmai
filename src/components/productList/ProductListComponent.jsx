@@ -1,18 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import Wrapper from "@components/Wrapper";
-import ProductCard from "@components/ProductCard";
-import ProductCardHorizon from "@components/ProductCardHorizon";
-import ProductSlider from "@components/ProductSlider";
+import Wrapper from "../Wrapper";
+import ProductCard from "../ProductCard";
+import ProductCardHorizon from "../ProductCardHorizon";
+import ProductSlider from "../ProductSlider";
 import { tagsRam } from "../../data";
-import TagList from "@components/TagList";
-import Panigation from "@components/panigation/Panigation";
-import InfoPage from "@components/InfoPage";
+import TagList from "../TagList";
+import Panigation from "../panigation/Panigation";
+import InfoPage from "../InfoPage";
 import { useDispatch, useSelector } from "react-redux";
 import CheckBoxList from "../CheckBoxList";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import LoadingView from "../../pages/LoadingView";
 import { loadProduct } from "../../redux/actions/commonAction";
 import ProductListSkeleton from "./ProductListSkeleton";
+import { useFetchProductsQuery } from "../../redux/query/commonQuery";
 let pageSize = 20;
 const tagsSort = [
   {
@@ -29,13 +30,19 @@ const tagsSort = [
   },
 ];
 const ProductListComponent = () => {
+  const {
+    data: products,
+    refetch,
+    isFetching,
+    isLoading,
+  } = useFetchProductsQuery();
   const minPrice = useRef();
   const maxPrice = useRef();
   const [currentPage, setCurrentPage] = useState(1);
   const [displayVertical, setDisplayVertical] = useState(true);
   const [desc, setDesc] = useState(false);
   const [changeTagSort, setChangeTagSort] = useState(tagsSort[0]);
-  const { products, lstQUOM } = useSelector((state) => state.common);
+  const { lstQUOM } = useSelector((state) => state.common);
   const [productList, setProductList] = useState(null);
   const [listSearch, setListSearch] = useState({
     nameSearch: "",
@@ -79,7 +86,7 @@ const ProductListComponent = () => {
   };
 
   const handleRefresh = () => {
-    setProductList(products.data);
+    setProductList(products);
   };
 
   const onChangeTag = (value) => {
@@ -88,12 +95,12 @@ const ProductListComponent = () => {
 
   const filterPrice = () => {
     if (minPrice.current.value && maxPrice.current.value == null) {
-      products.data.filter((item) => item.PRCEDSCN >= minPrice.current.value);
+      products.filter((item) => item.PRCEDSCN >= minPrice.current.value);
       return;
     }
 
     if (minPrice.current.value == null && maxPrice.current.value) {
-      products.data.filter((item) => item.PRCEDSCN <= maxPrice.current.value);
+      products.filter((item) => item.PRCEDSCN <= maxPrice.current.value);
       return;
     }
     if (minPrice.current.value > maxPrice.current.value) {
@@ -101,7 +108,7 @@ const ProductListComponent = () => {
     }
 
     setProductList(
-      products.data.filter(
+      products.filter(
         (item) =>
           item.PRCEDSCN >= minPrice.current.value &&
           item.PRCEDSCN <= maxPrice.current.value
@@ -110,27 +117,19 @@ const ProductListComponent = () => {
   };
 
   useEffect(() => {
-    if (products.data != null) {
-      setProductList(products.data);
+    if (products != null) {
+      setProductList(products);
     }
-  }, [products.data]);
+  }, [products]);
 
   useEffect(() => {
-    setProductList(products.data);
+    setProductList(products);
     setCurrentPage(1);
-  }, [products.data]);
-
-  useEffect(() => {
-    if (products.isLoading == false && lstQUOM.isLoading == false) {
-      setLoading(false);
-    } else {
-      setLoading(true);
-    }
-  }, [products.isLoading, lstQUOM.isLoading]);
+  }, [products]);
 
   useEffect(() => {
     async function search() {
-      let productSearch = await products.data;
+      let productSearch = await products;
       if (listSearch.lstQUOMSearch.length > 0) {
         productSearch = await productSearch?.filter((item) => {
           return listSearch.lstQUOMSearch.includes(item.QUOMCODE + "");
@@ -183,7 +182,7 @@ const ProductListComponent = () => {
     }
   }, [changeTagSort, desc]);
 
-  return loading ? (
+  return isLoading ? (
     <ProductListSkeleton />
   ) : (
     // <ProductListSkeleton />
@@ -441,7 +440,7 @@ const ProductListComponent = () => {
                 </a>
               </div>
               <ProductSlider
-                data={products.data?.slice(0, 10)}
+                data={products?.slice(0, 10)}
                 id={"PRDCCODE"}
                 name={"PRDCNAME"}
                 unit={"QUOMNAME"}

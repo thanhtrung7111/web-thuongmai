@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import Wrapper from "@components/Wrapper";
+import Wrapper from "../components/Wrapper";
 const PaymentSuccess = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const vnp_ResponseCode = searchParams.get("vnp_ResponseCode");

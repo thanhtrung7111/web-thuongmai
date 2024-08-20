@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import ProductDetailComponent from "@components/productDetail/ProductDetailComponent";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductDetail } from "@redux/actions/productAction";
 import LoadingView from "./LoadingView";
 import ProductDetailSkeleton from "../components/productDetail/ProductDetailSkeleton";
+import { fetchProductDetail } from "../redux/actions/productAction";
 const ProductDetail = () => {
   const { id } = useParams();
 

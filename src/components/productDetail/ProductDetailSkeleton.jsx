@@ -1,6 +1,6 @@
 import React from "react";
 import AnimateSkeleton from "../AnimateSkeleton";
-import Wrapper from "@components/Wrapper";
+import Wrapper from "../Wrapper";
 const ProductDetailSkeleton = () => {
   return (
     <div className="product-detail">

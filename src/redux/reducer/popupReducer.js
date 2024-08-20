@@ -59,7 +59,7 @@ const manifySlice = createSlice({
   },
 });
 
-export const popupReducer = manifySlice.reducer;
+export default manifySlice.reducer;
 export const {
   openManify,
   closeManify,

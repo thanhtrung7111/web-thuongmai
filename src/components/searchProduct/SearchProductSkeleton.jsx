@@ -1,5 +1,5 @@
 import React from "react";
-import Wrapper from "@components/Wrapper";
+import Wrapper from "../Wrapper";
 import AnimateSkeleton from "../AnimateSkeleton";
 const SearchProductSkeleton = () => {
   return (

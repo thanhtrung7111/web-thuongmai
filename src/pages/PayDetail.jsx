@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PayDetailComponent from "@components/payDetail/PayDetailComponent";
+import PayDetailComponent from "../components/payDetail/PayDetailComponent";
 import { useDispatch, useSelector } from "react-redux";
 import {
   loadCUOM,

@@ -1,5 +1,4 @@
 import React from "react";
-
 const InfoPage = ({ data }) => {
   return (
     <div className="xl:container xl:mx-auto mx-5 text-gray-dark font-semibold text-base flex items-center justify-start gap-x-1 mb-2">

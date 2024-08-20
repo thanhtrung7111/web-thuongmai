@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Wrapper from "@components/Wrapper";
 import Information from "./Information";
+import Wrapper from "../Wrapper";
 import { NavLink } from "react-router-dom";
 import InfomationOrder from "./InfomationOrder";
 import InfomationNotify from "./InfomationNotify";

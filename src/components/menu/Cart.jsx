@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Box from "@assets/img/box.png";
-import Triangle from "@assets/img/triangle.png";
+import Box from "../../assets/img/box.png";
+import Triangle from "../../assets/img/triangle.png";
 import { NavLink, useNavigate } from "react-router-dom";
-import RowCart from "@components/menu/RowCart";
+import RowCart from "./RowCart";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import { loadCart } from "../../redux/actions/cartAction";
 import AnimateSkeleton from "../AnimateSkeleton";

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import SubMenu from "./SubMenu";
-import Phone from "@assets/img/phone.png";
-import QrCode from "@assets/img/qr-code.png";
-import IconVN from "@assets/img/icon-vn.png";
-import Triangle from "@assets/img/triangle.png";
-import Apple from "@assets/img/appple.png";
-import Android from "@assets/img/android.png";
+import Phone from "../../assets/img/phone.png";
+import QrCode from "../../assets/img/qr-code.png";
+import IconVN from "../../assets/img/icon-vn.png";
+import Triangle from "../../assets/img/triangle.png";
+import Apple from "../../assets/img/appple.png";
+import Android from "../../assets/img/android.png";
 import { useDispatch, useSelector } from "react-redux";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 const data = [

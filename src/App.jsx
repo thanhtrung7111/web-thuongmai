@@ -6,19 +6,9 @@ import {
   Navigate,
   HashRouter,
 } from "react-router-dom";
-import Home from "@pages/Home";
-import Footer from "@components/Footer";
-import ProductDetail from "@pages/ProductDetail";
-import ProductList from "@pages/ProductList";
-import Login from "@pages/Login";
-import PayDetail from "@pages/PayDetail";
 import { useDispatch, useSelector } from "react-redux";
-import AppLayout from "@routes/AppLayout";
-import AppLogin from "@routes/AppLogin";
-import Register from "@pages/Register";
 import Test from "./pages/Test";
 import PersonalInfomation from "./pages/PersonalInfomation";
-import EvaluateProduct from "@components/evaluateProduct/EvaluateProduct";
 import DetailOrder from "./components/personalInfomation/DetailOrder";
 import Promotion from "./pages/Promotion";
 import AppNotifycation from "./components/AppNotification/AppNotifycation";
@@ -28,9 +18,26 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PaySuccessVietQR } from "./pages/PaySuccessVietQR";
 import ProductSearch from "./pages/ProductSearch";
+import EvaluateProduct from "./components/evaluateProduct/EvaluateProduct";
+import AppLayout from "./routes/AppLayout";
+import Home from "./pages/Home";
+import Footer from "./components/Footer";
+import ProductDetail from "./pages/ProductDetail";
+import ProductList from "./pages/ProductList";
+import PayDetail from "./pages/PayDetail";
+import AppLogin from "./routes/AppLogin";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { api } from "./api/api";
 
 function App() {
   const [count, setCount] = useState(0);
+  const [token, setToken] = useState({
+    data: sessionStorage.getItem("tokenInitial")
+      ? sessionStorage.getItem("tokenInitial")
+      : null,
+    isLoading: sessionStorage.getItem("tokenInitial") ? false : true,
+  });
   const { currentUser } = useSelector((state) => state.user);
   const {
     showManify,
@@ -58,11 +65,40 @@ function App() {
     showAppNotify.open,
     block,
   ]);
-  return (
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      await api
+        .post(
+          "https://Api-Dev.firstems.com/Api/data/runApi_Syst?run_Code=SYS001",
+          {
+            COMPCODE: "PMC",
+            APP_CODE: "AER",
+            SYSTCODE: 4,
+          }
+        )
+        .then((res) => {
+          // console.log("hello");
+          if (res.data?.RETNCODE == false) {
+            return;
+          }
+          setToken({ data: res?.data?.RETNDATA?.TOKEN, isLoading: false });
+          sessionStorage.setItem("tokenInitial", res?.data?.RETNDATA?.TOKEN);
+        })
+        .catch((e) => console.log(e));
+    };
+    if (token.data == null) {
+      fetchToken();
+    }
+  }, [token.data]);
+
+  return token.isLoading ? (
+    <div>Dang khoi tao trang web</div>
+  ) : (
     <div>
       <ToastContainer></ToastContainer>
       {/* <BrowserRouter basename={import.meta.env.BASE_URL}> */}
-      <BrowserRouter>
+      <HashRouter>
         <DetailOrder></DetailOrder>
         <EvaluateProduct></EvaluateProduct>
         <AppNotifycation></AppNotifycation>
@@ -122,6 +158,7 @@ function App() {
                 )
               }
             ></Route>
+
             {/* <Route path="/*" element={<Navigate to="/" />}></Route> */}
           </Route>
           <Route element={<AppLogin></AppLogin>}>
@@ -146,7 +183,7 @@ function App() {
         </Routes>
 
         <Footer></Footer>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }

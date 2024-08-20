@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Asus from "@assets/img/asus.jpg";
+import Asus from "../../assets/img/asus.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { closeEvaluateProduct } from "../../redux/reducer/popupReducer";
 const EvaluateProduct = () => {

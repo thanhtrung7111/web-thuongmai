@@ -1,10 +1,9 @@
 import React, { Suspense, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import HomeComponent from "@components/home/HomeComponent";
-import { loadProduct } from "@redux/actions/commonAction";
 import AppContext from "../context/AppContext";
 import LoadingView from "./LoadingView";
 import HomeSkeleton from "../components/home/HomeSkeleton";
+import HomeComponent from "../components/home/HomeComponent";
 const Home = () => {
   const dispatch = useDispatch();
   // useEffect(() => {

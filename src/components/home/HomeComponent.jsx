@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Banner3 from "@assets/img/banner3.png";
-import Banner1 from "@assets/img/banner1.jpg";
-import Banner2 from "@assets/img/banner2.jpg";
-import BannerSmall1 from "@assets/img/bannersmall1.jpg";
-import BannerSmall2 from "@assets/img/bannersmall2.png";
-import Asus from "@assets/img/asus.jpg";
-import BannerSlider from "@components/BannerSlider";
-import ProductSlider from "@components/ProductSlider";
-import Wrapper from "@components/Wrapper";
-import CategorySlider from "@components/CategorySlider";
+import Banner3 from "../../assets/img/banner3.png";
+import Banner1 from "../../assets/img/banner1.jpg";
+import Banner2 from "../../assets/img/banner2.jpg";
+import BannerSmall1 from "../../assets/img/bannersmall1.jpg";
+import BannerSmall2 from "../../assets/img/bannersmall2.png";
+import Asus from "../../assets/img/asus.jpg";
+import BannerSlider from "../BannerSlider";
+import ProductSlider from "../ProductSlider";
+import Wrapper from "../Wrapper";
+import CategorySlider from "../CategorySlider";
 import { useSelector } from "react-redux";
 import LoadingView from "../../pages/LoadingView";
 import HomeSkeleton from "./HomeSkeleton";
@@ -18,29 +18,22 @@ import {
 } from "../../redux/query/commonQuery";
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomeComponent = () => {
-  const { data: products, refetch } = useFetchProductsQuery();
+  const { tokenInitial, tokenLocation } = useSelector((state) => state.user);
+  const {
+    data: products,
+    refetch,
+    isFetching,
+    isLoading,
+  } = useFetchProductsQuery(undefined);
 
-  const [getProducts, { isLoading, isError }] = useGetProductsMutation();
-  // useEffect(() => {
-  //   setLstProduct(products?.data);
-  // }, [products]);
+  // const [getProducts, { isLoading: loadingProducts, isError }] =
+  //   useGetProductsMutation();
 
   useEffect(() => {
-    if (!products) {
-      getProducts({
-        DCMNCODE: "appPrdcList",
-        PARACODE: "001",
-        LCTNCODE: "001",
-        LGGECODE: "{{0302}}",
-        SCTNCODE: 1,
-        JSTFDATE: "1990-01-01",
-        KEY_WORD: "%",
-        SHOPCODE: "%",
-        CUSTCODE: "%",
-        reload: true,
-      });
+    if (tokenInitial.data != null || tokenLocation.data != null) {
+      refetch();
     }
-  }, []);
+  }, [tokenInitial.data, tokenLocation.data]);
   console.log(products);
   return isLoading ? (
     <HomeSkeleton />

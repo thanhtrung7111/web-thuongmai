@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import Wrapper from "@components/Wrapper";
+import Wrapper from "../components/Wrapper";
 export const PaySuccessVietQR = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const response = searchParams.get("response");

@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Wrapper from "@components/Wrapper";
-import ProductCard from "@components/ProductCard";
-import ProductCardHorizon from "@components/ProductCardHorizon";
-import Panigation from "@components/panigation/Panigation";
-import InfoPage from "@components/InfoPage";
+import Wrapper from "../Wrapper";
+import ProductCard from "../ProductCard";
+import ProductCardHorizon from "../ProductCardHorizon";
+import Panigation from "../panigation/Panigation";
+import InfoPage from "../InfoPage";
 import SearchProductSkeleton from "./SearchProductSkeleton";
+import { useFetchProductsQuery } from "../../redux/query/commonQuery";
 let pageSize = 20;
 const SearchProductComponent = ({ searchName }) => {
+  const [productList, setProductList] = useState([]);
   const [displayVertical, setDisplayVertical] = useState(true);
-  const { products } = useSelector((state) => state.common);
   const [currentPage, setCurrentPage] = useState(1);
-  const [productList, setProductList] = useState({
-    data: [],
-    isLoading: true,
-  });
+  const {
+    data: products,
+    isLoading,
+    isError,
+    isFetching,
+  } = useFetchProductsQuery();
 
   useEffect(() => {
-    if (products.data != null) {
+    if (products != null) {
       searchName != null && searchName != ""
         ? setProductList({
-            data: products.data.filter(
+            data: products.filter(
               (item) =>
                 item.PRDCNAME.toLowerCase().indexOf(searchName.toLowerCase()) >=
                 0
@@ -31,9 +34,9 @@ const SearchProductComponent = ({ searchName }) => {
     } else {
       setProductList({ data: [], isLoading: true });
     }
-  }, [products.data]);
-  console.log(searchName);
-  return productList.isLoading ? (
+  }, [searchName]);
+
+  return isLoading ? (
     <SearchProductSkeleton></SearchProductSkeleton>
   ) : (
     <>

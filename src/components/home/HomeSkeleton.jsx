@@ -1,6 +1,6 @@
 import React from "react";
-import Wrapper from "@components/Wrapper";
-import BannerSlider from "@components/BannerSlider";
+import Wrapper from "../Wrapper";
+import BannerSlider from "../BannerSlider";
 import AnimateSkeleton from "../AnimateSkeleton";
 const HomeSkeleton = () => {
   return (
