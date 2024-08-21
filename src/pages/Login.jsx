@@ -3,7 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import Branch from "../components/branch/Branch";
 import { login } from "../redux/actions/userAction";
+import { useLoginMutation } from "../redux/query/authQuery";
+import { loginSuccess } from "../redux/reducer/userReducer";
 const Login = () => {
+  const [
+    login,
+    { data: dataLogin, isLoading: isLoadingLogin, isError: isErrorLogin },
+  ] = useLoginMutation();
   const [compCode, setCompCode] = useState("");
   const navigate = useNavigate();
   const dispath = useDispatch();
@@ -23,46 +29,18 @@ const Login = () => {
     console.log(compCode);
   };
   const handleLogin = async () => {
-    await dispath(
-      login({
-        APP_CODE: "AER",
-        LGGECODE: "V",
-        CUSTLGIN: username,
-        PASSWORD: password,
-        SYSTCODE: 2,
-        SYSTCHAR: "",
-        INPTCHAR: "",
-        PHONNAME: "",
-        TKENDEVC: "",
-        // APP_CODE: "AER",
-        // LGGECODE: "V",
-        // CUSTLGIN: "tranvannam1511@gmail.com",
-        // PASSWORD: "11111111",
-        // SYSTCODE: 8,
-        // SYSTCHAR: "",
-        // INPTCHAR: "",
-        // PHONNAME: "",
-        // TKENDEVC: "",
-      })
-    );
-    // const url = "http://localhost:5173";
-    // const cacheUser = await caches.open("user");
-    // console.log(remember);
-    // if (remember == false) {
-    //   await cacheUser.delete(url);
-    // } else {
-    //   console.log(username);
-    //   const data = new Response(
-    //     JSON.stringify({
-    //       username: username,
-    //       password: password,
-    //       remember: true,
-    //     })
-    //   );
-    //   await cacheUser.put(url, data);
-    // }
+    await login({
+      APP_CODE: "AER",
+      LGGECODE: "V",
+      CUSTLGIN: username,
+      PASSWORD: password,
+      SYSTCODE: 2,
+      SYSTCHAR: "",
+      INPTCHAR: "",
+      PHONNAME: "",
+      TKENDEVC: "",
+    });
     window.scroll(0, 0);
-    // navigate("/branch");
   };
 
   const handlePressKey = (e) => {
@@ -165,10 +143,10 @@ const Login = () => {
               <button
                 className="bg-second text-white py-3 text-center px-3 hover:bg-opacity-90 transition-all duration-200"
                 onClick={handleLogin}
-                disabled={isLoadingUser}
+                disabled={isLoadingLogin}
                 type="submit"
               >
-                {isLoadingUser ? (
+                {isLoadingLogin ? (
                   <svg
                     aria-hidden="true"
                     class="w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-first"

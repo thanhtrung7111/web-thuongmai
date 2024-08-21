@@ -1,6 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { api, fetchDataCommon, fetchLocationData } from "../../api/api";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { errorServerOn } from "../reducer/exceptionReducer";
 
@@ -399,7 +397,6 @@ export const commonApiSlice = createApi({
 });
 
 export const {
-  useGetProductsMutation,
   useFetchProductsQuery,
   useFetchWareHouseQuery,
   useFetchLocationQuery,

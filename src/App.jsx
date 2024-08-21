@@ -29,15 +29,11 @@ import AppLogin from "./routes/AppLogin";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { api } from "./api/api";
+import { useFetchInitialTokenQuery } from "./redux/query/authQuery";
 
 function App() {
   const [count, setCount] = useState(0);
-  const [token, setToken] = useState({
-    data: sessionStorage.getItem("tokenInitial")
-      ? sessionStorage.getItem("tokenInitial")
-      : null,
-    isLoading: sessionStorage.getItem("tokenInitial") ? false : true,
-  });
+  const { data: token, isLoading, isError } = useFetchInitialTokenQuery();
   const { currentUser } = useSelector((state) => state.user);
   const {
     showManify,
@@ -65,34 +61,7 @@ function App() {
     showAppNotify.open,
     block,
   ]);
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      await api
-        .post(
-          "https://Api-Dev.firstems.com/Api/data/runApi_Syst?run_Code=SYS001",
-          {
-            COMPCODE: "PMC",
-            APP_CODE: "AER",
-            SYSTCODE: 4,
-          }
-        )
-        .then((res) => {
-          // console.log("hello");
-          if (res.data?.RETNCODE == false) {
-            return;
-          }
-          setToken({ data: res?.data?.RETNDATA?.TOKEN, isLoading: false });
-          sessionStorage.setItem("tokenInitial", res?.data?.RETNDATA?.TOKEN);
-        })
-        .catch((e) => console.log(e));
-    };
-    if (token.data == null) {
-      fetchToken();
-    }
-  }, [token.data]);
-
-  return token.isLoading ? (
+  return isLoading ? (
     <div className="h-screen w-screen flex items-center justify-center gap-x-5">
       <div role="status">
         <svg
@@ -121,7 +90,7 @@ function App() {
     <div>
       <ToastContainer></ToastContainer>
       {/* <BrowserRouter basename={import.meta.env.BASE_URL}> */}
-      <BrowserRouter>
+      <HashRouter>
         <DetailOrder></DetailOrder>
         <EvaluateProduct></EvaluateProduct>
         <AppNotifycation></AppNotifycation>
@@ -206,7 +175,7 @@ function App() {
         </Routes>
 
         <Footer></Footer>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }

@@ -12,10 +12,7 @@ import CategorySlider from "../CategorySlider";
 import { useSelector } from "react-redux";
 import LoadingView from "../../pages/LoadingView";
 import HomeSkeleton from "./HomeSkeleton";
-import {
-  useFetchProductsQuery,
-  useGetProductsMutation,
-} from "../../redux/query/commonQuery";
+import { useFetchProductsQuery } from "../../redux/query/commonQuery";
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomeComponent = () => {
   const { tokenInitial, tokenLocation } = useSelector((state) => state.user);
@@ -31,7 +28,10 @@ const HomeComponent = () => {
   //   useGetProductsMutation();
 
   useEffect(() => {
-    if (tokenInitial.data != null || tokenLocation.data != null) {
+    if (
+      (tokenInitial.data != null || tokenLocation.data != null) &&
+      !isLoading
+    ) {
       refetch();
     }
   }, [tokenInitial.data, tokenLocation.data]);

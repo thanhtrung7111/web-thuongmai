@@ -48,6 +48,14 @@ const userSlice = createSlice({
       return { ...stateUser, currentUrl: state.currentUrl };
     },
 
+    loginSuccess: (state, action) => {
+      state.currentUser = action.payload.user;
+    },
+
+    saveTokenUser: (state, action) => {
+      state.tokenUser.data = action.payload.token;
+    },
+
     saveTokenInitial: (state, action) => {
       state.tokenInitial.data = action.payload.token;
     },
@@ -156,5 +164,7 @@ export const {
   saveCurrentUrl,
   removeKeyword,
   saveTokenInitial,
+  saveTokenUser,
+  loginSuccess,
 } = userSlice.actions;
 export default userSlice.reducer;

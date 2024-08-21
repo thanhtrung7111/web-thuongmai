@@ -25,7 +25,8 @@ import {
 } from "@reduxjs/toolkit";
 import sessionStorage from "redux-persist/es/storage/session";
 import { toast } from "react-toastify";
-import exceptionReducer from "../reducer/exceptionReducer";
+import exceptionReducer, { errorServerOn } from "../reducer/exceptionReducer";
+import { authApiSlice } from "../query/authQuery";
 // import { GetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 
 const rootPersistConfig = {
@@ -65,6 +66,7 @@ const rootReducer = combineReducers({
   popup: popupReducer,
   order: orderReducer,
   [commonApiSlice.reducerPath]: commonApiSlice.reducer,
+  [authApiSlice.reducerPath]: authApiSlice.reducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
@@ -88,7 +90,7 @@ const listenerMiddleWare = createListenerMiddleware();
 listenerMiddleWare.startListening({
   matcher: isAnyOf(...lstReject),
   effect: async (action, { dispatch }) => {
-    console.log(action.type);
+    dispatch(errorServerOn({ message: "Lỗi hệ thống!" }));
     toast.error("Lỗi hệ thống!", {
       autoClose: 1500,
       hideProgressBar: true,
@@ -102,7 +104,11 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(commonApiSlice.middleware, listenerMiddleWare.middleware),
+    }).concat(
+      commonApiSlice.middleware,
+      authApiSlice.middleware,
+      listenerMiddleWare.middleware
+    ),
 });
 
 export default store;
