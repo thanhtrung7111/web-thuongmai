@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { openDetailOrder } from "../../redux/reducer/popupReducer";
 import { getAllOrder, getOrderDetail } from "../../redux/actions/orderActions";
 import LoadingView from "../LoadingView";
-import { loadCUOM, loadTimeType } from "../../redux/actions/commonAction";
 import InfomationOrderSkeleton from "./InfomationOrderSkeleton";
 const menu = [
   { tabId: 1, nameTab: "Tất cả" },

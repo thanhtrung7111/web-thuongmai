@@ -2,46 +2,64 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { closeDetailOrder } from "../../redux/reducer/popupReducer";
 import Asus from "../../assets/img/asus.jpg";
-import {
-  loadCUOM,
-  loadDcmnSbCd,
-  loadDlvrMthd,
-  loadDlvrType,
-  loadListHour,
-  loadTimeType,
-  loadinpCustOdMtPayMthd2,
-} from "../../redux/actions/commonAction";
 import moment from "moment";
 import LoadingView from "../../pages/LoadingView";
+import {
+  useFetchCUOMQuery,
+  useFetchDCmnSbcdQuery,
+  useFetchDlvrMthdQuery,
+  useFetchDlvrTypeQuery,
+  useFetchInpCustOdMtPayMthd2Query,
+  useFetchListHourQuery,
+  useFetchTimeTypeQuery,
+} from "../../redux/query/commonQuery";
 const DetailOrder = () => {
+  const { errorServer } = useSelector((state) => state.exception);
+  const {
+    data: lstCUOM,
+    isLoading: isLoadingCUOM,
+    isError: isErrorCUOM,
+  } = useFetchCUOMQuery(undefined, { skip: errorServer });
+  const {
+    data: lstDcmnSbCd,
+    isLoading: isLoadingDcmnSbCd,
+    isError: isErrorDcmnSbCd,
+  } = useFetchDCmnSbcdQuery(undefined, { skip: errorServer });
+  const {
+    data: lstDlvrMthd,
+    isLoading: isLoadingDlvrMthd,
+    isError: isErrorDlvrMthd,
+  } = useFetchDlvrMthdQuery(undefined, { skip: errorServer });
+  const {
+    data: lstDlvrType,
+    isLoading: isLoadingDlvrType,
+    isError: isErrorDlvrType,
+  } = useFetchDlvrTypeQuery(undefined, { skip: errorServer });
+  const {
+    data: lstListHour,
+    isLoading: isLoadingListHour,
+    isError: isErrorListHour,
+  } = useFetchListHourQuery(undefined, { skip: errorServer });
+  const {
+    data: lstinpCustOdMtPayMthd2,
+    isLoading: isLoadingInpCustOdMtPayMthd,
+    isError: isErrorInpCustOdMtPayMthd,
+  } = useFetchInpCustOdMtPayMthd2Query(undefined, { skip: errorServer });
+  const {
+    data: lstTimeType,
+    isLoading: isLoadingTimeType,
+    isError: isErrorTimeType,
+  } = useFetchTimeTypeQuery(undefined, { skip: errorServer });
+
   const dispatch = useDispatch();
   const [detailOrderData, setDetailOrderData] = useState(null);
   const { showDetailOrder } = useSelector((state) => state.popup);
   const { orderDetail, isLoadingOrder } = useSelector((state) => state.order);
-  const {
-    lstCUOM,
-    lstTimeType,
-    lstDlvrType,
-    lstDlvrMthd,
-    lstListHour,
-    lstinpCustOdMtPayMthd2,
-    lstDcmnSbCd,
-  } = useSelector((state) => state.common);
   const { currentUser } = useSelector((state) => state.user);
   const closeScreen = () => {
     dispatch(closeDetailOrder());
   };
-  useEffect(() => {
-    if (currentUser) {
-      dispatch(loadDlvrType());
-      dispatch(loadCUOM());
-      dispatch(loadTimeType());
-      dispatch(loadDlvrMthd());
-      dispatch(loadListHour());
-      dispatch(loadinpCustOdMtPayMthd2());
-      dispatch(loadDcmnSbCd());
-    }
-  }, [showDetailOrder.open == true]);
+  useEffect(() => {}, [showDetailOrder.open == true]);
   return (
     <div
       className={`${
@@ -148,7 +166,7 @@ const DetailOrder = () => {
                     <p>
                       <span>Loại tiền tệ: </span>
                       {
-                        lstCUOM.data?.find(
+                        lstCUOM?.find(
                           (item) => item.ITEMCODE == orderDetail?.CUOMCODE
                         )?.ITEMNAME
                       }
@@ -160,7 +178,7 @@ const DetailOrder = () => {
                     <p>
                       <span>Phương thức vận chuyển: </span>
                       {
-                        lstDlvrType.data?.find(
+                        lstDlvrType?.find(
                           (item) => item.ITEMCODE == orderDetail?.DLVRTYPE
                         )?.ITEMNAME
                       }
@@ -176,7 +194,7 @@ const DetailOrder = () => {
                     <p>
                       <span>Chu kì thanh toán: </span>
                       {
-                        lstTimeType.data?.find(
+                        lstTimeType?.find(
                           (item) => item.ITEMCODE == orderDetail?.PYMNPERD
                         )?.ITEMNAME
                       }
@@ -187,11 +205,10 @@ const DetailOrder = () => {
                     </p>
                     <p>
                       <span>Phương thức giao hàng: </span>
-                      {
-                        lstDlvrMthd.data?.find(
+                      {lstDlvrMthd &&
+                        lstDlvrMthd?.find(
                           (item) => item.ITEMCODE == orderDetail?.DLVRMTHD
-                        )?.ITEMNAME
-                      }
+                        )?.ITEMNAME}
                     </p>
                   </div>
                   <div className="flex flex-col gap-y-2">
@@ -207,7 +224,7 @@ const DetailOrder = () => {
                     <p>
                       <span>Giờ giao: </span>
                       {
-                        lstListHour.data?.find(
+                        lstListHour?.find(
                           (item) => item.ITEMCODE == orderDetail?.DLVRHOUR
                         )?.ITEMNAME
                       }
@@ -216,7 +233,7 @@ const DetailOrder = () => {
                     <p>
                       <span>Phương thức thanh toán: </span>
                       {
-                        lstinpCustOdMtPayMthd2.data?.find(
+                        lstinpCustOdMtPayMthd2?.find(
                           (item) => item.ITEMCODE == orderDetail?.PAY_MTHD
                         )?.ITEMNAME
                       }
@@ -224,7 +241,7 @@ const DetailOrder = () => {
                     <p>
                       <span>Loại bán hàng: </span>
                       {
-                        lstDcmnSbCd.data?.find(
+                        lstDcmnSbCd?.find(
                           (item) => item.ITEMCODE == orderDetail?.DCMNSBCD
                         )?.ITEMNAME
                       }

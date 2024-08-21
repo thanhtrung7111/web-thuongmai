@@ -11,9 +11,11 @@ import { useDispatch, useSelector } from "react-redux";
 import CheckBoxList from "../CheckBoxList";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import LoadingView from "../../pages/LoadingView";
-import { loadProduct } from "../../redux/actions/commonAction";
 import ProductListSkeleton from "./ProductListSkeleton";
-import { useFetchProductsQuery } from "../../redux/query/commonQuery";
+import {
+  useFetchProductsQuery,
+  useFetchQUOMQuery,
+} from "../../redux/query/commonQuery";
 let pageSize = 20;
 const tagsSort = [
   {
@@ -30,19 +32,24 @@ const tagsSort = [
   },
 ];
 const ProductListComponent = () => {
+  const { errorServer } = useSelector((state) => state.exception);
   const {
     data: products,
     refetch,
     isFetching,
-    isLoading,
-  } = useFetchProductsQuery();
+    isLoading: isLoadingProducts,
+  } = useFetchProductsQuery(undefined, { skip: errorServer });
+  const {
+    data: lstQUOM,
+    isLoading: isLoadingQUOM,
+    isError: isErrorQUOM,
+  } = useFetchQUOMQuery(undefined, { skip: errorServer });
   const minPrice = useRef();
   const maxPrice = useRef();
   const [currentPage, setCurrentPage] = useState(1);
   const [displayVertical, setDisplayVertical] = useState(true);
   const [desc, setDesc] = useState(false);
   const [changeTagSort, setChangeTagSort] = useState(tagsSort[0]);
-  const { lstQUOM } = useSelector((state) => state.common);
   const [productList, setProductList] = useState(null);
   const [listSearch, setListSearch] = useState({
     nameSearch: "",
@@ -182,7 +189,7 @@ const ProductListComponent = () => {
     }
   }, [changeTagSort, desc]);
 
-  return isLoading ? (
+  return isLoadingProducts ? (
     <ProductListSkeleton />
   ) : (
     // <ProductListSkeleton />
@@ -241,7 +248,7 @@ const ProductListComponent = () => {
                 <CheckBoxList
                   onRefresh={refresh}
                   title={"Đơn vị tính"}
-                  data={lstQUOM?.data}
+                  data={lstQUOM}
                   itemName={"ITEMNAME"}
                   itemKey={"ITEM_KEY"}
                   onChange={onchangeQUOM}

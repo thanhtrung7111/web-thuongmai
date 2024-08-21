@@ -14,6 +14,7 @@ import MenuChild from "./MenuChild";
 import { clearSearch, logout } from "../../redux/reducer/userReducer";
 import { PURGE } from "redux-persist/lib/constants";
 import { clearCart } from "../../redux/reducer/cartReducer";
+import { initialError } from "../../redux/reducer/exceptionReducer";
 const Menu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,10 +23,12 @@ const Menu = () => {
 
   const handleLogout = async (e) => {
     e.preventDefault();
-    await dispatch(clearCart());
+    dispatch(clearCart());
     dispatch(clearSearch());
+    dispatch(initialError());
     dispatch(logout());
     sessionStorage.removeItem("tokenUser");
+    sessionStorage.removeItem("tokenLocation");
     window.scroll(0, 0);
     navigate("/login");
   };

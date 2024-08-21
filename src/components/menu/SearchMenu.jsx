@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { removeKeyword, saveSearch } from "../../redux/reducer/userReducer";
+import { useFetchProductsQuery } from "../../redux/query/commonQuery";
 
 const data = [
   { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },
@@ -29,7 +30,11 @@ const SearchMenu = () => {
   const { productSearchs } = useSelector((state) => state.user);
   const [disable, setDisable] = useState(false);
   const [indexMove, setIndexMove] = useState(-1);
-  const { products } = useSelector((state) => state.common);
+  const {
+    data: products,
+    isLoading: isLoadingProduct,
+    isError,
+  } = useFetchProductsQuery();
   useEffect(() => {
     setIsLoading(true);
     if (keyWord !== "") {
@@ -132,9 +137,9 @@ const SearchMenu = () => {
         }}
         onKeyUp={(event) => handlePress(event)}
         value={keyWord}
-        disabled={products.actionPending}
+        disabled={isLoadingProduct}
       />
-      {products.actionPending ? (
+      {isLoadingProduct ? (
         <div role="status">
           <svg
             aria-hidden="true"
@@ -159,7 +164,7 @@ const SearchMenu = () => {
           className="ri-search-line cursor-pointer text-gray-dark"
         ></i>
       )}
-      {!products.actionPending && (
+      {isLoadingProduct && (
         <div
           className={`${
             (keyWord != "" || productSearchs?.length > 0) &&

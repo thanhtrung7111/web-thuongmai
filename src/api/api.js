@@ -43,15 +43,16 @@ apiFetchLogin.interceptors.response.use(
     // store.dispatch(openAppNotify({ link: "33432" }));
   },
   (error) => {
-    if (error.response?.status === 401) {
-      // store.dispatch(openAppNotify({ link: "33432" }));
-    } else if (error.response?.status === 500) {
-      // console.log("Hello");
-      // console.log(error);
-      store.dispatch(logout());
-      store.dispatch(clearCart());
-      window.history.go("/error");
-    }
+    console.log(error);
+    // if (error.response?.status === 401) {
+    //   // store.dispatch(openAppNotify({ link: "33432" }));
+    // } else if (error.response?.status === 500) {
+    //   // console.log("Hello");
+    //   // console.log(error);
+    //   store.dispatch(logout());
+    //   store.dispatch(clearCart());
+    //   window.history.go("/error");
+    // }
     return error;
   }
 );
@@ -105,35 +106,35 @@ apiFetchData.interceptors.request.use(
 
 apiFetchData.interceptors.response.use(
   (response) => {
-    console.log(response);
-    if (response?.data?.RETNCODE != false) {
-      return response;
-    }
-    // store.dispatch(logout());
-    store.dispatch(clearCart());
-    store.dispatch(
-      openAppNotify({
-        link: "/login",
-        message: response?.data?.RETNMSSG,
-      })
-    );
+    // console.log(response);
+    // if (response?.data?.RETNCODE != false) {
+    //   return response;
+    // }
+    // // store.dispatch(logout());
+    // store.dispatch(clearCart());
+    // store.dispatch(
+    //   openAppNotify({
+    //     link: "/login",
+    //     message: response?.data?.RETNMSSG,
+    //   })
+    // );
   },
   (error) => {
     console.log(error);
-    if (error.response?.status === 401) {
-      store.dispatch(saveCurrentUrl({ url: location.href }));
-      store.dispatch(
-        openAppNotify({
-          link: "/login",
-          message: "Lỗi đăng nhập! Đăng nhập lại hệ thống",
-        })
-      );
-    } else if (error.response?.status === 500) {
-      // console.log(error);
-      // store.dispatch(logout());
-      // store.dispatch(clearCart());
-      // window.location.href = "http://localhost:5173/error";
-    }
+    // if (error.response?.status === 401) {
+    //   store.dispatch(saveCurrentUrl({ url: location.href }));
+    //   store.dispatch(
+    //     openAppNotify({
+    //       link: "/login",
+    //       message: "Lỗi đăng nhập! Đăng nhập lại hệ thống",
+    //     })
+    //   );
+    // } else if (error.response?.status === 500) {
+    // console.log(error);
+    // store.dispatch(logout());
+    // store.dispatch(clearCart());
+    // window.location.href = "http://localhost:5173/error";
+    // }
     return error;
   }
 );

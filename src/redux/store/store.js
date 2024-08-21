@@ -14,12 +14,18 @@ import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
 import { commonApiSlice } from "../query/commonQuery";
 import cartReducer from "../reducer/cartReducer";
 import userReducer from "../reducer/userReducer";
-import commonReducer from "../reducer/commonReducer";
 import productReducer from "../reducer/productReducer";
 import popupReducer from "../reducer/popupReducer";
 import orderReducer from "../reducer/orderReducer";
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import {
+  combineReducers,
+  configureStore,
+  createListenerMiddleware,
+  isAnyOf,
+} from "@reduxjs/toolkit";
 import sessionStorage from "redux-persist/es/storage/session";
+import { toast } from "react-toastify";
+import exceptionReducer from "../reducer/exceptionReducer";
 // import { GetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 
 const rootPersistConfig = {
@@ -53,8 +59,8 @@ const userPersistConfig = {
 
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
+  exception: exceptionReducer,
   cart: cartReducer,
-  common: commonReducer,
   product: productReducer,
   popup: popupReducer,
   order: orderReducer,
@@ -63,12 +69,39 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 
+const lstReject = [
+  commonApiSlice.endpoints.fetchCUOM.matchRejected,
+  commonApiSlice.endpoints.fetchDCmnSbcd.matchRejected,
+  commonApiSlice.endpoints.fetchDlvrMthd.matchRejected,
+  commonApiSlice.endpoints.fetchDlvrType.matchRejected,
+  commonApiSlice.endpoints.fetchInpCustOdMtPayMthd2.matchRejected,
+  commonApiSlice.endpoints.fetchListHour.matchRejected,
+  commonApiSlice.endpoints.fetchLocation.matchRejected,
+  commonApiSlice.endpoints.fetchPmtPmtnPrgr.matchRejected,
+  commonApiSlice.endpoints.fetchProducts.matchRejected,
+  commonApiSlice.endpoints.fetchQUOM.matchRejected,
+  commonApiSlice.endpoints.fetchTimeType.matchRejected,
+  commonApiSlice.endpoints.fetchWareHouse.matchRejected,
+];
+
+const listenerMiddleWare = createListenerMiddleware();
+listenerMiddleWare.startListening({
+  matcher: isAnyOf(...lstReject),
+  effect: async (action, { dispatch }) => {
+    toast.error("Lỗi hệ thống!", {
+      autoClose: 1500,
+      hideProgressBar: true,
+      position: "top-center",
+    });
+  },
+});
+
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(commonApiSlice.middleware),
+    }).concat(commonApiSlice.middleware, listenerMiddleWare.middleware),
 });
 
 export default store;

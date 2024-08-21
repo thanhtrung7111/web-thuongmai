@@ -45,9 +45,6 @@ const userSlice = createSlice({
 
   reducers: {
     logout: (state, action) => {
-      console.log(state);
-      console.log(current(state));
-
       return { ...stateUser, currentUrl: state.currentUrl };
     },
 

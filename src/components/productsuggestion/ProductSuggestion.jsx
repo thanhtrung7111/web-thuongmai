@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../ProductCard";
 import Panigation from "../panigation/Panigation";
-import { loadProduct } from "../../redux/actions/commonAction";
 import LoadingView from "../../pages/LoadingView";
 import AnimateSkeleton from "../AnimateSkeleton";
+import { useFetchProductsQuery } from "../../redux/query/commonQuery";
 let pageSize = 4;
 const ProductSuggestion = ({ keyword }) => {
+  const { data: products, isLoading, isError } = useFetchProductsQuery();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const { products } = useSelector((state) => state.common);
   const [lstProduct, setLstProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
@@ -18,24 +18,6 @@ const ProductSuggestion = ({ keyword }) => {
         products.data?.filter((item) => item.PRDCNAME.indexOf(keyword) >= 0)
       );
   }, [keyword]);
-
-  useEffect(() => {
-    if (open == true) {
-      dispatch(
-        loadProduct({
-          DCMNCODE: "appPrdcList",
-          PARACODE: "001",
-          LCTNCODE: "001",
-          LGGECODE: "{{0302}}",
-          SCTNCODE: 1,
-          JSTFDATE: "1990-01-01",
-          KEY_WORD: "keyword",
-          SHOPCODE: "%",
-          CUSTCODE: "%",
-        })
-      );
-    }
-  }, [open]);
 
   return (
     <>

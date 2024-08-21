@@ -113,7 +113,9 @@ function App() {
         </svg>
         <span class="sr-only">Loading...</span>
       </div>{" "}
-      <p className="text-2xl">Đang tải dữ liệu...</p>
+      <p className="text-2xl text-gray-700 font-semibold">
+        Đang tải dữ liệu...
+      </p>
     </div>
   ) : (
     <div>
