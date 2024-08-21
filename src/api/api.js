@@ -107,9 +107,9 @@ apiFetchData.interceptors.request.use(
 apiFetchData.interceptors.response.use(
   (response) => {
     // console.log(response);
-    // if (response?.data?.RETNCODE != false) {
-    //   return response;
-    // }
+    if (response?.data?.RETNCODE != false) {
+      return response;
+    }
     // // store.dispatch(logout());
     // store.dispatch(clearCart());
     // store.dispatch(

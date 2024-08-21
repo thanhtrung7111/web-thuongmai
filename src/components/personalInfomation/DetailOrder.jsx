@@ -19,37 +19,39 @@ const DetailOrder = () => {
     data: lstCUOM,
     isLoading: isLoadingCUOM,
     isError: isErrorCUOM,
-  } = useFetchCUOMQuery(undefined, { skip: errorServer });
+  } = useFetchCUOMQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstDcmnSbCd,
     isLoading: isLoadingDcmnSbCd,
     isError: isErrorDcmnSbCd,
-  } = useFetchDCmnSbcdQuery(undefined, { skip: errorServer });
+  } = useFetchDCmnSbcdQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstDlvrMthd,
     isLoading: isLoadingDlvrMthd,
     isError: isErrorDlvrMthd,
-  } = useFetchDlvrMthdQuery(undefined, { skip: errorServer });
+  } = useFetchDlvrMthdQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstDlvrType,
     isLoading: isLoadingDlvrType,
     isError: isErrorDlvrType,
-  } = useFetchDlvrTypeQuery(undefined, { skip: errorServer });
+  } = useFetchDlvrTypeQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstListHour,
     isLoading: isLoadingListHour,
     isError: isErrorListHour,
-  } = useFetchListHourQuery(undefined, { skip: errorServer });
+  } = useFetchListHourQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstinpCustOdMtPayMthd2,
     isLoading: isLoadingInpCustOdMtPayMthd,
     isError: isErrorInpCustOdMtPayMthd,
-  } = useFetchInpCustOdMtPayMthd2Query(undefined, { skip: errorServer });
+  } = useFetchInpCustOdMtPayMthd2Query(undefined, {
+    skip: errorServer.isError,
+  });
   const {
     data: lstTimeType,
     isLoading: isLoadingTimeType,
     isError: isErrorTimeType,
-  } = useFetchTimeTypeQuery(undefined, { skip: errorServer });
+  } = useFetchTimeTypeQuery(undefined, { skip: errorServer.isError });
 
   const dispatch = useDispatch();
   const [detailOrderData, setDetailOrderData] = useState(null);

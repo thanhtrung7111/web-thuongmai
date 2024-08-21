@@ -72,12 +72,16 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchProducts",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData?.filter(
+                  (item) =>
+                    item.PRDCODE.lowerCase().indexOf("tấm trần pima") >= 0
+                );
               }
             )
           );
@@ -98,12 +102,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchWareHouse",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );
@@ -124,12 +129,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchLocation",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );
@@ -150,12 +156,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchCUOM",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );
@@ -176,12 +183,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchTimeType",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );
@@ -202,12 +210,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchDlvrType",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );
@@ -228,12 +237,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchDCmnSbcd",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );
@@ -254,12 +264,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchDlvrMthd",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );
@@ -280,12 +291,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchListHour",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );
@@ -306,12 +318,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchInpCustOdMtPayMthd2",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );
@@ -332,12 +345,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchQUOM",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );
@@ -366,12 +380,13 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const listData = response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchPmtPmtnPrgr",
               undefined,
               (draft) => {
-                return response(data, dispatch);
+                return listData;
               }
             )
           );

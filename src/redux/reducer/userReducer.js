@@ -116,11 +116,13 @@ const userSlice = createSlice({
         // state.currentUser = { TOKEN, ...USERLGIN };
         state.tokenLocation.data = TOKEN;
         state.tokenLocation.isLoading = false;
+        console.log(TOKEN);
         session.setItem("tokenLocation", TOKEN);
         state.tokenLocation.isError = false;
         state.tokenLocation.messageError = "";
       })
       .addCase(loginLCTN.rejected, (state, action) => {
+        // console.log("Đăng nhập thất bại");
         state.tokenLocation.data = null;
         state.tokenUser.data = null;
         state.tokenLocation.isLoading = false;

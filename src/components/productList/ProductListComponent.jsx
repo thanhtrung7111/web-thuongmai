@@ -38,12 +38,12 @@ const ProductListComponent = () => {
     refetch,
     isFetching,
     isLoading: isLoadingProducts,
-  } = useFetchProductsQuery(undefined, { skip: errorServer });
+  } = useFetchProductsQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstQUOM,
     isLoading: isLoadingQUOM,
     isError: isErrorQUOM,
-  } = useFetchQUOMQuery(undefined, { skip: errorServer });
+  } = useFetchQUOMQuery(undefined, { skip: errorServer.isError });
   const minPrice = useRef();
   const maxPrice = useRef();
   const [currentPage, setCurrentPage] = useState(1);

@@ -46,16 +46,20 @@ export const loginLCTN = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const result = await fetchLocationData(data)
-        .then((response) => response?.data?.RETNDATA)
-        .catch((e) => e);
-      // console.log(result);
+        .then((response) => {
+          console.log(response?.data);
+          return response?.data?.RETNDATA;
+        })
+        .catch((e) => console.log(e));
+      console.log(result);
       if (result) {
         return result;
       } else {
-        // console.log("Sa");
+        console.log(result);
         return rejectWithValue("Lỗi hệ thống!");
       }
     } catch (error) {
+      console.log(error);
       return rejectWithValue("Lỗi hệ thống!");
     }
   }

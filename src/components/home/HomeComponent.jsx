@@ -19,12 +19,13 @@ import {
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomeComponent = () => {
   const { tokenInitial, tokenLocation } = useSelector((state) => state.user);
+  const { errorServer } = useSelector((state) => state.exception);
   const {
     data: products,
     refetch,
     isFetching,
     isLoading,
-  } = useFetchProductsQuery(undefined);
+  } = useFetchProductsQuery(undefined, { skip: errorServer.isError });
 
   // const [getProducts, { isLoading: loadingProducts, isError }] =
   //   useGetProductsMutation();
