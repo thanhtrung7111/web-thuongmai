@@ -83,6 +83,7 @@ export const authApiSlice = createApi({
           const listData = response(data, dispatch, null);
           if (listData != null) {
             sessionStorage.setItem("tokenUser", listData.TOKEN);
+            console.log(listData.USERLGIN);
             dispatch(loginSuccess({ user: listData.USERLGIN }));
             dispatch(saveTokenUser({ token: listData.TOKEN }));
           }

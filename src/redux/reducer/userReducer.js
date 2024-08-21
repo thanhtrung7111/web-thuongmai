@@ -56,8 +56,8 @@ const userSlice = createSlice({
       state.tokenUser.data = action.payload.token;
     },
 
-    saveTokenInitial: (state, action) => {
-      state.tokenInitial.data = action.payload.token;
+    saveLocations: (state, action) => {
+      state.locations = action.payload.location;
     },
 
     saveSearch: (state, action) => {
