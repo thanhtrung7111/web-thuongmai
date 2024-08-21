@@ -88,6 +88,7 @@ const listenerMiddleWare = createListenerMiddleware();
 listenerMiddleWare.startListening({
   matcher: isAnyOf(...lstReject),
   effect: async (action, { dispatch }) => {
+    console.log(action.type);
     toast.error("Lỗi hệ thống!", {
       autoClose: 1500,
       hideProgressBar: true,

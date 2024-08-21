@@ -80,7 +80,7 @@ export const commonApiSlice = createApi({
               (draft) => {
                 return listData?.filter(
                   (item) =>
-                    item.PRDCODE.lowerCase().indexOf("tấm trần pima") >= 0
+                    item.PRDCNAME.toLowerCase().indexOf("tấm trần pima") >= 0
                 );
               }
             )

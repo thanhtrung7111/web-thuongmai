@@ -35,7 +35,6 @@ const HomeComponent = () => {
       refetch();
     }
   }, [tokenInitial.data, tokenLocation.data]);
-  console.log(products);
   return isLoading ? (
     <HomeSkeleton />
   ) : (
