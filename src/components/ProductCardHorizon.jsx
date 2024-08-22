@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import NoImage from "../assets/img/noimage.png";
 import ImageFetch from "./ImageFetch";
 import { toast } from "react-toastify";
-import { addToCart } from "../redux/actions/cartAction";
+import { useAddToCartMutation } from "../redux/query/cartQuery";
 const ProductCard = ({
   item,
   id,
@@ -19,49 +19,53 @@ const ProductCard = ({
   stars,
   sold,
 }) => {
+  const [
+    addToCart,
+    { data: cartData, isLoading: isLoadingAdd, isError: isErrorAdd },
+  ] = useAddToCartMutation();
   const { currentUser } = useSelector((state) => state.user);
   const { errorMessageCart } = useSelector((state) => state.cart);
   const [disableAction, setDisableAction] = useState(false);
   const { productCarts, actionCart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleAddProductToCart = (value) => {
+  const handleAddProductToCart = async (value) => {
     event.preventDefault();
-    setDisableAction(true);
-    if (currentUser !== null) {
-      console.log(item[id]);
 
+    if (currentUser !== null) {
+      setDisableAction(true);
       const findProduct = productCarts?.find((item) => {
         return item?.PRDCCODE == value;
       });
       console.log(findProduct);
 
-      if (findProduct != null) {
+      if (findProduct) {
         toast.warning("Sản phẩm đã có trong giỏ hàng!", {
           autoClose: 1500,
           position: "top-center",
           hideProgressBar: true,
         });
+        setDisableAction(false);
         return;
       }
-      dispatch(
-        addToCart({
-          COMPCODE: item["COMPCODE"],
-          LCTNCODE: "001",
-          USERLOGIN: currentUser?.USERLGIN,
-          PRDCCODE: item[id],
-          QUOMQTTY: 1,
-          QUOMCODE: item["QUOMCODE"],
-          SALEPRCE: item[price],
-          DSCNRATE: item[discount],
-          PRDCNAME: item["PRDCNAME"],
-          PRDCIMAGE: item["PRDCIMGE"],
-        })
-      );
+      await addToCart({
+        COMPCODE: item["COMPCODE"],
+        LCTNCODE: "001",
+        USERLOGIN: currentUser?.USERLGIN,
+        PRDCCODE: item[id],
+        QUOMQTTY: 1,
+        QUOMCODE: item["QUOMCODE"],
+        SALEPRCE: item[price],
+        DSCNRATE: item[discount],
+        PRDCNAME: item["PRDCNAME"],
+        PRDCIMAGE: item["PRDCIMGE"],
+      });
+      setDisableAction(false);
     } else {
       toast.warning("Bạn cần phải đăng nhập để thêm sản phẩm vào giỏ hàng!", {
         autoClose: 1500,
         position: "top-center",
+        hideProgressBar: true,
       });
     }
   };

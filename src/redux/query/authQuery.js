@@ -3,7 +3,9 @@ import { errorServerOn } from "../reducer/exceptionReducer";
 import { toast } from "react-toastify";
 import {
   loginSuccess,
+  saveLocations,
   saveTokenInitial,
+  saveTokenLocation,
   saveTokenUser,
 } from "../reducer/userReducer";
 
@@ -21,14 +23,15 @@ const axiosBaseQuery = fetchBaseQuery({
   },
 });
 
-const response = (data, dispatch, defaultValue = []) => {
+const response = async (data, dispatch, defaultValue = []) => {
   if (data?.RETNCODE == false) {
-    dispatch(errorServerOn({ message: data.RETNMSSG }));
+    await dispatch(errorServerOn({ message: data.RETNMSSG }));
     toast.error(data.RETNMSSG, {
       position: "top-center",
       autoClose: 1500,
       hideProgressBar: true,
     });
+    console.log(data);
     return defaultValue;
   }
   return data.RETNDATA;
@@ -55,13 +58,15 @@ export const authApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch, null);
+          const listData = await response(data, dispatch, null);
+          console.log(listData);
           dispatch(
             authApiSlice.util.updateQueryData(
               "fetchInitialToken",
               undefined,
               (draft) => {
                 sessionStorage.setItem("tokenInitial", listData?.TOKEN);
+                console.log(listData?.TOKEN);
                 return listData?.TOKEN;
               }
             )
@@ -80,19 +85,47 @@ export const authApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch, null);
+          const listData = await response(data, dispatch, null);
+          // console.log(listData.COMPLIST);
           if (listData != null) {
             sessionStorage.setItem("tokenUser", listData.TOKEN);
-            console.log(listData.USERLGIN);
+            // console.log(listData.USERLGIN);
             dispatch(loginSuccess({ user: listData.USERLGIN }));
             dispatch(saveTokenUser({ token: listData.TOKEN }));
+            dispatch(saveLocations({ locations: listData?.COMPLIST }));
           }
         } catch (error) {
           console.log(error);
         }
       },
     }),
+    loginLCTN: builder.mutation({
+      query: (credential) => ({
+        url: "/Api/data/runApi_Syst?run_Code=SYS006",
+        method: "POST",
+        body: credential,
+      }),
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch, null);
+          if (listData != null) {
+            dispatch(saveTokenLocation({ token: listData.TOKEN }));
+            sessionStorage.setItem("tokenLocation", listData.TOKEN);
+            console.log(listData);
+          }
+          return listData;
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      },
+    }),
   }),
 });
 
-export const { useFetchInitialTokenQuery, useLoginMutation } = authApiSlice;
+export const {
+  useFetchInitialTokenQuery,
+  useLoginMutation,
+  useLoginLCTNMutation,
+} = authApiSlice;

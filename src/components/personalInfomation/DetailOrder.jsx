@@ -5,53 +5,69 @@ import Asus from "../../assets/img/asus.jpg";
 import moment from "moment";
 import LoadingView from "../../pages/LoadingView";
 import {
-  useFetchCUOMQuery,
-  useFetchDCmnSbcdQuery,
-  useFetchDlvrMthdQuery,
-  useFetchDlvrTypeQuery,
-  useFetchInpCustOdMtPayMthd2Query,
-  useFetchListHourQuery,
-  useFetchTimeTypeQuery,
+  useLazyFetchCUOMQuery,
+  useLazyFetchDCmnSbcdQuery,
+  useLazyFetchDlvrMthdQuery,
+  useLazyFetchDlvrTypeQuery,
+  useLazyFetchInpCustOdMtPayMthd2Query,
+  useLazyFetchListHourQuery,
+  useLazyFetchTimeTypeQuery,
 } from "../../redux/query/commonQuery";
+import { skipToken } from "@reduxjs/toolkit/query";
 const DetailOrder = () => {
   const { errorServer } = useSelector((state) => state.exception);
-  const {
-    data: lstCUOM,
-    isLoading: isLoadingCUOM,
-    isError: isErrorCUOM,
-  } = useFetchCUOMQuery(undefined, { skip: errorServer.isError });
-  const {
-    data: lstDcmnSbCd,
-    isLoading: isLoadingDcmnSbCd,
-    isError: isErrorDcmnSbCd,
-  } = useFetchDCmnSbcdQuery(undefined, { skip: errorServer.isError });
-  const {
-    data: lstDlvrMthd,
-    isLoading: isLoadingDlvrMthd,
-    isError: isErrorDlvrMthd,
-  } = useFetchDlvrMthdQuery(undefined, { skip: errorServer.isError });
-  const {
-    data: lstDlvrType,
-    isLoading: isLoadingDlvrType,
-    isError: isErrorDlvrType,
-  } = useFetchDlvrTypeQuery(undefined, { skip: errorServer.isError });
-  const {
-    data: lstListHour,
-    isLoading: isLoadingListHour,
-    isError: isErrorListHour,
-  } = useFetchListHourQuery(undefined, { skip: errorServer.isError });
-  const {
-    data: lstinpCustOdMtPayMthd2,
-    isLoading: isLoadingInpCustOdMtPayMthd,
-    isError: isErrorInpCustOdMtPayMthd,
-  } = useFetchInpCustOdMtPayMthd2Query(undefined, {
-    skip: errorServer.isError,
-  });
-  const {
-    data: lstTimeType,
-    isLoading: isLoadingTimeType,
-    isError: isErrorTimeType,
-  } = useFetchTimeTypeQuery(undefined, { skip: errorServer.isError });
+  const [
+    loadCUOM,
+    { data: lstCUOM, isLoading: isLoadingCUOM, isError: isErrorCUOM },
+  ] = useLazyFetchCUOMQuery();
+  const [
+    loadDcmnSbCd,
+    {
+      data: lstDcmnSbCd,
+      isLoading: isLoadingDcmnSbCd,
+      isError: isErrorDcmnSbCd,
+    },
+  ] = useLazyFetchDCmnSbcdQuery();
+  const [
+    loadDlvrMthd,
+    {
+      data: lstDlvrMthd,
+      isLoading: isLoadingDlvrMthd,
+      isError: isErrorDlvrMthd,
+    },
+  ] = useLazyFetchDlvrMthdQuery();
+  const [
+    loadDlvrType,
+    {
+      data: lstDlvrType,
+      isLoading: isLoadingDlvrType,
+      isError: isErrorDlvrType,
+    },
+  ] = useLazyFetchDlvrTypeQuery();
+  const [
+    loadListHour,
+    {
+      data: lstListHour,
+      isLoading: isLoadingListHour,
+      isError: isErrorListHour,
+    },
+  ] = useLazyFetchListHourQuery();
+  const [
+    loadInpCustOdMtPayMthd2,
+    {
+      data: lstinpCustOdMtPayMthd2,
+      isLoading: isLoadingInpCustOdMtPayMthd,
+      isError: isErrorInpCustOdMtPayMthd,
+    },
+  ] = useLazyFetchInpCustOdMtPayMthd2Query();
+  const [
+    loadTimeType,
+    {
+      data: lstTimeType,
+      isLoading: isLoadingTimeType,
+      isError: isErrorTimeType,
+    },
+  ] = useLazyFetchTimeTypeQuery();
 
   const dispatch = useDispatch();
   const [detailOrderData, setDetailOrderData] = useState(null);
@@ -61,7 +77,17 @@ const DetailOrder = () => {
   const closeScreen = () => {
     dispatch(closeDetailOrder());
   };
-  useEffect(() => {}, [showDetailOrder.open == true]);
+  useEffect(() => {
+    if (showDetailOrder == true) {
+      loadCUOM();
+      loadDcmnSbCd();
+      loadDlvrMthd();
+      loadDlvrType();
+      loadInpCustOdMtPayMthd2();
+      loadListHour();
+      loadTimeType();
+    }
+  }, [showDetailOrder.open]);
   return (
     <div
       className={`${

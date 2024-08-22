@@ -17,12 +17,18 @@ import {
 import LoadingView from "../../pages/LoadingView";
 import ImageFetch from "../ImageFetch";
 import { fetchImage } from "../../helper/ImageHelper";
-import { addToCart, updateAmountProduct } from "../../redux/actions/cartAction";
+// import { addToCart, updateAmountProduct } from "../../redux/actions/cartAction";
 import ProductDetailSkeleton from "./ProductDetailSkeleton";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { chooseProduct } from "../../redux/reducer/cartReducer";
 import ImageMagnifier from "../ImageMagnifier";
+import InfoPage from "../InfoPage";
+import Wrapper from "../Wrapper";
+import TagList from "../TagList";
+import Panigation from "../panigation/Panigation";
+import CommentCard from "../CommentCard";
+import ProductSlider from "../ProductSlider";
 let pageSize = 4;
 const images = [
   {
@@ -206,49 +212,49 @@ const ProductDetailComponent = () => {
   console.log(productCarts);
 
   const addCart = (value) => {
-    const productFind = productCarts.find(
-      (item) => item.PRDCCODE == productDetail.PRDCCODE
-    );
-    if (productFind) {
-      dispatch(
-        updateAmountProduct({
-          DCMNCODE: "APPCARTPRDC",
-          HEADER: [
-            {
-              ...productFind,
-              QUOMQTTY: qty,
-            },
-          ],
-        })
-      );
-      toast.success("Thêm sản phẩm vào giỏ thành công!", {
-        position: "top-center",
-        autoClose: 1500,
-        hideProgressBar: true,
-      });
-    } else {
-      console.log(value.PRCEDSCN);
-      dispatch(
-        addToCart({
-          COMPCODE: value.COMPCODE,
-          LCTNCODE: "001",
-          USERLOGIN: currentUser?.USERLGIN,
-          PRDCCODE: value.PRDCCODE,
-          QUOMQTTY: qty,
-          // QUOMCODE: item["QUOMCODE"],
-          SALEPRCE: value.PRCESALE,
-          DSCNRATE: value.DSCNRATE,
-          PRDCNAME: value.PRDCNAME,
-          PRDCIMAGE: value.DETAIL_4[0]?.IMGE_URL,
-        })
-      );
-    }
+    // const productFind = productCarts.find(
+    //   (item) => item.PRDCCODE == productDetail.PRDCCODE
+    // );
+    // if (productFind) {
+    //   dispatch(
+    //     updateAmountProduct({
+    //       DCMNCODE: "APPCARTPRDC",
+    //       HEADER: [
+    //         {
+    //           ...productFind,
+    //           QUOMQTTY: qty,
+    //         },
+    //       ],
+    //     })
+    //   );
+    //   toast.success("Thêm sản phẩm vào giỏ thành công!", {
+    //     position: "top-center",
+    //     autoClose: 1500,
+    //     hideProgressBar: true,
+    //   });
+    // } else {
+    //   console.log(value.PRCEDSCN);
+    //   dispatch(
+    //     addToCart({
+    //       COMPCODE: value.COMPCODE,
+    //       LCTNCODE: "001",
+    //       USERLOGIN: currentUser?.USERLGIN,
+    //       PRDCCODE: value.PRDCCODE,
+    //       QUOMQTTY: qty,
+    //       // QUOMCODE: item["QUOMCODE"],
+    //       SALEPRCE: value.PRCESALE,
+    //       DSCNRATE: value.DSCNRATE,
+    //       PRDCNAME: value.PRDCNAME,
+    //       PRDCIMAGE: value.DETAIL_4[0]?.IMGE_URL,
+    //     })
+    //   );
+    // }
   };
 
   const handlePay = (value) => {
-    addCart(value);
-    dispatch(chooseProduct({ id: productDetail.PRDCCODE, checked: true }));
-    navigate("/pay");
+    // addCart(value);
+    // dispatch(chooseProduct({ id: productDetail.PRDCCODE, checked: true }));
+    // navigate("/pay");
   };
 
   useEffect(() => {

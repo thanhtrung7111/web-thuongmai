@@ -13,9 +13,9 @@ const ProductSuggestion = ({ keyword }) => {
   const [lstProduct, setLstProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
-    products.data?.length > 0 &&
+    products?.length > 0 &&
       setLstProduct(
-        products.data?.filter((item) => item.PRDCNAME.indexOf(keyword) >= 0)
+        products?.filter((item) => item.PRDCNAME.indexOf(keyword) >= 0)
       );
   }, [keyword]);
 
@@ -42,7 +42,7 @@ const ProductSuggestion = ({ keyword }) => {
             onClick={() => setOpen(false)}
           ></i>
         </div>
-        {products.isLoading ? (
+        {isLoading ? (
           <div className="p-5 pt-1 min-h-96">
             {[1, 2, 3, 4].forEach((item) => {
               return <AnimateSkeleton className={"h-72 w-full"} />;

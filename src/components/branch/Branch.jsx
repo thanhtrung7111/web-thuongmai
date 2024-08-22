@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginLCTN } from "../../redux/actions/userAction";
 import { useNavigate } from "react-router-dom";
+import { useLoginLCTNMutation } from "../../redux/query/authQuery";
 
-const Branch = ({ locations, onChange }) => {
+const Branch = ({ onChange }) => {
   const dispatch = useDispatch();
-  const { tokenLocation, currentUrl } = useSelector((state) => state.user);
+  const { tokenLocation, currentUrl, locations } = useSelector(
+    (state) => state.user
+  );
+  const [
+    loginLCTN,
+    { data: dataLCTN, isLoading: isLoadingLCTN, isError: isErrorLCTN },
+  ] = useLoginLCTNMutation();
   const [compSelected, setCompSelected] = useState("");
   const [lctnSelected, setLctnSelected] = useState("");
   const navigate = useNavigate();
@@ -25,23 +31,24 @@ const Branch = ({ locations, onChange }) => {
       COMPCODE: compSelected?.COMPCODE,
       LCTNCODE: lctnSelected,
     };
-    dispatch(loginLCTN(body));
+    // dispatch(loginLCTN(body));
+    await loginLCTN(body);
   };
 
   useEffect(() => {
-    console.log(tokenLocation.data);
-    if (tokenLocation.data != null) {
+    if (dataLCTN != null) {
       window.scroll(0, 0);
       navigate(currentUrl != "" ? currentUrl : "/");
       console.log(lctnSelected);
     }
-  }, [tokenLocation.data]);
+  }, [dataLCTN]);
+  console.log(tokenLocation);
   return (
     <div>
       <div className="flex flex-col gap-y-1 text-gray-dark">
         <label>Chọn chi nhánh</label>
         <select
-          disabled={tokenLocation.isLoading}
+          disabled={isLoadingLCTN}
           onChange={(e) =>
             setCompSelected(
               locations.find((item) => item.COMPCODE == e.target.value)
@@ -61,7 +68,7 @@ const Branch = ({ locations, onChange }) => {
             })}
         </select>
         <select
-          disabled={tokenLocation.isLoading}
+          disabled={isLoadingLCTN}
           onChange={(e) => setLctnSelected(e.target.value)}
           name=""
           id=""
@@ -73,11 +80,11 @@ const Branch = ({ locations, onChange }) => {
         </select>
       </div>
       <button
-        disabled={tokenLocation.isLoading}
+        disabled={isLoadingLCTN}
         className="bg-second flex items-center justify-center w-full mt-5 disabled:opacity-85 text-white py-3 text-center px-3 hover:bg-opacity-90 transition-all duration-200"
         onClick={handleLogin}
       >
-        {tokenLocation.isLoading ? (
+        {isLoadingLCTN ? (
           <svg
             aria-hidden="true"
             class="w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-first"

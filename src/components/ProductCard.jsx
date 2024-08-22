@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import NoImage from "../assets/img/noimage.png";
 import ImageFetch from "./ImageFetch";
 import { toast } from "react-toastify";
-import { addToCart } from "../redux/actions/cartAction";
+import { useAddToCartMutation } from "../redux/query/cartQuery";
 const ProductCard = ({
   item,
   id,
@@ -19,6 +19,10 @@ const ProductCard = ({
   stars,
   sold,
 }) => {
+  const [
+    addToCart,
+    { data: cartData, isLoading: isLoadingAdd, isError: isErrorAdd },
+  ] = useAddToCartMutation();
   const { currentUser } = useSelector((state) => state.user);
   const { errorMessageCart } = useSelector((state) => state.cart);
   const [disableAction, setDisableAction] = useState(false);
@@ -44,20 +48,18 @@ const ProductCard = ({
         setDisableAction(false);
         return;
       }
-      await dispatch(
-        addToCart({
-          COMPCODE: item["COMPCODE"],
-          LCTNCODE: "001",
-          USERLOGIN: currentUser?.USERLGIN,
-          PRDCCODE: item[id],
-          QUOMQTTY: 1,
-          QUOMCODE: item["QUOMCODE"],
-          SALEPRCE: item[price],
-          DSCNRATE: item[discount],
-          PRDCNAME: item["PRDCNAME"],
-          PRDCIMAGE: item["PRDCIMGE"],
-        })
-      );
+      await addToCart({
+        COMPCODE: item["COMPCODE"],
+        LCTNCODE: "001",
+        USERLOGIN: currentUser?.USERLGIN,
+        PRDCCODE: item[id],
+        QUOMQTTY: 1,
+        QUOMCODE: item["QUOMCODE"],
+        SALEPRCE: item[price],
+        DSCNRATE: item[discount],
+        PRDCNAME: item["PRDCNAME"],
+        PRDCIMAGE: item["PRDCIMGE"],
+      });
       setDisableAction(false);
     } else {
       toast.warning("Bạn cần phải đăng nhập để thêm sản phẩm vào giỏ hàng!", {

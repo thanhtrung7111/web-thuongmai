@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import Branch from "../components/branch/Branch";
-import { login } from "../redux/actions/userAction";
 import { useLoginMutation } from "../redux/query/authQuery";
 import { loginSuccess } from "../redux/reducer/userReducer";
+import { errorServerOff } from "../redux/reducer/exceptionReducer";
 const Login = () => {
   const [
     login,
@@ -29,17 +29,23 @@ const Login = () => {
     console.log(compCode);
   };
   const handleLogin = async () => {
-    await login({
-      APP_CODE: "AER",
-      LGGECODE: "V",
-      CUSTLGIN: username,
-      PASSWORD: password,
-      SYSTCODE: 2,
-      SYSTCHAR: "",
-      INPTCHAR: "",
-      PHONNAME: "",
-      TKENDEVC: "",
-    });
+    try {
+      login({
+        APP_CODE: "AER",
+        LGGECODE: "V",
+        CUSTLGIN: username,
+        PASSWORD: password,
+        SYSTCODE: 2,
+        SYSTCHAR: "",
+        INPTCHAR: "",
+        PHONNAME: "",
+        TKENDEVC: "",
+      }).unwrap;
+      dispath(errorServerOff());
+    } catch (error) {}
+
+    dispath(errorServerOff());
+    // dispatch(errorServerOff());
     window.scroll(0, 0);
   };
 

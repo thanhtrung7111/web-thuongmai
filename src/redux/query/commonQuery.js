@@ -4,7 +4,7 @@ import { errorServerOn } from "../reducer/exceptionReducer";
 
 const axiosBaseQuery = fetchBaseQuery({
   baseUrl: "https://api-dev.firstems.com",
-  timeout: 10000,
+  timeout: 15000,
   prepareHeaders: (headers) => {
     headers.set(
       "token",
@@ -16,9 +16,11 @@ const axiosBaseQuery = fetchBaseQuery({
   },
 });
 
-const response = (data, dispatch) => {
+const response = async (data, dispatch) => {
+  console.log(data);
   if (data?.RETNCODE == false) {
     dispatch(errorServerOn({ message: data.RETNMSSG }));
+    // console.log();
     toast.error(data.RETNMSSG, {
       position: "top-center",
       autoClose: 1500,
@@ -70,7 +72,8 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
+          console.log("Hello");
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchProducts",
@@ -100,7 +103,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchWareHouse",
@@ -127,7 +130,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchLocation",
@@ -154,7 +157,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchCUOM",
@@ -181,7 +184,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchTimeType",
@@ -208,7 +211,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchDlvrType",
@@ -235,7 +238,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchDCmnSbcd",
@@ -262,7 +265,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchDlvrMthd",
@@ -289,7 +292,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchListHour",
@@ -316,7 +319,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchInpCustOdMtPayMthd2",
@@ -343,7 +346,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchQUOM",
@@ -378,7 +381,7 @@ export const commonApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch);
+          const listData = await response(data, dispatch);
           dispatch(
             commonApiSlice.util.updateQueryData(
               "fetchPmtPmtnPrgr",
@@ -408,4 +411,16 @@ export const {
   useFetchListHourQuery,
   useFetchInpCustOdMtPayMthd2Query,
   useFetchQUOMQuery,
+  useLazyFetchCUOMQuery,
+  useLazyFetchDCmnSbcdQuery,
+  useLazyFetchDlvrMthdQuery,
+  useLazyFetchDlvrTypeQuery,
+  useLazyFetchInpCustOdMtPayMthd2Query,
+  useLazyFetchListHourQuery,
+  useLazyFetchLocationQuery,
+  useLazyFetchPmtPmtnPrgrQuery,
+  useLazyFetchProductsQuery,
+  useLazyFetchQUOMQuery,
+  useLazyFetchTimeTypeQuery,
+  useLazyFetchWareHouseQuery,
 } = commonApiSlice;

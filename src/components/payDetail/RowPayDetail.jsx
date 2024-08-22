@@ -3,13 +3,11 @@ import ImageFetch from "../ImageFetch";
 import ProductSuggestion from "../productsuggestion/ProductSuggestion";
 import { useDispatch, useSelector } from "react-redux";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
-import {
-  changeAmoutProduct,
-  decreamentAmountProduct,
-  deleteProductFromCart,
-  increamentAmountProduct,
-} from "../../redux/actions/cartAction";
 import { chooseProduct } from "../../redux/reducer/cartReducer";
+import {
+  useDeleteCartMutation,
+  useUpdateCartMutation,
+} from "../../redux/query/cartQuery";
 
 const RowPayDetail = ({
   item,
@@ -25,6 +23,22 @@ const RowPayDetail = ({
   handleChangeAmount,
   handleChoose,
 }) => {
+  const [
+    updateCart,
+    {
+      data: updateCartData,
+      isLoading: isLoadingUpdate,
+      isError: isErrorUpdate,
+    },
+  ] = useUpdateCartMutation();
+  const [
+    deleteCart,
+    {
+      data: deleteCartData,
+      isLoading: isLoadingDelete,
+      isError: isErrorDelete,
+    },
+  ] = useDeleteCartMutation();
   const [disabled, setDisabled] = useState(false);
   const [notifyDelete, setNotifyDelete] = useState(false);
   const { productCarts, actionCart } = useSelector((state) => state.cart);
@@ -36,7 +50,7 @@ const RowPayDetail = ({
     setNotifyDelete(false);
   };
 
-  const handlePlus = (id) => {
+  const handlePlus = async (id) => {
     setDisabled(true);
     const productFind = productCarts.find((item) => item.PRDCCODE == id);
     const body = {
@@ -50,27 +64,17 @@ const RowPayDetail = ({
         },
       ],
     };
-    try {
-      dispatch(increamentAmountProduct(body));
-    } catch (error) {
-      return;
-    }
+    await updateCart(body);
   };
   useEffect(() => {
     setQty(item[quantity]);
   }, [item[quantity]]);
 
   const handleDeleteProduct = (prdcCode, id) => {
-    dispatch(deleteProductFromCart({ PRDCCODE: prdcCode, id: id }));
-    // formik.values.DETAIL = result;
-    // if (result.length == 0) {
-    //   setChooseAll(false);
-    // }
-    // console.log(result.length);
-    // updateFormik();
+    deleteCart({ PRDCCODE: prdcCode, id: id });
   };
 
-  const handleBlurAmount = (e, id) => {
+  const handleBlurAmount = async (e, id) => {
     setDisabled(true);
     const productFind = productCarts.find((item) => item.PRDCCODE == id);
     if (parseInt(e.target.value) == 0) {
@@ -91,7 +95,8 @@ const RowPayDetail = ({
           },
         ],
       };
-      dispatch(changeAmoutProduct(body));
+      console.log(currentUser);
+      await updateCart(body);
     }
   };
 
@@ -100,7 +105,7 @@ const RowPayDetail = ({
     setNotifyDelete(true);
   };
 
-  const notifyHandleSubtract = (value) => {
+  const notifyHandleSubtract = async (value) => {
     console.log(value);
     if (item[quantity] == 1) {
       dispatch(openBlock());
@@ -120,12 +125,7 @@ const RowPayDetail = ({
         },
       ],
     };
-    try {
-      dispatch(decreamentAmountProduct(body));
-      // productFind.PRDCQTTY -= 1;
-    } catch (error) {
-      return;
-    }
+    await updateCart(body);
   };
 
   const handleChangeChoose = (id) => {
@@ -133,12 +133,12 @@ const RowPayDetail = ({
   };
 
   useEffect(() => {
-    if (actionCart.isLoading == false) {
+    if (!isLoadingUpdate) {
       dispatch(closeBlock());
       setNotifyDelete(false);
       setDisabled(false);
     }
-  }, [actionCart.isLoading]);
+  }, [isLoadingUpdate]);
 
   return (
     <>

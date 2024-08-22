@@ -4,11 +4,6 @@ import Asus from "../../assets/img/asus.jpg";
 import ProductSlider from "../ProductSlider";
 import InfoPage from "../InfoPage";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  changeAmoutProduct,
-  deleteProductFromCart,
-  loadCart,
-} from "../../redux/actions/cartAction";
 import Combobox from "../Combobox";
 import Input from "../Input";
 import DatePicker from "../DatePicker";

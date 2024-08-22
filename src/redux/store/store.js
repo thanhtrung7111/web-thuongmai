@@ -27,13 +27,15 @@ import sessionStorage from "redux-persist/es/storage/session";
 import { toast } from "react-toastify";
 import exceptionReducer, { errorServerOn } from "../reducer/exceptionReducer";
 import { authApiSlice } from "../query/authQuery";
+import { cartApiSlice } from "../query/cartQuery";
+import { detailApiSlice } from "../query/detailQuery";
 // import { GetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 
 const rootPersistConfig = {
   key: "root",
   storage: sessionStorage,
   version: 1,
-  whitelist: ["user"],
+  // whitelist: ["user"],
   // blacklist: [
   //   "user",
   //   "cart",
@@ -67,6 +69,8 @@ const rootReducer = combineReducers({
   order: orderReducer,
   [commonApiSlice.reducerPath]: commonApiSlice.reducer,
   [authApiSlice.reducerPath]: authApiSlice.reducer,
+  [cartApiSlice.reducerPath]: cartApiSlice.reducer,
+  [detailApiSlice.reducerPath]: detailApiSlice.reducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
@@ -90,6 +94,7 @@ const listenerMiddleWare = createListenerMiddleware();
 listenerMiddleWare.startListening({
   matcher: isAnyOf(...lstReject),
   effect: async (action, { dispatch }) => {
+    console.log(action.type);
     dispatch(errorServerOn({ message: "Lỗi hệ thống!" }));
     toast.error("Lỗi hệ thống!", {
       autoClose: 1500,
@@ -107,6 +112,8 @@ const store = configureStore({
     }).concat(
       commonApiSlice.middleware,
       authApiSlice.middleware,
+      cartApiSlice.middleware,
+      detailApiSlice.middleware,
       listenerMiddleWare.middleware
     ),
 });

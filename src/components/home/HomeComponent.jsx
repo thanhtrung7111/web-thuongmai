@@ -15,26 +15,25 @@ import HomeSkeleton from "./HomeSkeleton";
 import { useFetchProductsQuery } from "../../redux/query/commonQuery";
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomeComponent = () => {
-  const { tokenInitial, tokenLocation } = useSelector((state) => state.user);
+  const tokenLocation = sessionStorage.getItem("tokenLocation");
   const { errorServer } = useSelector((state) => state.exception);
   const {
     data: products,
     refetch,
     isFetching,
     isLoading,
+    isUninitialized,
   } = useFetchProductsQuery(undefined, { skip: errorServer.isError });
 
   // const [getProducts, { isLoading: loadingProducts, isError }] =
   //   useGetProductsMutation();
 
   useEffect(() => {
-    if (
-      (tokenInitial.data != null || tokenLocation.data != null) &&
-      !isLoading
-    ) {
+    if (tokenLocation != null && isUninitialized) {
+      console.log("hello 2");
       refetch();
     }
-  }, [tokenInitial.data, tokenLocation.data]);
+  }, []);
   return isLoading ? (
     <HomeSkeleton />
   ) : (

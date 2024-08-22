@@ -8,6 +8,16 @@ const ImageFetch = ({ url, className }) => {
     isLoading: true,
   });
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Cleanup function to revoke object URLs
+    return () => {
+      if (image.data) {
+        URL.revokeObjectURL(image.data);
+      }
+    };
+  }, [image.data]);
+
   useEffect(() => {
     // async function fetchImage() {
     //   setIsLoading(false);

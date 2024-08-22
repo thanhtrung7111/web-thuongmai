@@ -5,11 +5,15 @@ import Triangle from "../../assets/img/triangle.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import RowCart from "./RowCart";
 import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
-import { loadCart } from "../../redux/actions/cartAction";
 import AnimateSkeleton from "../AnimateSkeleton";
+import { useFetchCartMutation } from "../../redux/query/cartQuery";
 const Cart = () => {
   const dispatch = useDispatch();
-  const { productCarts, loadingCart } = useSelector((state) => state.cart);
+  const [
+    fetchCart,
+    { data: cartData, isLoading: isLoadingCart, isError: isErrorCart },
+  ] = useFetchCartMutation();
+  const { productCarts } = useSelector((state) => state.cart);
   const [loading, setLoading] = useState(true);
   const { currentUser } = useSelector((state) => state.user);
   const [overlay, setOverlay] = useState(false);
@@ -40,18 +44,22 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    if (currentUser !== null) {
-      dispatch(
-        loadCart({
+    const fetchDataCart = async () => {
+      try {
+        await fetchCart({
           DCMNCODE: "APPCARTPRDC",
           CONDFLTR: "UserLogin like '000005'",
-        })
-      );
+        }).unwrap();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (currentUser !== null) {
+      fetchDataCart();
     }
-    console.log(currentUser);
   }, [currentUser]);
 
-  return loadingCart?.isLoading ? (
+  return isLoadingCart ? (
     <AnimateSkeleton className={"w-20 h-5"}></AnimateSkeleton>
   ) : (
     <>
