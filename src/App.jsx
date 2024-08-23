@@ -27,9 +27,9 @@ import ProductList from "./pages/ProductList";
 import PayDetail from "./pages/PayDetail";
 import AppLogin from "./routes/AppLogin";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import { api } from "./api/api";
 import { useFetchInitialTokenQuery } from "./redux/query/authQuery";
+import Register from "./pages/Register";
 
 function App() {
   const [count, setCount] = useState(0);

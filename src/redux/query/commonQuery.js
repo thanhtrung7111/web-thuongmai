@@ -47,6 +47,10 @@ export const commonApiSlice = createApi({
     "lst_inpCustOdMt_Pay_Mthd_2",
     "lstQUOM",
     "pmtPmtnPrgr",
+    "lstCustomerGroup",
+    "lstProvince",
+    "lstDistrict",
+    "lstWard",
   ],
   keepUnusedDataFor: 7200,
   refetchOnFocus: true,
@@ -396,11 +400,130 @@ export const commonApiSlice = createApi({
         }
       },
     }),
+    fetchCustomerGroup: builder.query({
+      query: () => ({
+        url: "/Api/data/runApi_Data?run_Code=DTA002",
+        method: "POST",
+        body: {
+          LISTCODE: "lstCustomerGroup",
+        },
+      }),
+      providesTags: "lstCustomerGroup",
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch, null);
+          if (listData != null) {
+            dispatch(
+              commonApiSlice.util.updateQueryData(
+                "fetchCustomerGroup",
+                undefined,
+                (draft) => {
+                  return listData;
+                }
+              )
+            );
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
+    fetchProvince: builder.query({
+      query: () => ({
+        url: "/Api/data/runApi_Data?run_Code=DTA002",
+        method: "POST",
+        body: {
+          LISTCODE: "lstProvince",
+        },
+      }),
+      providesTags: "lstProvince",
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch, null);
+          if (listData != null) {
+            dispatch(
+              commonApiSlice.util.updateQueryData(
+                "fetchProvince",
+                undefined,
+                (draft) => {
+                  return listData;
+                }
+              )
+            );
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
+    fetchDistrict: builder.mutation({
+      query: (provinceCode) => ({
+        url: "/Api/data/runApi_Data?run_Code=DTA002",
+        method: "POST",
+        body: {
+          LISTCODE: "lstDistrict",
+          CONDFLTR: "PrvnCode=" + provinceCode + "'",
+        },
+      }),
+      providesTags: "lstDistrict",
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch, null);
+          if (listData != null) {
+            dispatch(
+              commonApiSlice.util.updateQueryData(
+                "fetchDistrict",
+                undefined,
+                (draft) => {
+                  return listData;
+                }
+              )
+            );
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
+    fetchWard: builder.query({
+      query: () => ({
+        url: "/Api/data/runApi_Data?run_Code=DTA002",
+        method: "POST",
+        body: {
+          LISTCODE: "lstWard",
+        },
+      }),
+      providesTags: "lstWard",
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch, null);
+          if (listData != null) {
+            dispatch(
+              commonApiSlice.util.updateQueryData(
+                "fetchWard",
+                undefined,
+                (draft) => {
+                  return listData;
+                }
+              )
+            );
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
   }),
 });
 
 export const {
   useFetchProductsQuery,
+  useFetchProvinceQuery,
+  useFetchDistrictMutation,
   useFetchWareHouseQuery,
   useFetchLocationQuery,
   useFetchCUOMQuery,

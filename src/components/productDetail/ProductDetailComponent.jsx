@@ -29,6 +29,10 @@ import TagList from "../TagList";
 import Panigation from "../panigation/Panigation";
 import CommentCard from "../CommentCard";
 import ProductSlider from "../ProductSlider";
+import {
+  useAddToCartMutation,
+  useUpdateCartMutation,
+} from "../../redux/query/cartQuery";
 let pageSize = 4;
 const images = [
   {
@@ -188,6 +192,25 @@ const productDetailDemo = {
   STTESIGN: 0,
 };
 const ProductDetailComponent = () => {
+  const [
+    addToCart,
+    {
+      data: cartData,
+      isLoading: isLoadingCart,
+      isError: isErrorCart,
+      isSuccess: isSuccessCart,
+    },
+  ] = useAddToCartMutation();
+
+  const [
+    updateCart,
+    {
+      data: cartUpdateDate,
+      isLoading: isLoadingUpdateCart,
+      isError: isErrorUpdateCart,
+      isSuccess: isSuccessUpdateCart,
+    },
+  ] = useUpdateCartMutation();
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -211,62 +234,43 @@ const ProductDetailComponent = () => {
   };
   console.log(productCarts);
 
-  const addCart = (value) => {
-    // const productFind = productCarts.find(
-    //   (item) => item.PRDCCODE == productDetail.PRDCCODE
-    // );
-    // if (productFind) {
-    //   dispatch(
-    //     updateAmountProduct({
-    //       DCMNCODE: "APPCARTPRDC",
-    //       HEADER: [
-    //         {
-    //           ...productFind,
-    //           QUOMQTTY: qty,
-    //         },
-    //       ],
-    //     })
-    //   );
-    //   toast.success("Thêm sản phẩm vào giỏ thành công!", {
-    //     position: "top-center",
-    //     autoClose: 1500,
-    //     hideProgressBar: true,
-    //   });
-    // } else {
-    //   console.log(value.PRCEDSCN);
-    //   dispatch(
-    //     addToCart({
-    //       COMPCODE: value.COMPCODE,
-    //       LCTNCODE: "001",
-    //       USERLOGIN: currentUser?.USERLGIN,
-    //       PRDCCODE: value.PRDCCODE,
-    //       QUOMQTTY: qty,
-    //       // QUOMCODE: item["QUOMCODE"],
-    //       SALEPRCE: value.PRCESALE,
-    //       DSCNRATE: value.DSCNRATE,
-    //       PRDCNAME: value.PRDCNAME,
-    //       PRDCIMAGE: value.DETAIL_4[0]?.IMGE_URL,
-    //     })
-    //   );
-    // }
+  const addCart = async (value) => {
+    const productFind = productCarts.find(
+      (item) => item.PRDCCODE == productDetail.PRDCCODE
+    );
+    console.log(productFind);
+    if (!productFind) {
+      console.log(productDetail);
+      await addToCart({
+        COMPCODE: productDetail.COMPCODE,
+        LCTNCODE: "001",
+        USERLOGIN: currentUser?.USERLGIN,
+        PRDCCODE: productDetail.COMPCODE,
+        QUOMQTTY: qty,
+        QUOMCODE: 27,
+        SALEPRCE: productDetail.PRCESALE,
+        DSCNRATE: productDetail.DSCNRATE,
+        PRDCNAME: productDetail.PRDCNAME,
+        PRDCIMAGE: productDetail?.DETAIL_4[0]?.IMGE_URL,
+      });
+    } else {
+      await updateCart({
+        ...productFind,
+        QUOMQTTY: qty,
+        USERLOGIN: currentUser?.USERLGIN,
+        PRDCIMAGE: productFind.PRDCIMAGE,
+      });
+    }
   };
 
-  const handlePay = (value) => {
-    // addCart(value);
-    // dispatch(chooseProduct({ id: productDetail.PRDCCODE, checked: true }));
-    // navigate("/pay");
+  const handlePay = async (value) => {
+    await addCart(value);
+    dispatch(chooseProduct({ id: productDetail.PRDCCODE, checked: true }));
+    navigate("/pay");
   };
 
   useEffect(() => {
-    async function fetchDataImage() {
-      const img = await fetchImage(
-        productDetail?.DETAIL_4[0]?.IMGE_URL,
-        sessionStorage.getItem("tokenUser")
-      );
-      setMainImage(img);
-    }
-    fetchDataImage();
-    // }
+    setMainImage(productDetail?.DETAIL_4[0]?.IMGE_URL);
   }, [productDetail]);
   console.log(productDetail);
   const showManify = () => {
@@ -274,8 +278,14 @@ const ProductDetailComponent = () => {
   };
 
   useEffect(() => {
-    console.log(mainImage);
-  }, [mainImage]);
+    if (isSuccessCart || isSuccessUpdateCart) {
+      toast.success("Thêm sản phẩm vào giỏ thành công!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: true,
+      });
+    }
+  }, [isSuccessCart, isSuccessUpdateCart]);
 
   const showEvaludate = () => {
     dispatch(openEvaluateProduct({ productID: "0000" }));
@@ -299,11 +309,10 @@ const ProductDetailComponent = () => {
                   onClick={showManify}
                 >
                   {/* <ImageFetch url={product?.DETAIL_4[0]?.IMGE_URL}></ImageFetch> */}
-                  <img
-                    src={mainImage}
-                    alt=""
-                    className="w-full h-full object-contain object-top"
-                  />
+                  <ImageFetch
+                    className={"w-full h-full"}
+                    url={mainImage}
+                  ></ImageFetch>
                 </div>
                 <div className="min-w-full">
                   <Swiper
@@ -513,14 +522,38 @@ const ProductDetailComponent = () => {
 
                   <div className="flex items-center gap-x-2">
                     <button
-                      className="bg-second text-white rounded-md px-3 py-2"
+                      disabled={isLoadingCart || isErrorUpdateCart}
+                      className="bg-second  disabled:opacity-85 text-white rounded-md px-3 h-12 w-40"
                       onClick={() => addCart(productDetail)}
                     >
-                      Thêm vào giỏ
+                      {isLoadingCart || isLoadingUpdateCart ? (
+                        <div role="status">
+                          <svg
+                            aria-hidden="true"
+                            class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-first"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="currentFill"
+                            />
+                          </svg>
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                      ) : (
+                        "Thêm vào giỏ"
+                      )}
                     </button>
                     <button
+                      disabled={isLoadingCart || isErrorUpdateCart}
                       onClick={() => handlePay(productDetail)}
-                      className="bg-[#f24c4c] text-white rounded-md px-3 py-2"
+                      className="bg-[#f24c4c] text-white rounded-md px-3 h-12 w-40"
                     >
                       Mua ngay
                     </button>

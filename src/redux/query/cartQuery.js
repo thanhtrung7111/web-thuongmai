@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   addCartByUser,
+  changeActionCart,
   deleteCartByUser,
   loadCartByUser,
   updateCartByUser,
@@ -74,6 +75,9 @@ export const cartApiSlice = createApi({
           console.log(listData);
           if (listData != null) {
             dispatch(addCartByUser({ product: listData[0] }));
+            dispatch(
+              changeActionCart({ action: "addproduct" + listData[0].PRDCCODE })
+            );
           }
         } catch (error) {}
       },
@@ -82,7 +86,14 @@ export const cartApiSlice = createApi({
       query: (data) => ({
         url: "/Api/data/runApi_Data?run_Code=DTA008",
         method: "POST",
-        body: data,
+        body: {
+          DCMNCODE: "APPCARTPRDC",
+          HEADER: [
+            {
+              ...data,
+            },
+          ],
+        },
       }),
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -91,6 +102,15 @@ export const cartApiSlice = createApi({
           console.log(listData);
           if (listData != null) {
             dispatch(updateCartByUser({ product: listData[0] }));
+            dispatch(
+              changeActionCart({
+                action:
+                  "update:" +
+                  listData[0].PRDCCODE +
+                  " QUOMQTTY: " +
+                  listData[0].QUOMQTTY,
+              })
+            );
           }
         } catch (error) {}
       },
@@ -108,6 +128,15 @@ export const cartApiSlice = createApi({
           console.log(listData);
           if (listData != null) {
             dispatch(deleteCartByUser({ product: listData[0] }));
+            dispatch(
+              changeActionCart({
+                action:
+                  "deleteproduct:" +
+                  listData[0].PRDCCODE +
+                  " QUOMQTTY: " +
+                  listData[0].QUOMQTTY,
+              })
+            );
           }
         } catch (error) {}
       },

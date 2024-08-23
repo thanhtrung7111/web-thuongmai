@@ -43,6 +43,10 @@ import {
   useFetchTimeTypeQuery,
   useFetchWareHouseQuery,
 } from "../../redux/query/commonQuery";
+import {
+  useDeleteCartMutation,
+  useUpdateCartMutation,
+} from "../../redux/query/cartQuery";
 const PayDetailComponent = () => {
   const {
     data: lstWareHouse,
@@ -84,18 +88,32 @@ const PayDetailComponent = () => {
     isLoading: isLoadingTimeType,
     isError: isErrorTimeType,
   } = useFetchTimeTypeQuery();
-
+  const [
+    updateCart,
+    {
+      data: updateCartData,
+      isLoading: isLoadingUpdate,
+      isError: isErrorUpdate,
+      isSuccess: isSuccessUpdate,
+    },
+  ] = useUpdateCartMutation();
+  const [
+    deleteCart,
+    {
+      data: deleteCartData,
+      isLoading: isLoadingDelete,
+      isError: isErrorDelete,
+      isSuccess: isSuccessDelete,
+    },
+  ] = useDeleteCartMutation();
+  const { actionCart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [stateButton, setStateButton] = useState("");
   const { productCarts } = useSelector((state) => state.cart);
   const { currentUser } = useSelector((state) => state.user);
-  const { showAlert } = useSelector((state) => state.popup);
   const [openVietQR, setOpenVietQR] = useState(false);
   const [infoVietQR, setInfoVietQR] = useState(null);
-  let timer = useRef(null);
-  const [loading, setLoading] = useState(true);
-  // console.log(productCarts);
   const formik = useFormik({
     initialValues: {
       COMPCODE: "PMC", //Công ty
@@ -329,7 +347,7 @@ const PayDetailComponent = () => {
     const varFormik = formik.values.DETAIL?.filter(
       (item) => item.checked == true
     );
-    console.log(formik.values.DETAIL);
+    // console.log(formik.values.DETAIL);
     formik.setValues({
       DETAIL: formik.values.DETAIL,
       SMPRQTTY: varFormik?.reduce(
@@ -373,45 +391,76 @@ const PayDetailComponent = () => {
     });
   };
 
-  const changeForm = () => {};
+  const checkAll = (checked) => {
+    const detail = productCarts?.map((item) => {
+      return {
+        PRDCCODE: item.PRDCCODE, //Mã sản phẩm
+        PRDCNAME: item.PRDCNAME,
+        ORGNCODE: "1", //Nguồn sản phẩm
+        SORTCODE: "1", //Phân loại sản phẩm
+        QUOMCODE: item.QUOMCODE, //Đơn vị tính
+        QUOMQTTY: 1, //Số lượng
+        CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
+        MNEYCRAM: item.PRCEDSCN, //Thành tiền
+        PRDCIMGE: item.PRDCIMAGE,
+        DISCRATE: 0, //%Chiết khấu
+        DCPRCRAM: 0, //Tiền giảm CK
+        PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
+        SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
+        MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
+        DCPRAMNT: 0, //Tiền giảm CK qui đổi
+        DSCNRATE: item.DSCNRATE,
+        KKKK0000: item["KKKK0000"],
+        COMPCODE: item["COMPCODE"],
+        LCTNCODE: item["LCTNCODE"],
+        checked: checked,
+        ...item,
+      };
+    });
+    formik.values.DETAIL = detail;
+    updateFormik();
+  };
 
+  const checkItem = (id) => {
+    formik.values.DETAIL.find((item) => item.PRDCCODE == id).checked =
+      !formik.values.DETAIL.find((item) => item.PRDCCODE == id).checked;
+    updateFormik();
+  };
   useEffect(() => {
     // if (productCarts?.length > 0) {
-    async function loadDetailCart() {
-      const detail = await Promise.all(
-        productCarts?.map((item) => {
-          return {
-            PRDCCODE: item.PRDCCODE, //Mã sản phẩm
-            PRDCNAME: item.PRDCNAME,
-            ORGNCODE: "1", //Nguồn sản phẩm
-            SORTCODE: "1", //Phân loại sản phẩm
-            QUOMCODE: item.QUOMCODE, //Đơn vị tính
-            QUOMQTTY: 1, //Số lượng
-            CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
-            MNEYCRAM: item.PRCEDSCN, //Thành tiền
-            PRDCIMGE: item.PRDCIMAGE,
-            DISCRATE: 0, //%Chiết khấu
-            DCPRCRAM: 0, //Tiền giảm CK
-            PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
-            SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
-            MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
-            DCPRAMNT: 0, //Tiền giảm CK qui đổi
-            DSCNRATE: item.DSCNRATE,
-            KKKK0000: item["KKKK0000"],
-            COMPCODE: item["COMPCODE"],
-            LCTNCODE: item["LCTNCODE"],
-            ...item,
-          };
-        })
-      );
+    function loadDetailCart() {
+      const detail = productCarts?.map((item) => {
+        return {
+          PRDCCODE: item.PRDCCODE, //Mã sản phẩm
+          PRDCNAME: item.PRDCNAME,
+          ORGNCODE: "1", //Nguồn sản phẩm
+          SORTCODE: "1", //Phân loại sản phẩm
+          QUOMCODE: item.QUOMCODE, //Đơn vị tính
+          QUOMQTTY: 1, //Số lượng
+          CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
+          MNEYCRAM: item.PRCEDSCN, //Thành tiền
+          PRDCIMGE: item.PRDCIMAGE,
+          DISCRATE: 0, //%Chiết khấu
+          DCPRCRAM: 0, //Tiền giảm CK
+          PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
+          SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
+          MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
+          DCPRAMNT: 0, //Tiền giảm CK qui đổi
+          DSCNRATE: item.DSCNRATE,
+          KKKK0000: item["KKKK0000"],
+          COMPCODE: item["COMPCODE"],
+          LCTNCODE: item["LCTNCODE"],
+          checked: false,
+          ...item,
+        };
+      });
       console.log(detail);
       formik.values.DETAIL = detail ? [...detail] : [];
-
-      // }
       updateFormik();
     }
+
     loadDetailCart();
-  }, [productCarts]);
+  }, [actionCart]);
 
   return (
     <div className="product-detail">
@@ -564,6 +613,8 @@ const PayDetailComponent = () => {
                 </table> */}
                 <TableDetailProduct
                   data={formik.values.DETAIL}
+                  onHandleCheckAll={checkAll}
+                  onHandleChooseItem={checkItem}
                   maincode={"KKKK0000"}
                   name={"PRDCNAME"}
                   id={"PRDCCODE"}

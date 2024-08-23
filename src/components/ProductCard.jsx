@@ -21,11 +21,15 @@ const ProductCard = ({
 }) => {
   const [
     addToCart,
-    { data: cartData, isLoading: isLoadingAdd, isError: isErrorAdd },
+    {
+      data: cartData,
+      isLoading: isLoadingAdd,
+      isError: isErrorAdd,
+      isSuccess: isSuccessAdd,
+    },
   ] = useAddToCartMutation();
   const { currentUser } = useSelector((state) => state.user);
   const { errorMessageCart } = useSelector((state) => state.cart);
-  const [disableAction, setDisableAction] = useState(false);
   const { productCarts, actionCart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,7 +37,6 @@ const ProductCard = ({
     event.preventDefault();
 
     if (currentUser !== null) {
-      setDisableAction(true);
       const findProduct = productCarts?.find((item) => {
         return item?.PRDCCODE == value;
       });
@@ -45,7 +48,7 @@ const ProductCard = ({
           position: "top-center",
           hideProgressBar: true,
         });
-        setDisableAction(false);
+
         return;
       }
       await addToCart({
@@ -60,7 +63,6 @@ const ProductCard = ({
         PRDCNAME: item["PRDCNAME"],
         PRDCIMAGE: item["PRDCIMGE"],
       });
-      setDisableAction(false);
     } else {
       toast.warning("Bạn cần phải đăng nhập để thêm sản phẩm vào giỏ hàng!", {
         autoClose: 1500,
@@ -69,17 +71,13 @@ const ProductCard = ({
       });
     }
   };
-  // useEffect(() => {
-  //   if (errorMessageCart !== "" && errorMessageCart !== null) {
-  //     toast.warning("Thêm sản phẩm vào giỏ thất bại", {
-  //       autoClose: 2000,
-  //     });
-  //   } else {
-  //     toast.success("Thêm sản phẩm vào giỏ thành công", {
-  //       autoClose: 2000,
-  //     });
-  //   }
-  // }, [errorMessageCart]);
+  useEffect(() => {
+    if (isSuccessAdd) {
+      toast.success("Thêm sản phẩm vào giỏ thành công", {
+        autoClose: 2000,
+      });
+    }
+  }, [isSuccessAdd]);
 
   return (
     <div
@@ -162,7 +160,7 @@ const ProductCard = ({
       <button
         type="button"
         title="Thêm vào giỏ hàng"
-        disabled={disableAction}
+        disabled={isLoadingAdd}
         onClick={(e) => {
           e.stopPropagation();
           handleAddProductToCart(item[id]);
@@ -170,7 +168,7 @@ const ProductCard = ({
         className={`absolute  bottom-3 right-3 w-10 h-8 rounded-md bg-second disabled:bg-gray-200
                flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacitys duration-200`}
       >
-        {disableAction ? (
+        {isLoadingAdd ? (
           <svg
             aria-hidden="true"
             class="w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-gray-800"

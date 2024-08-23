@@ -4,23 +4,22 @@ import RowPayDetail from "./RowPayDetail";
 import { useDispatch, useSelector } from "react-redux";
 import { chooseAllProduct } from "../../redux/reducer/cartReducer";
 
-const TableDetailProduct = () => {
-  const { productCarts } = useSelector((state) => state.cart);
+const TableDetailProduct = ({ data, onHandleCheckAll, onHandleChooseItem }) => {
   const dispatch = useDispatch();
-  const [chooseAll, setChooseAll] = useState(false);
-  const handleClickAllProduct = () => {
-    dispatch(chooseAllProduct(!chooseAll));
-    setChooseAll(!chooseAll);
-  };
-
+  const [chooseAll, setChooseAll] = useState(
+    data?.find((item) => item.checked == false) ? false : true
+  );
+ 
   useEffect(() => {
-    const find = productCarts?.find((item) => item.checked == false);
-    if (find) {
+    const findItem = data?.find((item) => item.checked == false);
+    console.log(data);
+    console.log(findItem);
+    if (findItem) {
       setChooseAll(false);
-      return;
+    } else {
+      setChooseAll(true);
     }
-    setChooseAll(true);
-  }, [productCarts]);
+  }, [data]);
   return (
     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
       <thead class="text-xs text-gray-600 z-10 bg-gray-200 dark:bg-gray-700 dark:text-gray-400 sticky top-0 right-0 ">
@@ -30,7 +29,10 @@ const TableDetailProduct = () => {
               type="checkbox"
               id="chooseAll"
               className="w-5 h-5 accent-first border-gray-light"
-              onClick={handleClickAllProduct}
+              onClick={(e) => {
+                onHandleCheckAll(e.target.checked);
+                setChooseAll(e.target.checked);
+              }}
               checked={chooseAll}
             />{" "}
             <label for="chooseAll" className="cursor-pointer">
@@ -46,10 +48,11 @@ const TableDetailProduct = () => {
         <th class="px-6 py-3 w-32 uppercase">Xóa tất cả</th>
       </thead>
       <tbody>
-        {productCarts?.length >= 1
-          ? productCarts?.map((i) => {
+        {data?.length >= 1
+          ? data?.map((i) => {
               return (
                 <RowPayDetail
+                  handleChoose={onHandleChooseItem}
                   key={i["PRDCCODE"]}
                   item={i}
                   maincode={"KKKK0000"}

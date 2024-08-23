@@ -17,10 +17,8 @@ const RowPayDetail = ({
   price,
   choose,
   saleoff,
-  total,
   quantity,
   maincode,
-  handleChangeAmount,
   handleChoose,
 }) => {
   const [
@@ -39,7 +37,6 @@ const RowPayDetail = ({
       isError: isErrorDelete,
     },
   ] = useDeleteCartMutation();
-  const [disabled, setDisabled] = useState(false);
   const [notifyDelete, setNotifyDelete] = useState(false);
   const { productCarts, actionCart } = useSelector((state) => state.cart);
   const { currentUser } = useSelector((state) => state.user);
@@ -51,18 +48,12 @@ const RowPayDetail = ({
   };
 
   const handlePlus = async (id) => {
-    setDisabled(true);
     const productFind = productCarts.find((item) => item.PRDCCODE == id);
     const body = {
-      DCMNCODE: "APPCARTPRDC",
-      HEADER: [
-        {
-          ...productFind,
-          QUOMQTTY: productFind.QUOMQTTY + 1,
-          USERLOGIN: currentUser?.USERLGIN,
-          PRDCIMAGE: productFind.PRDCIMAGE,
-        },
-      ],
+      ...productFind,
+      QUOMQTTY: productFind.QUOMQTTY + 1,
+      USERLOGIN: currentUser?.USERLGIN,
+      PRDCIMAGE: productFind.PRDCIMAGE,
     };
     await updateCart(body);
   };
@@ -75,7 +66,6 @@ const RowPayDetail = ({
   };
 
   const handleBlurAmount = async (e, id) => {
-    setDisabled(true);
     const productFind = productCarts.find((item) => item.PRDCCODE == id);
     if (parseInt(e.target.value) == 0) {
       let result = productCarts.filter(
@@ -85,16 +75,12 @@ const RowPayDetail = ({
       handleDeleteProduct(productFind.PRDCCODE, productFind.KKKK0000);
     } else {
       const body = {
-        DCMNCODE: "APPCARTPRDC",
-        HEADER: [
-          {
-            ...productFind,
-            QUOMQTTY: parseInt(e.target.value),
-            USERLOGIN: currentUser?.USERLGIN,
-            PRDCIMAGE: productFind.PRDCIMAGE,
-          },
-        ],
+        ...productFind,
+        QUOMQTTY: parseInt(e.target.value),
+        USERLOGIN: currentUser?.USERLGIN,
+        PRDCIMAGE: productFind.PRDCIMAGE,
       };
+      console.log(body);
       console.log(currentUser);
       await updateCart(body);
     }
@@ -112,33 +98,15 @@ const RowPayDetail = ({
       setNotifyDelete(true);
       return;
     }
-    setDisabled(true);
     const productFind = productCarts.find((item) => item.PRDCCODE == value);
     const body = {
-      DCMNCODE: "APPCARTPRDC",
-      HEADER: [
-        {
-          ...productFind,
-          QUOMQTTY: productFind.QUOMQTTY - 1,
-          USERLOGIN: currentUser?.USERLGIN,
-          PRDCIMAGE: productFind.PRDCIMAGE,
-        },
-      ],
+      ...productFind,
+      QUOMQTTY: productFind.QUOMQTTY - 1,
+      USERLOGIN: currentUser?.USERLGIN,
+      PRDCIMAGE: productFind.PRDCIMAGE,
     };
     await updateCart(body);
   };
-
-  const handleChangeChoose = (id) => {
-    dispatch(chooseProduct({ id: id }));
-  };
-
-  useEffect(() => {
-    if (!isLoadingUpdate) {
-      dispatch(closeBlock());
-      setNotifyDelete(false);
-      setDisabled(false);
-    }
-  }, [isLoadingUpdate]);
 
   return (
     <>
@@ -158,7 +126,7 @@ const RowPayDetail = ({
                 handleDeleteProduct(item[id], item[maincode]);
               }}
             >
-              {disabled ? (
+              {isLoadingDelete ? (
                 <svg
                   aria-hidden="true"
                   class="w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-gray-800"
@@ -204,7 +172,7 @@ const RowPayDetail = ({
               type="checkbox"
               className="w-4 h-4 accent-first border-gray-light"
               checked={item[choose]}
-              onClick={() => handleChangeChoose(item[id])}
+              onClick={() => handleChoose(item[id])}
             />
             <label
               htmlFor={item[id]}
@@ -227,14 +195,14 @@ const RowPayDetail = ({
             <div className="flex items-center w-fit gap-x-1">
               <button
                 type="button"
-                disabled={disabled}
+                disabled={isLoadingUpdate}
                 onClick={() => notifyHandleSubtract(item[id])}
                 className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark disabled:bg-slate-100"
               >
                 -
               </button>
               <input
-                disabled={disabled}
+                disabled={isLoadingUpdate}
                 type="number"
                 min={1}
                 onBlur={(e) => {
@@ -248,10 +216,9 @@ const RowPayDetail = ({
                 className="border pl-2 w-14 h-6 rounded-md  outline-none text-xs text-gray-dark disabled:bg-slate-100"
               />
               <button
-                disabled={disabled}
+                disabled={isLoadingUpdate}
                 type="button"
                 onClick={() => {
-                  setDisabled(true);
                   handlePlus(item[id]);
                 }}
                 className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark disabled:bg-slate-100"
@@ -292,7 +259,7 @@ const RowPayDetail = ({
         <td class="px-6 py-4">
           <div className="flex flex-col items-center gap-y-2 relative">
             <button
-              disabled={disabled}
+              disabled={isLoadingUpdate}
               type="button"
               className="text-white bg-red-400 w-fit px-7 py-2 rounded-md text-xs cursor-pointer disabled:bg-gray-400"
               onClick={openNotify}

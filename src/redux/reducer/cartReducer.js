@@ -4,6 +4,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState: {
     productCarts: null,
+    actionCart: "",
   },
 
   reducers: {
@@ -24,30 +25,13 @@ const cartSlice = createSlice({
         (item) => item.PRDCCODE != action.payload.product.PRDCCODE
       );
     },
+    changeActionCart: (state, action) => {
+      state.actionCart = action.payload.action;
+    },
     clearCart: (state, action) => {
       return {
         productCarts: null,
       };
-    },
-    chooseProduct: (state, action) => {
-      if (action.payload.checked) {
-        state.productCarts.find(
-          (item) => item.PRDCCODE == action.payload.id
-        ).checked = action.checked;
-        return;
-      }
-      state.productCarts.find(
-        (item) => item.PRDCCODE == action.payload.id
-      ).checked = !state.productCarts.find(
-        (item) => item.PRDCCODE == action.payload.id
-      ).checked;
-    },
-
-    chooseAllProduct: (state, action) => {
-      console.log(action.payload);
-      state.productCarts = state.productCarts.map((item) => {
-        return { ...item, checked: action.payload };
-      });
     },
   },
 });
@@ -61,4 +45,5 @@ export const {
   clearCart,
   chooseProduct,
   chooseAllProduct,
+  changeActionCart,
 } = cartSlice.actions;
