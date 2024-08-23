@@ -167,13 +167,14 @@ const Register = () => {
                       options={dataProvince}
                       itemKey={"ITEMCODE"}
                       itemValue={"ITEMNAME"}
-                      onChange={(e) => {
+                      onChange={(item) => {
                         setFieldValue(
                           "address",
-                          dataProvince.find((item) => item.ITEMCODE == e)
-                            .ITEMNAME
+                          dataProvince.find(
+                            (item) => item.ITEMCODE == item.ITEMCODE
+                          ).ITEMNAME
                         );
-                        fetchDistrict(e);
+                        fetchDistrict(item.ITEMCODE);
                       }}
                     ></SelectForm>
                     {/* <InputForm

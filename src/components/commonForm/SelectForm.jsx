@@ -18,7 +18,7 @@ const SelectForm = ({
   const handleSelectItem = (item) => {
     setSelected(item);
     helpers.setValue(item[`${itemKey}`]);
-    onChange(item[`${itemKey}`]);
+    onChange(item);
     setShow(false);
   };
 
@@ -51,6 +51,7 @@ const SelectForm = ({
             if (e.target.value == "") {
               setSelected(options[1]);
               helpers.setValue(options[1][`${itemKey}`]);
+              onchange(options[1]);
             }
             setShow(false);
           }}

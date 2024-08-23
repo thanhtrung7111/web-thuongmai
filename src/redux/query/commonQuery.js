@@ -464,24 +464,15 @@ export const commonApiSlice = createApi({
         method: "POST",
         body: {
           LISTCODE: "lstDistrict",
-          CONDFLTR: "PrvnCode=" + provinceCode + "'",
+          CONDFLTR: "PrvnCode='" + provinceCode + "'",
         },
       }),
-      providesTags: "lstDistrict",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
           const listData = await response(data, dispatch, null);
           if (listData != null) {
-            dispatch(
-              commonApiSlice.util.updateQueryData(
-                "fetchDistrict",
-                undefined,
-                (draft) => {
-                  return listData;
-                }
-              )
-            );
+            return listData;
           }
         } catch (e) {
           console.log(e);
