@@ -32,6 +32,11 @@ const SelectForm = ({
       )
     );
   };
+  useEffect(() => {
+    setSelected(options[0]);
+    setDataFilter(options);
+    setShow(false);
+  }, [options]);
   return loading ? (
     "Đang tải"
   ) : (
@@ -48,15 +53,15 @@ const SelectForm = ({
         <input
           onClick={() => setShow(!show)}
           onBlur={(e) => {
-            if (e.target.value == "") {
+            if (e.target.value == "" && options.length >= 1) {
               setSelected(options[1]);
               helpers.setValue(options[1][`${itemKey}`]);
-              onchange(options[1]);
+              onChange(options[1]);
             }
             setShow(false);
           }}
           onChange={(e) => filterChange(e)}
-          value={selected[`${itemValue}`]}
+          value={selected && selected[`${itemValue}`]}
           autoComplete="off"
           className="flex-auto outline-none"
         />

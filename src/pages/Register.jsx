@@ -71,7 +71,6 @@ const Register = () => {
     //   .required("Không được để trống số điện thoại!")
     //   .matches(/0[0-9]{9}/, "Số điện thoại không đúng định dạng"),
   });
-  console.log(dataDistrict);
   return (
     <div>
       <div className="xl:container xl:mx-auto mx-5">
@@ -95,7 +94,7 @@ const Register = () => {
             event.preventDefault();
             console.log(values);
           }}
-          validateOnChange={true}
+          // validateOnChange={true}
         >
           {({ setValues, setFieldValue, values }) => (
             <Form className="bg-white w-[800px] shadow-md py-14 px-10 flex flex-col gap-y-3 text-sm mx-auto">
@@ -175,6 +174,28 @@ const Register = () => {
                           ).ITEMNAME
                         );
                         fetchDistrict(item.ITEMCODE);
+                      }}
+                    ></SelectForm>
+
+                    <SelectForm
+                      label={"Thành phố"}
+                      important={true}
+                      placeholder="Chọn quận huyện..."
+                      loading={isLoadingDistrict}
+                      name="district"
+                      options={
+                        dataDistrict?.RETNDATA ? dataDistrict.RETNDATA : []
+                      }
+                      itemKey={"ITEMCODE"}
+                      itemValue={"ITEMNAME"}
+                      onChange={(item) => {
+                        setFieldValue(
+                          "address",
+                          dataProvince.find(
+                            (item) => item.ITEMCODE == item.ITEMCODE
+                          ).ITEMNAME
+                        );
+                        // fetchDistrict(item.ITEMCODE);
                       }}
                     ></SelectForm>
                     {/* <InputForm
