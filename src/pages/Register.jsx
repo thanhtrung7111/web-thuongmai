@@ -175,7 +175,7 @@ const Register = () => {
                       placeholder="Chọn tỉnh..."
                       loading={isLoadingProvince}
                       name="province"
-                      options={dataProvince}
+                      options={dataProvince ? dataProvince : []}
                       itemKey={"ITEMCODE"}
                       itemValue={"ITEMNAME"}
                       onChange={(i) => {
@@ -183,7 +183,7 @@ const Register = () => {
                           "address",
                           values.addressDetail +
                             ", " +
-                            dataProvince.find(
+                            dataProvince?.find(
                               (item) => item.ITEMCODE == i.ITEMCODE
                             ).ITEMNAME
                         );
@@ -300,7 +300,7 @@ const Register = () => {
                 <input
                   id="agree"
                   type="checkbox"
-                  checked={isValid}
+                  checked={agree}
                   className="accent-first disabled:cursor-not-allowed"
                   disabled={!isValid}
                   onChange={() => setAgree(!agree)}
@@ -312,7 +312,7 @@ const Register = () => {
                 loading={isLoadingUser}
                 label={"Đăng nhập"}
                 type="submit"
-                disable={!agree}
+                disabled={!agree || !isValid}
               ></ButtonForm>
 
               <div className="text-xs text-gray-dark justify-center flex gap-x-1">

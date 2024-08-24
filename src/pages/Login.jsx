@@ -10,6 +10,7 @@ import SpinnerLoading from "../components/commonAnimtaion/SpinnerLoading";
 import PasswordForm from "../components/commonForm/PasswordForm";
 import * as Yup from "yup";
 import ButtonForm from "../components/commonForm/ButtonForm";
+import SelectForm from "../components/commonForm/SelectForm";
 const Login = () => {
   const [
     login,
@@ -90,7 +91,7 @@ const Login = () => {
   //   }
   //   getRemember();
   // }, []);
-
+  console.log(tokenUser.data);
   return (
     <div className="relative">
       <div className="xl:container xl:mx-auto mx-5">
@@ -167,7 +168,49 @@ const Login = () => {
               )}
             </Formik>
           ) : (
-            <Branch locations={locations} onChange={changeLCTN}></Branch>
+            <Formik
+              initialValues={{
+                COMPCODE: "",
+                LCTNCODE: "",
+              }}
+            >
+              {({ values, setFieldValue }) => (
+                <Form>
+                  <div className="flex flex-col gap-y-1 text-gray-dark">
+                    <SelectForm
+                      itemValue={"COMPNAME"}
+                      itemKey={"COMPCODE"}
+                      label={"Chọn công ty"}
+                      name="COMPCODE"
+                      important={true}
+                      options={
+                        dataLogin?.RETNDATA?.COMPLIST
+                          ? dataLogin?.RETNDATA?.COMPLIST
+                          : []
+                      }
+                    ></SelectForm>
+                    {/* <select
+                      disabled={isLoadingLCTN}
+                      onChange={(e) => setLctnSelected(e.target.value)}
+                      name=""
+                      id=""
+                      className="border disabled:opacity-90 py-2 px-3 outline-second"
+                    >
+                      {compSelected?.LCTNLIST?.map((item) => {
+                        return (
+                          <option value={item.LCTNCODE}>{item.LCTNNAME}</option>
+                        );
+                      })}
+                    </select> */}
+                  </div>
+                  <ButtonForm
+                    // loading={isLoadingLogin}
+                    label={"Tiếp tục"}
+                    type="submit"
+                  ></ButtonForm>
+                </Form>
+              )}
+            </Formik>
           )}
           <div className="text-xs text-gray-dark justify-center flex gap-x-1">
             <span>Chưa có tài khoản?</span>

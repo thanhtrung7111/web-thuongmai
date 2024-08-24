@@ -19,7 +19,7 @@ const SelectForm = ({
   const handleSelectItem = (item) => {
     setSelected(item);
     helpers.setValue(item[`${itemKey}`]);
-    onChange(item);
+    if (onChange) onChange(item);
     setShow(false);
   };
 
@@ -37,7 +37,8 @@ const SelectForm = ({
     setSelected(options.length <= 0 ? "" : options[0]);
     setDataFilter(options);
     setShow(false);
-  }, [options]);
+    console.log("hello");
+  }, [options[0][`${itemKey}`]]);
   return (
     <div className="flex flex-col gap-y-1 w-full">
       <label htmlFor="">
@@ -78,7 +79,7 @@ const SelectForm = ({
                 if (e.target.value == "" && options.length >= 1) {
                   setSelected(options[0]);
                   helpers.setValue(options[0][`${itemKey}`]);
-                  onChange(options[0]);
+                  if (onChange) onChange(options[0]);
                 }
                 setShow(false);
               }}
