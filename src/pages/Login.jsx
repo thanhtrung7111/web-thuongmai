@@ -142,8 +142,10 @@ const Login = () => {
                         type="checkbox"
                         id="remember"
                         name="remember"
-                        checked={values}
-                        onChange={handleChange}
+                        checked={values.remember}
+                        onChange={(e) =>
+                          setFieldValue("remember", e.target.checked)
+                        }
                         className="w-4 h-4 disabled:opacity-90 accent-first"
                       />
                       <label htmlFor="remember" className="cursor-pointer">
