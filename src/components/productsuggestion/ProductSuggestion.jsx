@@ -4,21 +4,35 @@ import ProductCard from "../ProductCard";
 import Panigation from "../panigation/Panigation";
 import LoadingView from "../../pages/LoadingView";
 import AnimateSkeleton from "../AnimateSkeleton";
-import { useFetchProductsQuery } from "../../redux/query/commonQuery";
+import {
+  useFetchProductsQuery,
+  useLazyFetchProductsQuery,
+} from "../../redux/query/commonQuery";
 let pageSize = 4;
 const ProductSuggestion = ({ keyword }) => {
-  const { data: products, isLoading, isError } = useFetchProductsQuery();
+  const [fetchProduct, { data: products, isLoading, isError, isSuccess }] =
+    useLazyFetchProductsQuery();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [lstProduct, setLstProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
-    products?.length > 0 &&
-      setLstProduct(
-        products?.filter((item) => item.PRDCNAME.indexOf(keyword) >= 0)
-      );
-  }, [keyword]);
+    const fetchData = async () => {
+      await fetchProduct();
+    };
+    if (open) {
+      fetchData();
+    }
+  }, [open]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      products?.length > 0 &&
+        setLstProduct(
+          products?.filter((item) => item.PRDCNAME.indexOf(keyword) >= 0)
+        );
+    }
+  }, [isSuccess]);
   return (
     <>
       <span
@@ -44,9 +58,12 @@ const ProductSuggestion = ({ keyword }) => {
         </div>
         {isLoading ? (
           <div className="p-5 pt-1 min-h-96">
-            {[1, 2, 3, 4].forEach((item) => {
-              return <AnimateSkeleton className={"h-72 w-full"} />;
-            })}
+            <div className="grid gap-4 mb-4 grid-cols-4">
+              {[1, 2, 3, 4].map((item) => {
+                return <AnimateSkeleton className={"h-72 w-full"} />;
+              })}
+            </div>
+            <AnimateSkeleton className={"h-10 w-full"} />
           </div>
         ) : (
           <div>

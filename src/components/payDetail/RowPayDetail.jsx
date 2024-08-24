@@ -35,6 +35,7 @@ const RowPayDetail = ({
       data: deleteCartData,
       isLoading: isLoadingDelete,
       isError: isErrorDelete,
+      isSuccess: isSuccessDelete,
     },
   ] = useDeleteCartMutation();
   const [notifyDelete, setNotifyDelete] = useState(false);
@@ -107,6 +108,12 @@ const RowPayDetail = ({
     };
     await updateCart(body);
   };
+
+  useEffect(() => {
+    if (isSuccessDelete) {
+      dispatch(closeBlock());
+    }
+  }, [isSuccessDelete]);
 
   return (
     <>

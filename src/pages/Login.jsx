@@ -3,38 +3,42 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import Branch from "../components/branch/Branch";
 import { useLoginMutation } from "../redux/query/authQuery";
-import { loginSuccess } from "../redux/reducer/userReducer";
 import { errorServerOff } from "../redux/reducer/exceptionReducer";
+import { Form, Formik } from "formik";
+import InputForm from "../components/commonForm/InputForm";
+import SpinnerLoading from "../components/commonAnimtaion/SpinnerLoading";
+import PasswordForm from "../components/commonForm/PasswordForm";
+import * as Yup from "yup";
+import ButtonForm from "../components/commonForm/ButtonForm";
 const Login = () => {
   const [
     login,
-    { data: dataLogin, isLoading: isLoadingLogin, isError: isErrorLogin },
+    {
+      data: dataLogin,
+      isLoading: isLoadingLogin,
+      isError: isErrorLogin,
+      error,
+    },
   ] = useLoginMutation();
   const [compCode, setCompCode] = useState("");
-  const navigate = useNavigate();
   const dispath = useDispatch();
-  const {
-    isLoadingUser,
-    errorMessageUser,
-    isErrorMessagesUser,
-    locations,
-    tokenUser,
-  } = useSelector((state) => state.user);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [visiblePassword, setVisiblePassword] = useState(false);
-  const [remember, setRemember] = useState(false);
+  const { locations, tokenUser } = useSelector((state) => state.user);
+  const [remember, setRemember] = useState(
+    localStorage.getItem("remember")
+      ? localStorage.getItem("remember").remember
+      : false
+  );
   const changeLCTN = (e) => {
     setCompCode(e.target.value);
     console.log(compCode);
   };
-  const handleLogin = async () => {
+  const handleLogin = async (values) => {
     try {
       login({
         APP_CODE: "AER",
         LGGECODE: "V",
-        CUSTLGIN: username,
-        PASSWORD: password,
+        CUSTLGIN: values.username,
+        PASSWORD: values.password,
         SYSTCODE: 2,
         SYSTCHAR: "",
         INPTCHAR: "",
@@ -42,6 +46,16 @@ const Login = () => {
         TKENDEVC: "",
       }).unwrap;
       dispath(errorServerOff());
+      if (values.remember) {
+        const dataRemember = {
+          remember: true,
+          username: values.username,
+          password: values.password,
+        };
+        localStorage.setItem("remember", JSON.stringify(dataRemember));
+      } else {
+        localStorage.removeItem("remember");
+      }
     } catch (error) {}
 
     dispath(errorServerOff());
@@ -49,12 +63,10 @@ const Login = () => {
     window.scroll(0, 0);
   };
 
-  const handlePressKey = (e) => {
-    if (e.keyCode === 13) {
-      window.scroll(0, 0);
-      handleLogin();
-    }
-  };
+  const validationSchema = Yup.object().shape({
+    username: Yup.string().required("Không để trống tài khoản!"),
+    password: Yup.string().required("Không để trống mật khẩu!"),
+  });
 
   // useEffect(() => {
   //   console.log("hello");
@@ -87,93 +99,71 @@ const Login = () => {
             Đăng nhập
           </h2>
           {tokenUser.data == null ? (
-            <>
-              <div className="flex flex-col gap-y-2">
-                <div className="flex flex-col gap-y-4">
-                  <div className="flex flex-col gap-y-1 text-gray-dark">
-                    <label>Tài khoản</label>
-                    <input
-                      value={username}
-                      disabled={isLoadingUser}
-                      onChange={(e) => setUsername(e.target.value)}
-                      type="text"
-                      className="border disabled:opacity-90 py-2 px-3 outline-second"
-                      placeholder="Tài khoản của bạn!"
-                      onKeyDown={(e) => handlePressKey(e)}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-y-1 text-gray-dark">
-                    <label>Mật khẩu</label>
-                    <div className="flex items-center gap-x-2 w-full border py-2 px-3 outline-second">
+            <Formik
+              initialValues={{
+                username: localStorage.getItem("remember")
+                  ? JSON.parse(localStorage.getItem("remember"))?.username
+                  : "",
+                password: localStorage.getItem("remember")
+                  ? JSON.parse(localStorage.getItem("remember"))?.password
+                  : "",
+                remember: localStorage.getItem("remember") ? true : false,
+              }}
+              validationSchema={validationSchema}
+              onSubmit={(values) => {
+                console.log(values);
+                handleLogin(values);
+              }}
+            >
+              {({ setFieldValue, handleChange, values }) => (
+                <Form>
+                  <div className="flex flex-col gap-y-4">
+                    <div className="flex flex-col gap-y-4">
+                      <InputForm
+                        name="username"
+                        label={"Tài khoản"}
+                        disabled={isLoadingLogin}
+                        important={true}
+                        placeholder="Nhập tên tài khoản..."
+                      ></InputForm>
+                    </div>
+                    <div className="flex flex-col gap-y-4">
+                      <PasswordForm
+                        name="password"
+                        label={"Mật khẩu"}
+                        disabled={isLoadingLogin}
+                        important={true}
+                        placeholder="Nhập mật khẩu..."
+                      ></PasswordForm>
+                    </div>
+                    <div className="text-gray-dark flex gap-x-1 text-xs">
                       <input
-                        disabled={isLoadingUser}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        type={visiblePassword ? "text" : "password"}
-                        className="outline-none disabled:opacity-90 bg-white flex-auto"
-                        placeholder="Mật khẩu của bạn!"
-                        onKeyDown={(e) => handlePressKey(e)}
+                        disabled={isLoadingLogin}
+                        type="checkbox"
+                        id="remember"
+                        name="remember"
+                        checked={values}
+                        onChange={handleChange}
+                        className="w-4 h-4 disabled:opacity-90 accent-first"
                       />
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => setVisiblePassword(!visiblePassword)}
-                      >
-                        {visiblePassword ? (
-                          <i class="ri-eye-line"></i>
-                        ) : (
-                          <i class="ri-eye-close-line"></i>
-                        )}
-                      </div>
+                      <label htmlFor="remember" className="cursor-pointer">
+                        Ghi nhớ
+                      </label>
                     </div>
                   </div>
-                </div>
-                <div className="text-gray-dark flex gap-x-1 text-xs">
-                  <input
-                    disabled={isLoadingUser}
-                    id="remember"
-                    type="checkbox"
-                    checked={remember}
-                    onChange={() => {
-                      setRemember(!remember);
-                    }}
-                    className="w-4 h-4 disabled:opacity-90 accent-first"
-                  />
-                  <label htmlFor="remember" className="cursor-pointer">
-                    Ghi nhớ
-                  </label>
-                </div>
-              </div>
-              {isErrorMessagesUser && (
-                <div className="text-red-600 text-xs">{errorMessageUser}</div>
+                  <div className="mt-2">
+                    {isErrorLogin && (
+                      <div className="text-red-600 text-xs">Lỗi hệ thống</div>
+                    )}
+                    <ButtonForm
+                      loading={isLoadingLogin}
+                      label={"Đăng nhập"}
+                      type="submit"
+                    ></ButtonForm>
+                  </div>
+                </Form>
               )}
-              <button
-                className="bg-second text-white py-3 text-center px-3 hover:bg-opacity-90 transition-all duration-200"
-                onClick={handleLogin}
-                disabled={isLoadingLogin}
-                type="submit"
-              >
-                {isLoadingLogin ? (
-                  <svg
-                    aria-hidden="true"
-                    class="w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-first"
-                    viewBox="0 0 100 101"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                      fill="currentFill"
-                    />
-                  </svg>
-                ) : (
-                  "Đăng nhập"
-                )}
-              </button>
-            </>
+            </Formik>
           ) : (
             <Branch locations={locations} onChange={changeLCTN}></Branch>
           )}

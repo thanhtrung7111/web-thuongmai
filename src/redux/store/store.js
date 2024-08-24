@@ -42,9 +42,16 @@ const rootPersistConfig = {
   //   "common",
   //   "product",
   //   "popup",
-  //   "order",
+  // 
   //   commonApiSlice.reducerPath,
   // ],
+  blacklist: [
+    "order",
+    commonApiSlice.reducerPath,
+    authApiSlice.reducerPath,
+    cartApiSlice.reducerPath,
+    detailApiSlice.reducerPath,
+  ],
 };
 const userPersistConfig = {
   key: "user",

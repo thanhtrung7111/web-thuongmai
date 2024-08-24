@@ -121,6 +121,28 @@ export const authApiSlice = createApi({
         }
       },
     }),
+    registerAccount: builder.mutation({
+      query: (credential) => ({
+        url: "/Api/data/runApi_Syst?run_Code=SYS007",
+        method: "POST",
+        body: credential,
+      }),
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch, null);
+          if (listData != null) {
+            dispatch(saveTokenLocation({ token: listData.TOKEN }));
+            sessionStorage.setItem("tokenLocation", listData.TOKEN);
+            console.log(listData);
+          }
+          return listData;
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      },
+    }),
   }),
 });
 

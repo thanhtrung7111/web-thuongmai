@@ -18,6 +18,7 @@ const PasswordForm = ({ label, important = false, ...props }) => {
         <input
           {...props}
           {...field}
+          autoComplete="off"
           type={show ? "text" : "password"}
           className="outline-none flex-auto"
         />

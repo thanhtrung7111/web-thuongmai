@@ -6,6 +6,7 @@ import {
   loadCartByUser,
   updateCartByUser,
 } from "../reducer/cartReducer";
+import { openBlock } from "../reducer/popupReducer";
 
 const axiosBaseQuery = fetchBaseQuery({
   baseUrl: "https://api-dev.firstems.com",
@@ -127,14 +128,14 @@ export const cartApiSlice = createApi({
           const listData = await response(data, dispatch, null);
           console.log(listData);
           if (listData != null) {
-            dispatch(deleteCartByUser({ product: listData[0] }));
+            dispatch(deleteCartByUser({ product: args }));
             dispatch(
               changeActionCart({
                 action:
                   "deleteproduct:" +
-                  listData[0].PRDCCODE +
+                  args.PRDCCODE +
                   " QUOMQTTY: " +
-                  listData[0].QUOMQTTY,
+                  args.QUOMQTTY,
               })
             );
           }

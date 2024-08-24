@@ -479,29 +479,21 @@ export const commonApiSlice = createApi({
         }
       },
     }),
-    fetchWard: builder.query({
-      query: () => ({
+    fetchWard: builder.mutation({
+      query: (districtCode) => ({
         url: "/Api/data/runApi_Data?run_Code=DTA002",
         method: "POST",
         body: {
           LISTCODE: "lstWard",
+          CONDFLTR: "DistCode='" + districtCode + "'",
         },
       }),
-      providesTags: "lstWard",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
           const listData = await response(data, dispatch, null);
           if (listData != null) {
-            dispatch(
-              commonApiSlice.util.updateQueryData(
-                "fetchWard",
-                undefined,
-                (draft) => {
-                  return listData;
-                }
-              )
-            );
+            return listData;
           }
         } catch (e) {
           console.log(e);
@@ -515,6 +507,7 @@ export const {
   useFetchProductsQuery,
   useFetchProvinceQuery,
   useFetchDistrictMutation,
+  useFetchWardMutation,
   useFetchWareHouseQuery,
   useFetchLocationQuery,
   useFetchCUOMQuery,

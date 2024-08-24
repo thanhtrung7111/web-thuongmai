@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { removeKeyword, saveSearch } from "../../redux/reducer/userReducer";
-import { useFetchProductsQuery } from "../../redux/query/commonQuery";
+import {
+  useFetchProductsQuery,
+  useLazyFetchProductsQuery,
+} from "../../redux/query/commonQuery";
 
 const data = [
   { name: "Sản phẩm 1", img: "https://picsum.photos/seed/picsum/200/300" },
@@ -30,11 +33,10 @@ const SearchMenu = () => {
   const { productSearchs } = useSelector((state) => state.user);
   const [disable, setDisable] = useState(false);
   const [indexMove, setIndexMove] = useState(-1);
-  const {
-    data: products,
-    isLoading: isLoadingProduct,
-    isError,
-  } = useFetchProductsQuery();
+  const [
+    fetchProduct,
+    { data: products, isLoading: isLoadingProduct, isError },
+  ] = useLazyFetchProductsQuery();
   useEffect(() => {
     setIsLoading(true);
     if (keyWord !== "") {
