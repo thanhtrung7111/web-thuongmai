@@ -6,7 +6,6 @@ import {
   loadCartByUser,
   updateCartByUser,
 } from "../reducer/cartReducer";
-import { openBlock } from "../reducer/popupReducer";
 
 const axiosBaseQuery = fetchBaseQuery({
   baseUrl: "https://api-dev.firstems.com",

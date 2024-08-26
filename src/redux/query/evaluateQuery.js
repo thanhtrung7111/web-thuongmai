@@ -1,8 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import session from "redux-persist/lib/storage/session";
 import { errorServerOn } from "../reducer/exceptionReducer";
 import { toast } from "react-toastify";
-
 const axiosBaseQuery = fetchBaseQuery({
   baseUrl: "https://api-dev.firstems.com",
   timeout: 10000,
@@ -30,24 +28,31 @@ const response = async (data, dispatch, defaultValue = []) => {
   return data.RETNDATA;
 };
 
-export const detailApiSlice = createApi({
-  reducerPath: "detailItemApi",
+export const evaluateApiSlice = createApi({
+  reducerPath: "evaluateApi",
   baseQuery: axiosBaseQuery,
   keepUnusedDataFor: 7200,
   refetchOnFocus: true,
-  tagTypes: ["ProductDetail", "OrderDetail"],
+  tagTypes: ["Evaluates"],
   endpoints: (builder) => ({
-    fetchDetailProduct: builder.mutation({
+    fetchEvaluate: builder.mutation({
       query: (data) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA005",
+        url: "/Api/data/runApi_Data?run_Code=DTA004",
         method: "POST",
-        body: data,
+        body: {
+          DCMNCODE: "INPMARKESTM",
+          // "PARACODE": "<Mã tham số> ",
+          CONDFLTR: "PRDCCODE = '" + data + "'",
+          PAGELINE: "0",
+          PAGENUMB: "1",
+        },
       }),
+      providesTags: ["Evaluates"],
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
           const listData = response(data, dispatch, null);
-          return listData;
+          console.log(listData);
         } catch (error) {
           console.log(error);
         }
@@ -55,4 +60,5 @@ export const detailApiSlice = createApi({
     }),
   }),
 });
-export const { useFetchDetailProductMutation } = detailApiSlice;
+
+export const { useFetchEvaluateMutation } = evaluateApiSlice;

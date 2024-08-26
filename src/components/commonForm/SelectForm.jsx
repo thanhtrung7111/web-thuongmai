@@ -8,7 +8,7 @@ const SelectForm = ({
   important = false,
   loading = false,
   options = [],
-  disable = false,
+  disabled = false,
   onChange,
   ...props
 }) => {
@@ -34,11 +34,15 @@ const SelectForm = ({
     );
   };
   useEffect(() => {
-    setSelected(options.length <= 0 ? "" : options[0]);
+    console.log(options);
+    setSelected(options[0]);
+    if (options.length >= 1) {
+      helpers.setValue(options[0][`${itemKey}`]);
+      setSelected(options[0]);
+    }
     setDataFilter(options);
     setShow(false);
-    console.log("hello");
-  }, [options[0][`${itemKey}`]]);
+  }, [options]);
   return (
     <div className="flex flex-col gap-y-1 w-full">
       <label htmlFor="">
@@ -49,7 +53,7 @@ const SelectForm = ({
         className={`${
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
         } ${
-          disable && "bg-slate-50"
+          disabled && "bg-slate-50"
         } px-3 py-3 text-sm border outline-none rounded-sm w-full flex relative`}
       >
         {loading ? (
@@ -83,7 +87,7 @@ const SelectForm = ({
                 }
                 setShow(false);
               }}
-              disabled={disable}
+              disabled={disabled}
               onChange={(e) => filterChange(e)}
               value={selected && selected[`${itemValue}`]}
               autoComplete="off"
@@ -98,7 +102,10 @@ const SelectForm = ({
             />
           </>
         )}
-        <i class="ri-arrow-down-s-line"></i>
+        <i
+          onClick={() => setShow(!show)}
+          className="ri-arrow-down-s-line cursor-pointer"
+        ></i>
         <div
           className={`${
             show == true ? "visible opacity-100" : "opacity-0 invisible"

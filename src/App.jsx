@@ -18,7 +18,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PaySuccessVietQR } from "./pages/PaySuccessVietQR";
 import ProductSearch from "./pages/ProductSearch";
-import EvaluateProduct from "./components/evaluateProduct/EvaluateProduct";
 import AppLayout from "./routes/AppLayout";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
@@ -36,32 +35,14 @@ function App() {
   const [count, setCount] = useState(0);
   const { data: token, isLoading, isError } = useFetchInitialTokenQuery();
   const { currentUser } = useSelector((state) => state.user);
-  const {
-    showManify,
-    showEvaluateProduct,
-    showDetailOrder,
-    showAppNotify,
-    block,
-  } = useSelector((state) => state.popup);
+  const { popup } = useSelector((state) => state.popup);
   useEffect(() => {
-    if (
-      showEvaluateProduct.open ||
-      showManify ||
-      showDetailOrder.open ||
-      showAppNotify.open ||
-      block
-    ) {
+    if (popup) {
       document.getElementsByTagName("html")[0].style.overflowY = "hidden";
     } else {
       document.getElementsByTagName("html")[0].style.overflowY = "scroll";
     }
-  }, [
-    showEvaluateProduct.open,
-    showManify,
-    showDetailOrder.open,
-    showAppNotify.open,
-    block,
-  ]);
+  }, [popup]);
   return isLoading ? (
     <div className="h-screen w-screen flex items-center justify-center gap-x-5">
       <SpinnerLoading
@@ -78,9 +59,8 @@ function App() {
       <ToastContainer></ToastContainer>
       {/* <BrowserRouter basename={import.meta.env.BASE_URL}> */}
       <HashRouter>
-        <DetailOrder></DetailOrder>
-        <EvaluateProduct></EvaluateProduct>
-        <AppNotifycation></AppNotifycation>
+        {/* <DetailOrder></DetailOrder> */}
+        {/* <AppNotifycation></AppNotifycation> */}
         <Routes>
           <Route element={<AppLayout></AppLayout>}>
             <Route path="/" element={<Home></Home>}></Route>

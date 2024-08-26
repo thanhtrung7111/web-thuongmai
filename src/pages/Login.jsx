@@ -1,26 +1,40 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import Branch from "../components/branch/Branch";
-import { useLoginMutation } from "../redux/query/authQuery";
+import {
+  useLoginLCTNMutation,
+  useLoginMutation,
+} from "../redux/query/authQuery";
 import { errorServerOff } from "../redux/reducer/exceptionReducer";
 import { Form, Formik } from "formik";
 import InputForm from "../components/commonForm/InputForm";
-import SpinnerLoading from "../components/commonAnimtaion/SpinnerLoading";
 import PasswordForm from "../components/commonForm/PasswordForm";
 import * as Yup from "yup";
 import ButtonForm from "../components/commonForm/ButtonForm";
 import SelectForm from "../components/commonForm/SelectForm";
+import PopupProductEvaluate from "../components/commonPopup/PopupProductEvaluate";
 const Login = () => {
+  const navigate = useNavigate();
   const [
     login,
     {
       data: dataLogin,
       isLoading: isLoadingLogin,
       isError: isErrorLogin,
+      isSuccess: isSuccessLogin,
       error,
     },
   ] = useLoginMutation();
+
+  const [
+    loginLCTN,
+    {
+      data: dataLctn,
+      isLoading: isLoadingLoginLCTN,
+      isError: isErrorLoginLCTN,
+      isSuccess: isSuccessLoginLCTN,
+    },
+  ] = useLoginLCTNMutation();
   const [compCode, setCompCode] = useState("");
   const dispath = useDispatch();
   const { locations, tokenUser } = useSelector((state) => state.user);
@@ -29,6 +43,8 @@ const Login = () => {
       ? localStorage.getItem("remember").remember
       : false
   );
+  const [compList, setCompList] = useState(null);
+  const [lctnList, setLctnList] = useState(null);
   const changeLCTN = (e) => {
     setCompCode(e.target.value);
     console.log(compCode);
@@ -69,29 +85,26 @@ const Login = () => {
     password: Yup.string().required("Không để trống mật khẩu!"),
   });
 
-  // useEffect(() => {
-  //   console.log("hello");
-  //   if (locations?.LCTNLIST?.length > 0) {
-  //     setCompCode(locations?.LCTNLIST.LCTNCODE);
-  //   }
-  // }, [locations?.LCTNLIST]);
+  const handleSubmitLctn = async (e) => {
+    console.log(e);
+    await loginLCTN(e);
+  };
 
-  // useEffect(() => {
-  //   async function getRemember() {
-  //     const url = "http://localhost:5173";
-  //     const cacheUser = await caches.open("user");
-  //     const response = await cacheUser.match(url);
-  //     let data = await response?.json();
-  //     if (data != null && data?.remember != null && data.remember) {
-  //       console.log(data.remember);
-  //       setRemember(data.remember);
-  //       setUsername(data?.username);
-  //       setPassword(data?.password);
-  //     }
-  //   }
-  //   getRemember();
-  // }, []);
-  console.log(tokenUser.data);
+  useEffect(() => {
+    if (isSuccessLogin) {
+      setCompList(dataLogin?.RETNDATA?.COMPLIST);
+      setLctnList(dataLogin?.RETNDATA?.COMPLIST[0].LCTNLIST);
+    }
+  }, [isSuccessLogin]);
+
+  useEffect(() => {
+    if (isSuccessLoginLCTN) {
+      window.scroll(0, 0);
+      navigate("/");
+    }
+  }, [isSuccessLoginLCTN]);
+
+  console.log(compList);
   return (
     <div className="relative">
       <div className="xl:container xl:mx-auto mx-5">
@@ -99,8 +112,9 @@ const Login = () => {
           <h2 className="font-semibold text-3xl text-second text-center mb-8">
             Đăng nhập
           </h2>
-          {tokenUser.data == null ? (
+          {compList == null ? (
             <Formik
+              key={"formLogin"}
               initialValues={{
                 username: localStorage.getItem("remember")
                   ? JSON.parse(localStorage.getItem("remember"))?.username
@@ -109,6 +123,8 @@ const Login = () => {
                   ? JSON.parse(localStorage.getItem("remember"))?.password
                   : "",
                 remember: localStorage.getItem("remember") ? true : false,
+                COMPCODE: "",
+                LCTNCODE: "",
               }}
               validationSchema={validationSchema}
               onSubmit={(values) => {
@@ -117,7 +133,7 @@ const Login = () => {
               }}
             >
               {({ setFieldValue, handleChange, values }) => (
-                <Form>
+                <Form id="formLogin">
                   <div className="flex flex-col gap-y-4">
                     <div className="flex flex-col gap-y-4">
                       <InputForm
@@ -169,45 +185,58 @@ const Login = () => {
             </Formik>
           ) : (
             <Formik
+              key={"formLctn"}
               initialValues={{
                 COMPCODE: "",
                 LCTNCODE: "",
               }}
+              onSubmit={(values) => {
+                handleSubmitLctn(values);
+              }}
             >
               {({ values, setFieldValue }) => (
-                <Form>
-                  <div className="flex flex-col gap-y-1 text-gray-dark">
+                <Form id="formLctn">
+                  <div className="flex flex-col mb-4 gap-y-3 text-gray-dark">
                     <SelectForm
                       itemValue={"COMPNAME"}
+                      disabled={isLoadingLoginLCTN}
                       itemKey={"COMPCODE"}
                       label={"Chọn công ty"}
                       name="COMPCODE"
                       important={true}
-                      options={
-                        dataLogin?.RETNDATA?.COMPLIST
-                          ? dataLogin?.RETNDATA?.COMPLIST
-                          : []
-                      }
+                      options={compList ? compList : []}
+                      onChange={(e) => {
+                        console.log(e);
+                        setLctnList(e?.LCTNLIST);
+                      }}
                     ></SelectForm>
-                    {/* <select
-                      disabled={isLoadingLCTN}
-                      onChange={(e) => setLctnSelected(e.target.value)}
-                      name=""
-                      id=""
-                      className="border disabled:opacity-90 py-2 px-3 outline-second"
-                    >
-                      {compSelected?.LCTNLIST?.map((item) => {
-                        return (
-                          <option value={item.LCTNCODE}>{item.LCTNNAME}</option>
-                        );
-                      })}
-                    </select> */}
+                    <SelectForm
+                      itemValue={"LCTNNAME"}
+                      disabled={isLoadingLoginLCTN}
+                      itemKey={"LCTNCODE"}
+                      label={"Chọn chi nhánh"}
+                      name="LCTNCODE"
+                      important={true}
+                      options={lctnList ? lctnList : []}
+                    ></SelectForm>
                   </div>
-                  <ButtonForm
-                    // loading={isLoadingLogin}
-                    label={"Tiếp tục"}
-                    type="submit"
-                  ></ButtonForm>
+                  <div className="flex gap-x-2">
+                    <ButtonForm
+                      className="bg-slate-500"
+                      onClick={() => setCompList(null)}
+                      // loading={isLoadingLogin}
+                      label={"Quay về"}
+                      icon={<i className="ri-arrow-go-back-line"></i>}
+                      type="submit"
+                    ></ButtonForm>
+                    {/* <input type="submit" value={"SUbmit"} /> */}
+                    <ButtonForm
+                      loading={isLoadingLoginLCTN}
+                      disabled={isLoadingLoginLCTN}
+                      label={"Tiếp tục"}
+                      type="submit"
+                    ></ButtonForm>
+                  </div>
                 </Form>
               )}
             </Formik>

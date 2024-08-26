@@ -9,7 +9,6 @@ import Panigation from "../panigation/Panigation";
 import InfoPage from "../InfoPage";
 import { useDispatch, useSelector } from "react-redux";
 import CheckBoxList from "../CheckBoxList";
-import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import LoadingView from "../../pages/LoadingView";
 import ProductListSkeleton from "./ProductListSkeleton";
 import {
@@ -61,13 +60,13 @@ const ProductListComponent = () => {
     document.getElementById("filter-menu").classList.add("show-filter");
     document.getElementById("overlay").style.visibility = "visible";
     // document.getElementsByTagName("body")[0].style.overflowY = "hidden";
-    dispatch(openBlock());
+    // dispatch(openBlock());
   };
 
   const closeMenu = () => {
     document.getElementById("filter-menu").classList.remove("show-filter");
     document.getElementById("overlay").style.visibility = "hidden";
-    dispatch(closeBlock());
+    // dispatch(closeBlock());
     // document.getElementsByTagName("body")[0].style.overflowY = "scroll";
   };
 

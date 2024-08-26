@@ -51,6 +51,7 @@ export const commonApiSlice = createApi({
     "lstProvince",
     "lstDistrict",
     "lstWard",
+    "lstMaktStdr",
   ],
   keepUnusedDataFor: 7200,
   refetchOnFocus: true,
@@ -429,6 +430,35 @@ export const commonApiSlice = createApi({
         }
       },
     }),
+    fetchMaktStdr: builder.query({
+      query: () => ({
+        url: "/Api/data/runApi_Data?run_Code=DTA002",
+        method: "POST",
+        body: {
+          LISTCODE: "lstMaktStdr",
+        },
+      }),
+      providesTags: " lstMaktStdr",
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch, null);
+          if (listData != null) {
+            dispatch(
+              commonApiSlice.util.updateQueryData(
+                "fetchMaktStdr",
+                undefined,
+                (draft) => {
+                  return listData;
+                }
+              )
+            );
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
     fetchProvince: builder.query({
       query: () => ({
         url: "/Api/data/runApi_Data?run_Code=DTA002",
@@ -518,6 +548,7 @@ export const {
   useFetchListHourQuery,
   useFetchInpCustOdMtPayMthd2Query,
   useFetchQUOMQuery,
+  useFetchMaktStdrQuery,
   useLazyFetchCUOMQuery,
   useLazyFetchDCmnSbcdQuery,
   useLazyFetchDlvrMthdQuery,
@@ -530,4 +561,5 @@ export const {
   useLazyFetchQUOMQuery,
   useLazyFetchTimeTypeQuery,
   useLazyFetchWareHouseQuery,
+  useLazyFetchMaktStdrQuery,
 } = commonApiSlice;

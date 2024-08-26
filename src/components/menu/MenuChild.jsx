@@ -7,7 +7,6 @@ import Triangle from "../../assets/img/triangle.png";
 import Apple from "../../assets/img/appple.png";
 import Android from "../../assets/img/android.png";
 import { useDispatch, useSelector } from "react-redux";
-import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 const data = [
   {
     name: "Danh mục",

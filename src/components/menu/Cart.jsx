@@ -4,7 +4,6 @@ import Box from "../../assets/img/box.png";
 import Triangle from "../../assets/img/triangle.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import RowCart from "./RowCart";
-import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import AnimateSkeleton from "../AnimateSkeleton";
 import { useFetchCartMutation } from "../../redux/query/cartQuery";
 const Cart = () => {
@@ -22,13 +21,13 @@ const Cart = () => {
   const openCart = () => {
     if (window.innerWidth < 768) {
       document.getElementById("cart-small").classList.add("show-small-cart");
-      dispatch(openBlock());
+      // dispatch(openBlock());
       setOverlay(true);
     }
   };
   const handleCloseCart = () => {
     document.getElementById("cart-small").classList.remove("show-small-cart");
-    dispatch(closeBlock());
+    // dispatch(closeBlock());
     setOverlay(false);
     console.log(overlay);
   };

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
-import { closeBlock } from "../../redux/reducer/popupReducer";
+// import { closeBlock } from "../../redux/reducer/popupReducer";
 import { base64StringToBlob } from "blob-util";
 import { postImage } from "../../api/api";
 import { storage } from "../../firebase/firebase.config";
@@ -37,7 +37,7 @@ const VietQRComponent = ({ open, handleOpen, handleClose, value }) => {
       )
       .then((resp) => resp.data.data)
       .catch((e) => console.log(e));
-    dispatch(closeBlock());
+    // dispatch(closeBlock());
     window.scroll(0, 0);
     navigate(`/status_payvietQR?response=${data.status}`);
   };

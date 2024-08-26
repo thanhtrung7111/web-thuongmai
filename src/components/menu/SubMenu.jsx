@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import { closeBlock } from "../../redux/reducer/popupReducer";
+import ProductDetailComponent from "../productDetail/ProductDetailComponent";
 
 const SubMenu = ({
   name = "Danh mục",
@@ -17,7 +17,7 @@ const SubMenu = ({
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const handleShow = () => {
-    if (window.innerWidth < 1024) {
+    if (window.innerWidth < 1024) {ProductDetailComponent
       setShowMenu(!showMenu);
     } else {
     }

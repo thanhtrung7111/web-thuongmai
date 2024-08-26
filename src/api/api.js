@@ -1,9 +1,5 @@
 import axios from "axios";
 import { useContext } from "react";
-import {
-  openAppNotify,
-  openEvaluateProduct,
-} from "../redux/reducer/popupReducer";
 import { logout, saveCurrentUrl } from "../redux/reducer/userReducer";
 import { clearCart } from "../redux/reducer/cartReducer";
 
@@ -88,12 +84,6 @@ apiFetchData.interceptors.request.use(
         sessionStorage.getItem("tokenUser") ||
         sessionStorage.getItem("tokenInitial");
     } else {
-      store.dispatch(
-        openAppNotify({
-          link: "/login",
-          message: "Lỗi đăng nhập! Đăng nhập lại hệ thống",
-        })
-      );
       return;
     }
     return req;

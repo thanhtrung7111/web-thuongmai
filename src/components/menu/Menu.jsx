@@ -3,22 +3,17 @@ import Logo from "../../assets/img/Icon.png";
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { current } from "@reduxjs/toolkit";
 import SearchMenu from "./SearchMenu";
 import Triangle from "../../assets/img/triangle.png";
-import { openBlock } from "../../redux/reducer/popupReducer";
 import Notifycation from "./Notifycation";
 import Cart from "./Cart";
-import SubMenu from "./SubMenu";
 import MenuChild from "./MenuChild";
 import { clearSearch, logout } from "../../redux/reducer/userReducer";
-import { PURGE } from "redux-persist/lib/constants";
 import { clearCart } from "../../redux/reducer/cartReducer";
 import { initialError } from "../../redux/reducer/exceptionReducer";
 const Menu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { productCarts } = useSelector((state) => state.cart);
   const { currentUser } = useSelector((state) => state.user);
 
   const handleLogout = async (e) => {

@@ -9,13 +9,7 @@ import Input from "../Input";
 import DatePicker from "../DatePicker";
 import moment from "moment";
 import TextArea from "../TextArea";
-import {
-  Form,
-  Formik,
-  FormikProvider,
-  useFormik,
-  useFormikContext,
-} from "formik";
+import { Form, FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
 import { postOrder } from "../../redux/actions/orderActions";
 import ImageFetch from "../ImageFetch";
@@ -28,7 +22,7 @@ import { HmacSHA256 } from "crypto-js";
 import VietQRComponent from "./VietQRComponent";
 import VNPay from "../../assets/img/vnpay.png";
 import VietQR from "../../assets/img/vietqr.png";
-import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
+// import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import { toast } from "react-toastify";
 import { base64StringToBlob } from "blob-util";
 import { postData } from "../../api/api";
@@ -280,7 +274,7 @@ const PayDetailComponent = () => {
     }
 
     setOpenVietQR(true);
-    dispatch(openBlock());
+    // dispatch(openBlock());
   };
 
   useEffect(() => {
@@ -469,7 +463,7 @@ const PayDetailComponent = () => {
         value={infoVietQR}
         handleClose={() => {
           setOpenVietQR(false);
-          dispatch(closeBlock());
+          // dispatch(closeBlock());
         }}
       ></VietQRComponent>
       <img src="" alt="" />
@@ -482,135 +476,6 @@ const PayDetailComponent = () => {
               className="shadow-md border-t border-gray-200 h-[600px]  rounded-lg overflow-hidden border"
             >
               <div className="overflow-y-scroll h-full">
-                {/* <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead class="text-xs text-gray-600 bg-gray-50 dark:text-gray-400 sticky top-0">
-                    <th class="px-6 py-3 uppercase text-gray-dark flex gap-x-2">
-                      <input
-                        type="checkbox"
-                        className="accent-first border-gray-light"
-                        onChange={handleClickAllProduct}
-                        value={chooseAll}
-                      />
-                      <span> Tất cả</span>
-                    </th>
-
-                    <th class="px-6 py-3 uppercase text-gray-dark">Số lượng</th>
-                    <th class="px-6 py-3 uppercase text-gray-dark">Đơn giá</th>
-                    <th class="px-6 py-3 uppercase text-gray-dark">
-                      Thành tiền
-                    </th>
-                    <th class="px-6 py-3 w-fit uppercase text-gray-dark"></th>
-                  </thead>
-
-                  <tbody>
-                    {formik.values.DETAIL.length <= 0
-                      ? "Bạn chưa có sản phẩm nào trong giỏ hàng"
-                      : formik.values.DETAIL.map((item) => {
-                          return (
-                            <tr
-                              key={item["PRDCCODE"]}
-                              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                            >
-                              <td
-                                scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                              >
-                                <div className="flex items-center gap-x-2 w-fit">
-                                  <input
-                                    type="checkbox"
-                                    className="accent-first border-gray-light"
-                                    checked={item["checked"]}
-                                    onClick={() =>
-                                      handleChangeChoose(item["PRDCCODE"])
-                                    }
-                                  />
-                                  <div className="border border-gray-300 rounded-xl overflow-hidden shadow-lg">
-                                    <ImageFetch
-                                      url={item["PRDCIMGE"]}
-                                      className={"!size-20"}
-                                    ></ImageFetch>
-                                  </div>
-                                  <span className="text-gray-dark text-wrap lg:w-60 line-clamp-2 w-0">
-                                    {item["PRDCNAME"]}
-                                  </span>
-                                </div>
-                              </td>
-                              <td class="px-6 py-4">
-                                <div className="flex items-center w-fit gap-x-1">
-                                  <button
-                                    disabled={disableButton}
-                                    onClick={() =>
-                                      handleSubstract(item["PRDCCODE"])
-                                    }
-                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark cursor-pointer disabled:bg-slate-100"
-                                  >
-                                    -
-                                  </button>
-
-                                  <input
-                                    disabled={disableButton}
-                                    type="number"
-                                    min={1}
-                                    onBlur={(e) =>
-                                      handleBlurAmount(e, item["PRDCCODE"])
-                                    }
-                                    onKeyDown={(e) => {
-                                      if (e.keyCode === 13) {
-                                        handleBlurAmount(e, item["PRDCCODE"]);
-                                      }
-                                    }}
-                                    id={item["PRDCCODE"]}
-                                    value={item["PRDCQTTY"]}
-                                    onChange={(e) =>
-                                      handleChangeAmount(e, item["PRDCCODE"])
-                                    }
-                                    className="border pl-2 w-14 h-6 rounded-md  outline-none text-xs text-gray-dark disabled:bg-slate-100"
-                                  />
-
-                                  <button
-                                    disabled={disableButton}
-                                    onClick={() => handlePlus(item["PRDCCODE"])}
-                                    className="border rounded-md w-6 h-6 flex items-center justify-center text-gray-dark cursor-pointer disabled:bg-slate-100"
-                                  >
-                                    +
-                                  </button>
-                                </div>
-                              </td>
-                              <td class="px-6 py-4">
-                                <div className="font-semibold">
-                                  {item["SALEPRCE"]?.toLocaleString("vi", {
-                                    style: "currency",
-                                    currency: "VND",
-                                  })}
-                                </div>
-                              </td>
-                              <td class="px-6 py-4">
-                                <div className="font-semibold">
-                                  {item["MNEYAMNT"]?.toLocaleString("vi", {
-                                    style: "currency",
-                                    currency: "VND",
-                                  })}
-                                </div>
-                              </td>
-                              <td class="px-6 py-4">
-                                <button
-                                  disabled={disableButton}
-                                  className="text-white bg-red-400 w-fit px-7 py-2 rounded-md text-xs cursor-pointer disabled:bg-gray-400"
-                                  onClick={() =>
-                                    handleDeleteProduct(
-                                      item["PRDCCODE"],
-                                      item["KKKK0000"]
-                                    )
-                                  }
-                                >
-                                  Xóa
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                  </tbody>
-                </table> */}
                 <TableDetailProduct
                   data={formik.values.DETAIL}
                   onHandleCheckAll={checkAll}

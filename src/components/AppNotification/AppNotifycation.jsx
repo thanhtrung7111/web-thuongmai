@@ -1,7 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import { closeAppNotify } from "../../redux/reducer/popupReducer";
 import { logout, saveCurrentUrl } from "../../redux/reducer/userReducer";
 
 const AppNotifycation = ({}) => {

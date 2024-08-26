@@ -33,22 +33,9 @@ const Register = () => {
   ] = useFetchWardMutation();
   const [agree, setAgree] = useState(false);
   const navigate = useNavigate();
-  const dispath = useDispatch();
   const { isLoadingUser, errorMessageUser } = useSelector(
     (state) => state.user
   );
-
-  const handleLogin = () => {
-    console.log("hêlo");
-    console.log(username);
-    dispath(
-      login({
-        username: username.current.value,
-        password: password.current.value,
-      })
-    );
-    navigate("/");
-  };
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
@@ -175,7 +162,7 @@ const Register = () => {
                       placeholder="Chọn tỉnh..."
                       loading={isLoadingProvince}
                       name="province"
-                      options={dataProvince ? dataProvince : []}
+                      options={dataProvince}
                       itemKey={"ITEMCODE"}
                       itemValue={"ITEMNAME"}
                       onChange={(i) => {
@@ -196,7 +183,7 @@ const Register = () => {
                       important={true}
                       placeholder="Chọn quận huyện..."
                       loading={isLoadingDistrict}
-                      disable={!dataDistrict?.RETNDATA}
+                      disabled={!dataDistrict?.RETNDATA}
                       name="city"
                       options={
                         dataDistrict?.RETNDATA ? dataDistrict.RETNDATA : []
@@ -228,7 +215,7 @@ const Register = () => {
                       loading={isLoadingWard}
                       name="ward"
                       options={dataWard?.RETNDATA ? dataWard.RETNDATA : []}
-                      disable={!dataWard?.RETNDATA}
+                      disabled={!dataWard?.RETNDATA}
                       itemKey={"ITEMCODE"}
                       itemValue={"ITEMNAME"}
                       onChange={(i) => {

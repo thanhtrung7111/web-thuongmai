@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { closeDetailOrder } from "../../redux/reducer/popupReducer";
 import Asus from "../../assets/img/asus.jpg";
 import moment from "moment";
 import LoadingView from "../../pages/LoadingView";

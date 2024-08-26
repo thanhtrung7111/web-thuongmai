@@ -14,7 +14,6 @@ import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
 import { commonApiSlice } from "../query/commonQuery";
 import cartReducer from "../reducer/cartReducer";
 import userReducer from "../reducer/userReducer";
-import productReducer from "../reducer/productReducer";
 import popupReducer from "../reducer/popupReducer";
 import orderReducer from "../reducer/orderReducer";
 import {
@@ -29,6 +28,7 @@ import exceptionReducer, { errorServerOn } from "../reducer/exceptionReducer";
 import { authApiSlice } from "../query/authQuery";
 import { cartApiSlice } from "../query/cartQuery";
 import { detailApiSlice } from "../query/detailQuery";
+import { evaluateApiSlice } from "../query/evaluateQuery";
 // import { GetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 
 const rootPersistConfig = {
@@ -42,7 +42,7 @@ const rootPersistConfig = {
   //   "common",
   //   "product",
   //   "popup",
-  // 
+  //
   //   commonApiSlice.reducerPath,
   // ],
   blacklist: [
@@ -51,6 +51,7 @@ const rootPersistConfig = {
     authApiSlice.reducerPath,
     cartApiSlice.reducerPath,
     detailApiSlice.reducerPath,
+    evaluateApiSlice.reducerPath,
   ],
 };
 const userPersistConfig = {
@@ -71,13 +72,13 @@ const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
   exception: exceptionReducer,
   cart: cartReducer,
-  product: productReducer,
   popup: popupReducer,
   order: orderReducer,
   [commonApiSlice.reducerPath]: commonApiSlice.reducer,
   [authApiSlice.reducerPath]: authApiSlice.reducer,
   [cartApiSlice.reducerPath]: cartApiSlice.reducer,
   [detailApiSlice.reducerPath]: detailApiSlice.reducer,
+  [evaluateApiSlice.reducerPath]: evaluateApiSlice.reducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
@@ -121,6 +122,7 @@ const store = configureStore({
       authApiSlice.middleware,
       cartApiSlice.middleware,
       detailApiSlice.middleware,
+      evaluateApiSlice.middleware,
       listenerMiddleWare.middleware
     ),
 });

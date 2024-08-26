@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ImageFetch from "../ImageFetch";
 import ProductSuggestion from "../productsuggestion/ProductSuggestion";
 import { useDispatch, useSelector } from "react-redux";
-import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
+// import { closeBlock, openBlock } from "../../redux/reducer/popupReducer";
 import { chooseProduct } from "../../redux/reducer/cartReducer";
 import {
   useDeleteCartMutation,

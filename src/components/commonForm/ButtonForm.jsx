@@ -7,13 +7,18 @@ const ButtonForm = ({
   labelLoading = "",
   loading = false,
   disabled = false,
+  className = "",
+  icon = null,
+  onClick,
 }) => {
   return (
     <button
-      className="bg-second text-white disabled:bg-slate-400 py-3 w-full flex justify-center items-center px-3 hover:bg-opacity-90 transition-all duration-200"
+      onClick={onClick}
+      className={`bg-second gap-x-2 text-white disabled:bg-slate-400 py-3 w-full flex justify-center items-center px-3 hover:bg-opacity-90 transition-all duration-200 ${className}`}
       disabled={loading || disabled}
       type={type}
     >
+      {icon && icon}
       {loading ? <SpinnerLoading></SpinnerLoading> : label}
     </button>
   );

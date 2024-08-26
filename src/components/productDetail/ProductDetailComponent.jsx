@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Asus from "../../assets/img/asus.jpg";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
-import Avatar from "../../assets/img/avatar.jpg";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { products, tagsColor, tagsRam, tagsReview } from "../../data";
+import { tagsReview } from "../../data";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  openEvaluateProduct,
-  openManify,
-} from "../../redux/reducer/popupReducer";
-import LoadingView from "../../pages/LoadingView";
 import ImageFetch from "../ImageFetch";
-import { fetchImage } from "../../helper/ImageHelper";
-// import { addToCart, updateAmountProduct } from "../../redux/actions/cartAction";
 import ProductDetailSkeleton from "./ProductDetailSkeleton";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { chooseProduct } from "../../redux/reducer/cartReducer";
 import ImageMagnifier from "../ImageMagnifier";
@@ -33,6 +25,9 @@ import {
   useAddToCartMutation,
   useUpdateCartMutation,
 } from "../../redux/query/cartQuery";
+import { useFetchDetailProductMutation } from "../../redux/query/detailQuery";
+import PopupProductEvaluate from "../commonPopup/PopupProductEvaluate";
+import { useFetchEvaluateMutation } from "../../redux/query/evaluateQuery";
 let pageSize = 4;
 const images = [
   {
@@ -57,141 +52,7 @@ const images = [
     image: "https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_.jpg",
   },
 ];
-const productDetailDemo = {
-  ACCERGHT: 79,
-  COMPCODE: "JYJ",
-  PRDCNAME: "BASE 2020 (1.06 m x 15.6 m) - 3804-6",
-  DDDD: "appPrdcDetl",
-  DESCBRIF: "",
-  DESCFULL: "quy cách 1.06 m x 15.6 m",
-  DETAIL_1: [
-    {
-      COMPCODE: "JYJ",
-      PRDCCODE: "000000037",
-      PYMNMEAN: "Tiền mặt hoặc chuyển khoản",
-      DLVRMEAN: "Tùy chọn",
-      KKKK0001: "JYJ0000000371",
-    },
-  ],
-  DETAIL_2: [
-    {
-      COMPCODE: "JYJ",
-      PRDCCODE: "000008224",
-      PRDCRLTN: "",
-      PRDCNAME: "V-CONCEPT 2020 (1.06 m x 15.6 m) - 7915-11",
-      PRDCDESC: "quy cách 1.06 m x 15.6 m",
-      PRDCBRIF: "7915-11",
-      PRDCIMGE:
-        "Https://Api-Dev.firstems.com/Api/data/runApi_File?run_Code=DTA001&CompCode=JYJ&DcmnCode=Product_New&Key_Code=JYJ000000115001&Key_Load=00062916102320",
-      SALEPRCE: 50000000,
-      DSCNRATE: "5",
-      DSCNAMNT: 50000,
-      DSCNPRCE: 500000,
-    },
-    {
-      COMPCODE: "JYJ",
-      PRDCCODE: "000008225",
-      PRDCRLTN: "",
-      PRDCNAME: "V-CONCEPT 2020 (1.06 m x 15.6 m) - 7915-11",
-      PRDCDESC: "quy cách 1.06 m x 15.6 m",
-      PRDCBRIF: "7915-11",
-      PRDCIMGE:
-        "Https://Api-Dev.firstems.com/Api/data/runApi_File?run_Code=DTA001&CompCode=JYJ&DcmnCode=Product_New&Key_Code=JYJ000000115001&Key_Load=00062916102320",
-      SALEPRCE: 50000000,
-      DSCNRATE: "5",
-      DSCNAMNT: 50000,
-      DSCNPRCE: 500000,
-    },
-    {
-      COMPCODE: "JYJ",
-      PRDCCODE: "000008226",
-      PRDCRLTN: "",
-      PRDCNAME: "V-CONCEPT 2020 (1.06 m x 15.6 m) - 7915-11",
-      PRDCDESC: "quy cách 1.06 m x 15.6 m",
-      PRDCBRIF: "7915-11",
-      PRDCIMGE:
-        "Https://Api-Dev.firstems.com/Api/data/runApi_File?run_Code=DTA001&CompCode=JYJ&DcmnCode=Product_New&Key_Code=JYJ000000115001&Key_Load=00062916102320",
-      SALEPRCE: 50000000,
-      DSCNRATE: 50,
-      DSCNAMNT: 50000,
-      DSCNPRCE: 500000,
-    },
-  ],
-  DETAIL_3: [
-    {
-      COMPCODE: "JYJ",
-      CUSTNAME: "Thành Trung",
-      CUSTLGIN: "aaaaaa",
-      MARKDATE: "2024-01-12 9:00",
-      PRDCMARK: 5,
-      CUSTIDEA: "Sản phẩm tốt",
-    },
-    {
-      COMPCODE: "JYJ",
-      CUSTNAME: "Nguyễn Văn a",
-      CUSTLGIN: "aaaaaa",
-      MARKDATE: "2024-01-12 8:00",
-      PRDCMARK: 5,
-      CUSTIDEA: "Sản phẩm tệ",
-    },
-    {
-      COMPCODE: "JYJ",
-      CUSTNAME: "Nguyễn Văn b",
-      CUSTLGIN: "aaaaaa",
-      MARKDATE: "2024-01-12 5:00",
-      PRDCMARK: 5,
-      CUSTIDEA: "Sản phẩm bình thường",
-    },
-    {
-      COMPCODE: "JYJ",
-      CUSTNAME: "Nguyễn Văn F",
-      CUSTLGIN: "aaaaaa",
-      MARKDATE: "2024-01-12 14:00",
-      PRDCMARK: 5,
-      CUSTIDEA: "Sản phẩm kém chất lượng",
-    },
-    {
-      COMPCODE: "JYJ",
-      CUSTNAME: "Nguyễn Văn T",
-      CUSTLGIN: "aaaaaa",
-      MARKDATE: "2024-01-12 14:00",
-      PRDCMARK: 5,
-      CUSTIDEA: "Sản phẩm kém",
-    },
-    {
-      COMPCODE: "JYJ",
-      CUSTNAME: "Nguyễn Văn D",
-      CUSTLGIN: "aaaaaa",
-      MARKDATE: "2024-02-12",
-      PRDCMARK: 4,
-      CUSTIDEA: "Sản phẩm tốt, giao hàng nhanh",
-    },
-    {
-      COMPCODE: "JYJ",
-      CUSTNAME: "Nguyễn Văn C",
-      CUSTLGIN: "aaaaaa",
-      MARKDATE: "2024-01-12",
-      PRDCMARK: 4,
-      CUSTIDEA: "Sản phẩm tuyệt vời, đúng với mô tả",
-    },
-  ],
-  DETAIL_4: [
-    {
-      IMGE_URL:
-        "Https://Api-Dev.firstems.com/Api/data/runApi_File?run_Code=DTA001&CompCode=JYJ&DcmnCode=Product_New&Key_Code=JYJ000000037002&Key_Load=00062216083120",
-      KKKK0004: "JYJ000000037JYJ000000037002",
-    },
-  ],
-  DSCNAMNT: 0,
-  DSCNRATE: 5,
-  KKKK0000: "JYJ000000037",
-  PRCEDSCN: 375250,
-  PRCESALE: 395000,
-  PRDCCODE: "000000037",
-  STTENAME: "",
-  STTESIGN: 0,
-};
-const ProductDetailComponent = () => {
+const ProductDetailComponent = ({ id }) => {
   const [
     addToCart,
     {
@@ -211,12 +72,32 @@ const ProductDetailComponent = () => {
       isSuccess: isSuccessUpdateCart,
     },
   ] = useUpdateCartMutation();
+  const [
+    fetchDetailProduct,
+    {
+      data: dataProductDetail,
+      isLoading: isLoadingProduct,
+      isError: isErrorDetailProduct,
+      isSuccess: isSuccessDetailProduct,
+    },
+  ] = useFetchDetailProductMutation();
+  const [
+    fetchEvaluate,
+    {
+      data: dataEvaluate,
+      isLoading: isLoadingEvaluate,
+      isError: isErrorEvaluate,
+      isSuccess: isSuccessEvalute,
+    },
+  ] = useFetchEvaluateMutation();
+
+  const [evaluate, setEvaluate] = useState([]);
+  const [openPopup, setOpenPopup] = useState(false);
+  const [productDetail, setProductDetail] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { productDetail, isLoadingProduct } = useSelector(
-    (state) => state.product
-  );
+
   const { currentUser } = useSelector((state) => state.user);
   const { productCarts } = useSelector((state) => state.cart);
   const [indexImage, setIndexImage] = useState({ ...images[0] });
@@ -270,7 +151,10 @@ const ProductDetailComponent = () => {
   };
 
   useEffect(() => {
-    setMainImage(productDetail?.DETAIL_4[0]?.IMGE_URL);
+    if (productDetail?.DETAIL_4[0]?.IMGE_URL) {
+      console.log(productDetail?.DETAIL_4[0]?.IMGE_URL);
+      setMainImage(productDetail?.DETAIL_4[0]?.IMGE_URL);
+    }
   }, [productDetail]);
   console.log(productDetail);
   const showManify = () => {
@@ -287,17 +171,44 @@ const ProductDetailComponent = () => {
     }
   }, [isSuccessCart, isSuccessUpdateCart]);
 
-  const showEvaludate = () => {
-    dispatch(openEvaluateProduct({ productID: "0000" }));
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchDetailProduct({
+        DCMNCODE: "appPrdcDetl",
+        PARACODE: "001",
+        KEY_CODE: id,
+      });
+      await fetchEvaluate(id);
+    };
+    if (id != null && id != "") {
+      fetchData();
+    }
+  }, [id]);
 
+  useEffect(() => {
+    if (isSuccessDetailProduct) {
+      setProductDetail(dataProductDetail.RETNDATA[0]);
+    }
+  }, [isSuccessDetailProduct]);
+
+  useEffect(() => {
+    if (isSuccessEvalute) {
+      setEvaluate(dataEvaluate.RETNDATA);
+    }
+  }, [isSuccessEvalute]);
+  console.log(evaluate);
   return isLoadingProduct ? (
     <ProductDetailSkeleton />
   ) : (
     // <ProductDetailSkeleton />
     <div className="product-detail">
+      <PopupProductEvaluate
+        open={openPopup}
+        item={productDetail}
+        onClose={() => setOpenPopup(close)}
+      ></PopupProductEvaluate>
       <InfoPage data={["Sản phẩm", productDetail?.PRDCNAME]} />
-      <ImageMagnifier image={mainImage}></ImageMagnifier>
+      {/* <ImageMagnifier image={mainImage}></ImageMagnifier> */}
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>
           <div className="px-7 py-10">
@@ -628,7 +539,7 @@ const ProductDetailComponent = () => {
                   </div>
 
                   <div>
-                    <h4 className="text-gray-dark text-xl font-semibold text-lg mb-2">
+                    <h4 className="text-gray-dark font-semibold text-lg mb-2">
                       Thiết kế sang trọng, cứng cáp cùng màn hình góc nhìn 178
                       (H) / 178 (V){" "}
                     </h4>
@@ -822,7 +733,7 @@ const ProductDetailComponent = () => {
                 </h4>
                 <button
                   className="text-white bg-first px-3 py-1 text-sm rounded-sm hover:opacity-90"
-                  onClick={showEvaludate}
+                  onClick={() => setOpenPopup(true)}
                 >
                   Đánh giá
                 </button>
@@ -1030,20 +941,22 @@ const ProductDetailComponent = () => {
               </div>
 
               <div className="flex flex-col gap-y-4 mb-16 min-h-[550px]">
-                {productDetail?.DETAIL_3?.length > 0 &&
-                  productDetail?.DETAIL_3?.slice(
-                    (currentPage - 1) * pageSize,
-                    pageSize * (currentPage - 1) + pageSize
-                  ).map((item) => {
-                    return (
-                      <CommentCard
-                        name={item.CUSTNAME}
-                        amountStar={item.PRDCMARK}
-                        timeStamp={item.MARKDATE}
-                        content={item.CUSTIDEA}
-                      ></CommentCard>
-                    );
-                  })}
+                {evaluate &&
+                  evaluate
+                    .slice(
+                      (currentPage - 1) * pageSize,
+                      pageSize * (currentPage - 1) + pageSize
+                    )
+                    .map((item) => {
+                      return (
+                        <CommentCard
+                          name={item.CUSTNAME}
+                          amountStar={item.MARKESTM}
+                          timeStamp={item.MARKDATE}
+                          content={item.IDEANOTE}
+                        ></CommentCard>
+                      );
+                    })}
               </div>
               {productDetail?.DETAIL_3?.length > 0 && (
                 <Panigation
@@ -1061,7 +974,7 @@ const ProductDetailComponent = () => {
         </Wrapper>
       </div>
 
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      {/* <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
@@ -1086,7 +999,7 @@ const ProductDetailComponent = () => {
             ></ProductSlider>
           </div>
         </Wrapper>
-      </div>
+      </div> */}
     </div>
   );
 };

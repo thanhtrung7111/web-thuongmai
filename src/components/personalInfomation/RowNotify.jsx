@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import Asus from "../../assets/img/asus.jpg";
-import {
-  openDetailOrder,
-  openEvaluateProduct,
-} from "../../redux/reducer/popupReducer";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 const RowNotify = ({ title, desc, date, category, isRead }) => {

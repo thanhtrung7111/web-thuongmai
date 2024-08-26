@@ -1,7 +1,7 @@
 import React from "react";
 import Triangle from "../../assets/img/triangle.png";
 import { useDispatch } from "react-redux";
-import { openEvaluateProduct } from "../../redux/reducer/popupReducer";
+// import { openEvaluateProduct } from "../../redux/reducer/popupReducer";
 const Notifycation = () => {
   const dispatch = useDispatch();
   const openEvaluate = () => {

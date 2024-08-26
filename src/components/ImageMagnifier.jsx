@@ -6,7 +6,7 @@ import "swiper/css/scrollbar";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { useDispatch, useSelector } from "react-redux";
-import { closeManify } from "../redux/reducer/popupReducer";
+// import { closeManify } from "../redux/reducer/popupReducer";
 
 const images = [
   {

@@ -7,7 +7,9 @@ const CommentCard = ({ name, amountStar, timeStamp, title, content }) => {
       <img src={Avatar} alt="" className="size-16" />
       <div className="flex flex-col gap-y-1">
         <div className="flex gap-x-3 items-center">
-          <h4 className="text-base font-medium text-gray-dark">{name}</h4>
+          <h4 className="text-base font-semibold text-gray-dark">
+            {name ? name : "Someone"}
+          </h4>
           <div className="gap-x-1 flex items-center h-fit">
             {amountStar &&
               [...Array(amountStar)].map((item) => {
@@ -16,9 +18,9 @@ const CommentCard = ({ name, amountStar, timeStamp, title, content }) => {
           </div>
         </div>
         <span className="text-xs text-gray-light italic">
-          {moment(timeStamp).format("HH:mm DD/MM/yyyy ")}
+          {moment(timeStamp).format("DD/MM/yyyy ")}
         </span>
-        <h5 className="text-gray-dark font-medium ml-3 text-sm">
+        {/* <h5 className="text-gray-dark font-medium ml-3 text-sm">
           "Sản phẩm
           {amountStar == 5
             ? " tuyệt với"
@@ -30,8 +32,8 @@ const CommentCard = ({ name, amountStar, timeStamp, title, content }) => {
             ? " kém"
             : " tệ"}
           "
-        </h5>
-        <p className="text-gray-dark ml-7 text-sm">{content}</p>
+        </h5> */}
+        <p className="text-gray-dark ml-2 text-sm">{content}</p>
       </div>
     </div>
   );
