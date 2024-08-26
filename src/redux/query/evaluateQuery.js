@@ -35,7 +35,7 @@ export const evaluateApiSlice = createApi({
   refetchOnFocus: true,
   tagTypes: ["Evaluates"],
   endpoints: (builder) => ({
-    fetchEvaluate: builder.mutation({
+    fetchEvaluate: builder.query({
       query: (data) => ({
         url: "/Api/data/runApi_Data?run_Code=DTA004",
         method: "POST",
@@ -51,8 +51,16 @@ export const evaluateApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch, null);
-          console.log(listData);
+          const listData = await response(data, dispatch, null);
+          dispatch(
+            evaluateApiSlice.util.updateQueryData(
+              "fetchEvaluate",
+              undefined,
+              (draft) => {
+                return listData;
+              }
+            )
+          );
         } catch (error) {
           console.log(error);
         }
@@ -61,4 +69,4 @@ export const evaluateApiSlice = createApi({
   }),
 });
 
-export const { useFetchEvaluateMutation } = evaluateApiSlice;
+export const { useLazyFetchEvaluateQuery } = evaluateApiSlice;

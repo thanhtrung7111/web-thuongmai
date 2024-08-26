@@ -27,7 +27,8 @@ import {
 } from "../../redux/query/cartQuery";
 import { useFetchDetailProductMutation } from "../../redux/query/detailQuery";
 import PopupProductEvaluate from "../commonPopup/PopupProductEvaluate";
-import { useFetchEvaluateMutation } from "../../redux/query/evaluateQuery";
+import { useLazyFetchEvaluateQuery } from "../../redux/query/evaluateQuery";
+import ButtonForm from "../commonForm/ButtonForm";
 let pageSize = 4;
 const images = [
   {
@@ -89,7 +90,7 @@ const ProductDetailComponent = ({ id }) => {
       isError: isErrorEvaluate,
       isSuccess: isSuccessEvalute,
     },
-  ] = useFetchEvaluateMutation();
+  ] = useLazyFetchEvaluateQuery();
 
   const [evaluate, setEvaluate] = useState([]);
   const [openPopup, setOpenPopup] = useState(false);
@@ -196,7 +197,7 @@ const ProductDetailComponent = ({ id }) => {
       setEvaluate(dataEvaluate.RETNDATA);
     }
   }, [isSuccessEvalute]);
-  console.log(evaluate);
+  console.log(dataEvaluate);
   return isLoadingProduct ? (
     <ProductDetailSkeleton />
   ) : (
@@ -731,12 +732,11 @@ const ProductDetailComponent = ({ id }) => {
                 <h4 className="text-2xl text-gray-dark font-semibold">
                   Đánh giá sản phẩm
                 </h4>
-                <button
-                  className="text-white bg-first px-3 py-1 text-sm rounded-sm hover:opacity-90"
+                <ButtonForm
+                  label={"Đánh giá"}
+                  className="!w-fit"
                   onClick={() => setOpenPopup(true)}
-                >
-                  Đánh giá
-                </button>
+                ></ButtonForm>
               </div>
               <div className="flex flex-col md:flex-row  items-center md:items-start gap-10 px-5 py-5">
                 <div className="flex flex-col items-center justify-center w-fit md:pr-10 md:border-r">
@@ -769,7 +769,7 @@ const ProductDetailComponent = ({ id }) => {
                     </div>
                   </div>
                   <span className="text-gray-light">
-                    ( {productDetail?.DETAIL_3?.length} Đánh giá )
+                    ( {evaluate.length} Đánh giá )
                   </span>
                 </div>
 
@@ -782,10 +782,9 @@ const ProductDetailComponent = ({ id }) => {
                     <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
                       <div
                         className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (productDetail?.DETAIL_3?.filter(
-                            (item) => item.PRDCMARK == 5
-                          ).length /
-                            productDetail?.DETAIL_3?.length) *
+                          (evaluate.filter((item) => item.MARKESTM == 5)
+                            .length /
+                            evaluate.length) *
                             100 >
                           40
                             ? "bg-green-700"
@@ -793,10 +792,9 @@ const ProductDetailComponent = ({ id }) => {
                         }`}
                         style={{
                           width: `${
-                            (productDetail?.DETAIL_3?.filter(
-                              (item) => item.PRDCMARK == 5
-                            ).length /
-                              productDetail?.DETAIL_3?.length) *
+                            (evaluate.filter((item) => item.MARKESTM == 5)
+                              .length /
+                              evaluate.length) *
                             100
                           }%`,
                         }}
