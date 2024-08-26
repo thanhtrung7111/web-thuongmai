@@ -170,6 +170,7 @@ const PopupProductEvaluate = ({
                 <ButtonForm
                   label={"Xác nhận đánh giá"}
                   type="submit"
+                  className="!w-fit ml-auto"
                 ></ButtonForm>
               </Form>
             );

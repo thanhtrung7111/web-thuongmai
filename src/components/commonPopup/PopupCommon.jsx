@@ -35,7 +35,7 @@ const PopupCommon = ({
           open && "!translate-y-0"
         } transition-transform duration-300 h-fit overflow-hidden`}
       >
-        <div className="bg-first text-white flex items-center justify-between py-2 px-5 border-b border-gray-100">
+        <div className=" text-gray-600 italic flex items-center justify-between py-2 px-5 border-b border-gray-100">
           <h5 className="text-base font-medium">{title}</h5>
           <div className="cursor-pointer" onClick={onClose}>
             <i class="ri-close-fill text-xl"></i>
