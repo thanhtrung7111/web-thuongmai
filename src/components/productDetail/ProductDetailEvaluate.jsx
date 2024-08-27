@@ -9,7 +9,7 @@ import PopupProductEvaluate from "../commonPopup/PopupProductEvaluate";
 import ProductSummaryReview from "./ProductSummaryReview";
 import { useSelector } from "react-redux";
 import ProductDetailEvaluateSkeleton from "./ProductDetailEvaluateSkeleton";
-let pageSize = 10;
+let pageSize = 5;
 const tagsReview = [
   {
     id: 0,
@@ -68,6 +68,7 @@ const ProductDetailEvaluate = ({ item }) => {
         listFilter: evaluate.filter((i) => i.MARKESTM == item.value),
       });
     }
+    setCurrentPage(1);
   };
   const [
     fetchEvaluate,
@@ -167,7 +168,7 @@ const ProductDetailEvaluate = ({ item }) => {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-y-4 mb-16 min-h-[550px]">
+                <div className="flex flex-col gap-y-4 mb-16 max-h-[550px] min-h-[200px]">
                   {dataFilter.listFilter.length >= 1 ? (
                     dataFilter.listFilter
                       .slice(
@@ -177,6 +178,9 @@ const ProductDetailEvaluate = ({ item }) => {
                       .map((item) => {
                         return (
                           <CommentCard
+                            disabledAction={
+                              !(item.USERLGIN == currentUser?.USERLGIN)
+                            }
                             name={item.USERNAME}
                             amountStar={item.MARKESTM}
                             timeStamp={item.MARKDATE}
@@ -191,10 +195,10 @@ const ProductDetailEvaluate = ({ item }) => {
                     </div>
                   )}
                 </div>
-                {dataFilter.length > pageSize && (
+                {dataFilter.listFilter.length > pageSize && (
                   <Panigation
                     currentPage={currentPage}
-                    totalCount={dataFilter.length}
+                    totalCount={dataFilter.listFilter.length}
                     pageSize={pageSize}
                     scrollTo="evaluate"
                     onPageChange={(page) => {

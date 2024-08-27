@@ -4,7 +4,7 @@ const ProductSummaryReview = ({ reviews = [], itemKey = "" }) => {
   return (
     <div className="flex flex-col md:flex-row  items-center md:items-start gap-10 px-5 py-5">
       <div className="flex flex-col items-center justify-center w-fit md:pr-10 md:border-r">
-        <span className="text-9xl font-normal text-gray-dark">
+        <span className="text-9xl font-normal text-gray-700">
           {reviews.length <= 0
             ? 0
             : (
@@ -70,16 +70,16 @@ const ProductSummaryReview = ({ reviews = [], itemKey = "" }) => {
         <span className="text-gray-light">( {reviews.length} Đánh giá )</span>
       </div>
 
-      <div className="flex flex-col gap-y-1">
+      <div className="flex flex-col gap-y-2">
         {[1, 2, 3, 4, 5].map((item) => {
           return (
             <div className="flex gap-x-2 items-center">
-              <span className=" text-yellow-400 font-medium w-6">
+              <span className=" text-yellow-400 font-medium w-6 flex items-start">
                 {item}
-                <i className="ri-star-fill text-base"></i>
+                <i className="ri-star-fill text-sm"></i>
               </span>
 
-              <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
+              <div className="relative w-[200px] bg-slate-300 h-[5px] rounded-md overflow-hidden">
                 <div
                   className={`absolute left-0 top-0 w-1/4 h-full ${
                     (reviews.filter((i) => i[itemKey] == item).length /

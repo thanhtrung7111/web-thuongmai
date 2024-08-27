@@ -81,6 +81,7 @@ const ProductDetailComponent = ({ id }) => {
     },
   ] = useFetchDetailProductMutation();
 
+  const [openManify, setOpenManify] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [productDetail, setProductDetail] = useState(null);
@@ -138,9 +139,6 @@ const ProductDetailComponent = ({ id }) => {
       setMainImage(productDetail?.DETAIL_4[0]?.IMGE_URL);
     }
   }, [productDetail]);
-  const showManify = () => {
-    dispatch(openManify());
-  };
 
   useEffect(() => {
     if (isSuccessCart || isSuccessUpdateCart) {
@@ -177,7 +175,11 @@ const ProductDetailComponent = ({ id }) => {
     // <ProductDetailSkeleton />
     <div className="product-detail">
       <InfoPage data={["Sản phẩm", productDetail?.PRDCNAME]} />
-      {/* <ImageMagnifier image={mainImage}></ImageMagnifier> */}
+      <ImageMagnifier
+        open={openManify}
+        image={mainImage}
+        onCloseManify={() => setOpenManify(false)}
+      ></ImageMagnifier>
       <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>
           <div className="px-7 py-10">
@@ -186,7 +188,7 @@ const ProductDetailComponent = ({ id }) => {
               <div className="min-w-full h-fit flex flex-col gap-y-2">
                 <div
                   className="h-96 w-full border border-gray-100 p-2 cursor-zoom-in"
-                  onClick={showManify}
+                  onClick={() => setOpenManify(true)}
                 >
                   {/* <ImageFetch url={product?.DETAIL_4[0]?.IMGE_URL}></ImageFetch> */}
                   <ImageFetch

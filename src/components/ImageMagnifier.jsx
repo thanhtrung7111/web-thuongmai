@@ -6,6 +6,8 @@ import "swiper/css/scrollbar";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { useDispatch, useSelector } from "react-redux";
+import { closePopup, openPopup } from "../redux/reducer/popupReducer";
+import ImageFetch from "./ImageFetch";
 // import { closeManify } from "../redux/reducer/popupReducer";
 
 const images = [
@@ -31,13 +33,12 @@ const images = [
     image: "https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_.jpg",
   },
   {
-    id: 6,
+    id: 5,
     image: "https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_.jpg",
   },
 ];
-const ImageMagnifier = ({ image }) => {
+const ImageMagnifier = ({ image, open, onCloseManify }) => {
   const dispatch = useDispatch();
-  const { showManify } = useSelector((state) => state.popup);
   const [indexImage, setIndexImage] = useState({ ...images[0] });
   const [mainImage, setMainImage] = useState(null);
   const navigationPrevRef = React.useRef(null);
@@ -48,35 +49,35 @@ const ImageMagnifier = ({ image }) => {
     setMainImage(images.find((item) => item.id == id).image);
   };
 
-  const closManify = () => {
-    dispatch(closeManify());
-  };
-
   useEffect(() => {
     setMainImage(image);
   }, [image]);
 
+  useEffect(() => {
+    if (open) dispatch(openPopup());
+    else dispatch(closePopup());
+  }, [open]);
   return (
     <div
       className={`fixed top-0 left-0 w-screen h-screen z-50 flex flex-col items-center justify-center ${
-        showManify ? "visible" : "invisible"
+        open ? "visible" : "invisible"
       }`}
     >
       <div
         className="absolute  bg-black bg-opacity-50 top-0 right-0 w-full h-full"
-        onClick={closManify}
+        onClick={onCloseManify}
       ></div>
       <div className=" bg-white max-w-[1000px] z-20">
         <div
           className="block text-right pr-2 pt-2 cursor-pointer"
-          onClick={closManify}
+          onClick={onCloseManify}
         >
-          <i class="ri-close-line text-2xl"></i>
+          <i class="ri-close-line text-2xl text-gray-400"></i>
         </div>
-        <div className="p-5 pt-1">
+        <div className="p-5 px-10 pt-1">
           <div className="border mb-5">
-            <img
-              src={mainImage}
+            <ImageFetch
+              url={mainImage}
               alt=""
               className="w-full h-[600px] object-contain object-center"
             />
@@ -86,7 +87,7 @@ const ImageMagnifier = ({ image }) => {
               // install Swiper modules
               modules={[Navigation, Pagination, Scrollbar, A11y]}
               spaceBetween={10}
-              slidesPerView={images.length}
+              slidesPerView={5}
               autoplay="true"
               navigation={{
                 prevEl: navigationPrevRef.current,
@@ -106,13 +107,18 @@ const ImageMagnifier = ({ image }) => {
               {images.map((item) => {
                 return (
                   <SwiperSlide
-                    className={
-                      indexImage.id == item.id
-                        ? "border border-first p-2"
-                        : "border border-gray-100 p-2"
-                    }
+                    className={`relative px-3 py-2 border  rounded-md border-gray-100 cursor-pointer`}
                     onClick={() => handleChangeImage(item.id)}
                   >
+                    <div
+                      className={`absolute top-0 right-0 w-full h-full bg-black transition-colors
+                       ${
+                         indexImage.id == item.id
+                           ? "bg-opacity-0"
+                           : "bg-opacity-5"
+                       }
+                      `}
+                    ></div>
                     <img
                       src={item.image}
                       className="h-32 w-full object-cover object-top"
