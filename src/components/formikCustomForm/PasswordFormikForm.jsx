@@ -1,7 +1,7 @@
 import { useField } from "formik";
 import React, { useState } from "react";
 
-const PasswordForm = ({ label, important = false, ...props }) => {
+const PasswordFormikForm = ({ label, important = false, ...props }) => {
   const [field, meta, helpers] = useField(props);
   const [show, setShow] = useState(false);
   return (
@@ -41,4 +41,4 @@ const PasswordForm = ({ label, important = false, ...props }) => {
   );
 };
 
-export default PasswordForm;
+export default PasswordFormikForm;

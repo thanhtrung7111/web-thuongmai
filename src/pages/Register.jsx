@@ -3,14 +3,14 @@ import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import InputForm from "../components/commonForm/InputForm";
-import PasswordForm from "../components/commonForm/PasswordForm";
+import InputFormikForm from "../components/formikCustomForm/InputFormikForm";
+import PasswordFormikForm from "../components/formikCustomForm/PasswordFormikForm";
 import {
   useFetchDistrictMutation,
   useFetchProvinceQuery,
   useFetchWardMutation,
 } from "../redux/query/commonQuery";
-import SelectForm from "../components/commonForm/SelectForm";
+import SelectFormikForm from "../components/formikCustomForm/SelectFormikForm";
 import ButtonForm from "../components/commonForm/ButtonForm";
 const Register = () => {
   const { errorServer } = useSelector((state) => state.exception);
@@ -18,6 +18,7 @@ const Register = () => {
     data: dataProvince,
     isLoading: isLoadingProvince,
     isError: isErrorProvince,
+    isSuccess: isSuccessProvince,
   } = useFetchProvinceQuery(undefined, { skip: errorServer.isError });
   const [
     fetchDistrict,
@@ -103,66 +104,66 @@ const Register = () => {
               <div className="grid grid-cols-1 gap-4">
                 <div className="flex flex-col gap-y-4">
                   <div className="flex flex-col gap-y-4 text-gray-dark">
-                    <InputForm
+                    <InputFormikForm
                       label={"Họ tên"}
                       important={true}
                       placeholder="Nhập tên người dùng..."
                       name="fullName"
                       // id="username"
                       // value={formik.values.username}
-                    ></InputForm>
-                    <InputForm
+                    ></InputFormikForm>
+                    <InputFormikForm
                       label={"Tên đăng nhập"}
                       important={true}
                       placeholder="Nhập tên đăng nhập..."
                       name="username"
                       // id="username"
                       // value={formik.values.username}
-                    ></InputForm>
-                    <PasswordForm
+                    ></InputFormikForm>
+                    <PasswordFormikForm
                       label={"Mật khẩu"}
                       important={true}
                       placeholder="Nhập mật khẩu..."
                       name="password"
                       // id="username"
                       // value={formik.values.username}
-                    ></PasswordForm>{" "}
-                    <PasswordForm
+                    ></PasswordFormikForm>{" "}
+                    <PasswordFormikForm
                       label={"Xác nhận mật khẩu"}
                       important={true}
                       placeholder="Nhập mật khẩu xác nhận..."
                       name="confirmPassword"
                       // id="username"
                       // value={formik.values.username}
-                    ></PasswordForm>
+                    ></PasswordFormikForm>
                   </div>
 
                   <div className="grid grid-cols-2 gap-x-4 text-gray-dark">
-                    <InputForm
+                    <InputFormikForm
                       label={"Email"}
                       important={true}
                       placeholder="Nhập địa chỉ email..."
                       name="email"
                       // id="username"
                       // value={formik.values.username}
-                    ></InputForm>
-                    <InputForm
+                    ></InputFormikForm>
+                    <InputFormikForm
                       label={"Số điện thoại"}
                       important={true}
                       placeholder="Nhập số điện thoại..."
                       name="phone"
                       // id="username"
                       // value={formik.values.username}
-                    ></InputForm>
+                    ></InputFormikForm>
                   </div>
                   <div className="grid grid-cols-2 gap-x-4 text-gray-dark">
-                    <SelectForm
+                    <SelectFormikForm
                       label={"Tỉnh"}
                       important={true}
                       placeholder="Chọn tỉnh..."
                       loading={isLoadingProvince}
                       name="province"
-                      options={dataProvince}
+                      options={isSuccessProvince ? dataProvince : []}
                       itemKey={"ITEMCODE"}
                       itemValue={"ITEMNAME"}
                       onChange={(i) => {
@@ -176,9 +177,9 @@ const Register = () => {
                         );
                         fetchDistrict(i.ITEMCODE);
                       }}
-                    ></SelectForm>
+                    ></SelectFormikForm>
 
-                    <SelectForm
+                    <SelectFormikForm
                       label={"Thành phố"}
                       important={true}
                       placeholder="Chọn quận huyện..."
@@ -205,10 +206,10 @@ const Register = () => {
                         );
                         fetchWard(i.ITEMCODE);
                       }}
-                    ></SelectForm>
+                    ></SelectFormikForm>
                   </div>
                   <div className="grid grid-cols-2 gap-x-4 text-gray-dark">
-                    <SelectForm
+                    <SelectFormikForm
                       label={"Chọn thị xã"}
                       important={true}
                       placeholder="Chọn thị xã..."
@@ -236,8 +237,8 @@ const Register = () => {
                             )?.ITEMNAME
                         );
                       }}
-                    ></SelectForm>
-                    <InputForm
+                    ></SelectFormikForm>
+                    <InputFormikForm
                       label={"Địa chỉ cụ thể"}
                       important={true}
                       placeholder="Nhập địa chỉ...."
@@ -265,11 +266,11 @@ const Register = () => {
                             ).ITEMNAME
                         );
                       }}
-                    ></InputForm>
+                    ></InputFormikForm>
                   </div>
 
                   <div className="flex flex-col gap-y-4 text-gray-dark">
-                    <InputForm
+                    <InputFormikForm
                       readOnly
                       label={"Địa chỉ"}
                       important={true}
@@ -278,7 +279,7 @@ const Register = () => {
                       name="address"
                       // id="username"
                       // value={formik.values.username}
-                    ></InputForm>
+                    ></InputFormikForm>
                   </div>
                 </div>
                 <div className="flex flex-col gap-y-4"></div>

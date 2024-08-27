@@ -1,9 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { toast } from "react-toastify";
 import { errorServerOn } from "../reducer/exceptionReducer";
+import CryptoJS from "crypto-js";
 
+const encryptAES = (path) => {
+  return CryptoJS.AES.encrypt(path, secretKey).toString();
+};
 const axiosBaseQuery = fetchBaseQuery({
-  baseUrl: "https://api-dev.firstems.com",
+  baseUrl: "/api",
   timeout: 15000,
   prepareHeaders: (headers) => {
     headers.set(

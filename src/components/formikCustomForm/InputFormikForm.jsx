@@ -1,12 +1,11 @@
 import React from "react";
 import { useField } from "formik";
 
-const TextAreaForm = ({
+const InputFormikForm = ({
   label,
   important = false,
   disabled = false,
   onChange,
-  row = 5,
   ...props
 }) => {
   const [field, meta, helpers] = useField(props);
@@ -16,9 +15,8 @@ const TextAreaForm = ({
         <span className="text-gray-600">{label} </span>{" "}
         {important && <span className="text-red-500">*</span>}
       </label>
-      <textarea
+      <input
         {...props}
-        rows={row}
         {...field}
         autoComplete="off"
         onChange={(e) => {
@@ -29,7 +27,7 @@ const TextAreaForm = ({
         className={`${
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
         } px-3 py-3 text-sm disabled:bg-slate-50 border outline-none rounded-sm w-full`}
-      ></textarea>
+      />
       {meta.error && meta.touched && (
         <span className="text-red-500 text-xs">{meta.error}</span>
       )}
@@ -37,4 +35,4 @@ const TextAreaForm = ({
   );
 };
 
-export default TextAreaForm;
+export default InputFormikForm;

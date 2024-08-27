@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Asus from "../../assets/img/asus.jpg";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { tagsReview } from "../../data";
+
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
@@ -27,9 +27,7 @@ import {
 } from "../../redux/query/cartQuery";
 import { useFetchDetailProductMutation } from "../../redux/query/detailQuery";
 import PopupProductEvaluate from "../commonPopup/PopupProductEvaluate";
-import { useLazyFetchEvaluateQuery } from "../../redux/query/evaluateQuery";
-import ButtonForm from "../commonForm/ButtonForm";
-let pageSize = 4;
+import ProductDetailEvaluate from "./ProductDetailEvaluate";
 const images = [
   {
     id: 1,
@@ -82,23 +80,10 @@ const ProductDetailComponent = ({ id }) => {
       isSuccess: isSuccessDetailProduct,
     },
   ] = useFetchDetailProductMutation();
-  const [
-    fetchEvaluate,
-    {
-      data: dataEvaluate,
-      isLoading: isLoadingEvaluate,
-      isError: isErrorEvaluate,
-      isSuccess: isSuccessEvalute,
-    },
-  ] = useLazyFetchEvaluateQuery();
 
-  const [evaluate, setEvaluate] = useState([]);
-  const [openPopup, setOpenPopup] = useState(false);
-  const [productDetail, setProductDetail] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [productDetail, setProductDetail] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
   const { productCarts } = useSelector((state) => state.cart);
   const [indexImage, setIndexImage] = useState({ ...images[0] });
@@ -106,15 +91,11 @@ const ProductDetailComponent = ({ id }) => {
   const [qty, setQty] = useState(1);
   const navigationPrevRef = React.useRef(null);
   const navigationNextRef = React.useRef(null);
-  const onChangeTagRam = (value) => {
-    console.log(value);
-  };
 
   const handleChangeImage = (id) => {
     setIndexImage(images.find((item) => item.id == id));
     setMainImage(images.find((item) => item.id == id).image);
   };
-  console.log(productCarts);
 
   const addCart = async (value) => {
     const productFind = productCarts.find(
@@ -157,7 +138,6 @@ const ProductDetailComponent = ({ id }) => {
       setMainImage(productDetail?.DETAIL_4[0]?.IMGE_URL);
     }
   }, [productDetail]);
-  console.log(productDetail);
   const showManify = () => {
     dispatch(openManify());
   };
@@ -179,7 +159,6 @@ const ProductDetailComponent = ({ id }) => {
         PARACODE: "001",
         KEY_CODE: id,
       });
-      await fetchEvaluate(id);
     };
     if (id != null && id != "") {
       fetchData();
@@ -187,27 +166,16 @@ const ProductDetailComponent = ({ id }) => {
   }, [id]);
 
   useEffect(() => {
-    if (isSuccessDetailProduct) {
-      setProductDetail(dataProductDetail.RETNDATA[0]);
+    if (isSuccessDetailProduct && dataProductDetail?.RETNDATA) {
+      setProductDetail(dataProductDetail?.RETNDATA[0]);
     }
   }, [isSuccessDetailProduct]);
-
-  useEffect(() => {
-    if (isSuccessEvalute) {
-      setEvaluate(dataEvaluate.RETNDATA);
-    }
-  }, [isSuccessEvalute]);
-  console.log(dataEvaluate);
+  // console.log("hêlo");
   return isLoadingProduct ? (
     <ProductDetailSkeleton />
   ) : (
     // <ProductDetailSkeleton />
     <div className="product-detail">
-      <PopupProductEvaluate
-        open={openPopup}
-        item={productDetail}
-        onClose={() => setOpenPopup(close)}
-      ></PopupProductEvaluate>
       <InfoPage data={["Sản phẩm", productDetail?.PRDCNAME]} />
       {/* <ImageMagnifier image={mainImage}></ImageMagnifier> */}
       <div className="mx-5 xl:container xl:mx-auto mb-5">
@@ -723,254 +691,7 @@ const ProductDetailComponent = ({ id }) => {
           </Wrapper>
         </div>
       </div>
-      {/* ĐÁNH GIÁ SẢN PHẨM  */}
-      <div id="evaluate" className="mx-5 xl:container xl:mx-auto mb-5">
-        <Wrapper>
-          <div className="p-5">
-            <div className="mb-5">
-              <div className="flex items-center justify-between">
-                <h4 className="text-2xl text-gray-dark font-semibold">
-                  Đánh giá sản phẩm
-                </h4>
-                <ButtonForm
-                  label={"Đánh giá"}
-                  className="!w-fit"
-                  onClick={() => setOpenPopup(true)}
-                ></ButtonForm>
-              </div>
-              <div className="flex flex-col md:flex-row  items-center md:items-start gap-10 px-5 py-5">
-                <div className="flex flex-col items-center justify-center w-fit md:pr-10 md:border-r">
-                  <span className="text-9xl font-normal text-gray-dark">
-                    {/* {(
-                      product?.DETAIL_3.reduce(
-                        (value, currentValue) => value + currentValue.PRDCMARK,
-                        0
-                      ) / product?.DETAIL_3.length
-                    ).toFixed(1)} */}
-                  </span>
-                  <div>
-                    <div className="flex items-center gap-x-1">
-                      {/* {product?.DETAIL_3 &&
-                        [
-                          ...Array(
-                            Math.ceil(
-                              product?.DETAIL_3.reduce(
-                                (value, currentValue) =>
-                                  value + currentValue.PRDCMARK,
-                                0
-                              ) / product?.DETAIL_3.length
-                            )
-                          ),
-                        ].map((item) => {
-                          return (
-                            <i className="ri-star-fill text-yellow-400 text-xl"></i>
-                          );
-                        })} */}
-                    </div>
-                  </div>
-                  <span className="text-gray-light">
-                    ( {evaluate.length} Đánh giá )
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-y-1">
-                  <div className="flex gap-x-2 items-center">
-                    <span className=" text-yellow-400 font-medium w-6">
-                      5<i className="ri-star-fill text-base"></i>
-                    </span>
-
-                    <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
-                      <div
-                        className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (evaluate.filter((item) => item.MARKESTM == 5)
-                            .length /
-                            evaluate.length) *
-                            100 >
-                          40
-                            ? "bg-green-700"
-                            : "bg-red-700"
-                        }`}
-                        style={{
-                          width: `${
-                            (evaluate.filter((item) => item.MARKESTM == 5)
-                              .length /
-                              evaluate.length) *
-                            100
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div className="flex gap-x-2 items-center">
-                    <span className=" text-yellow-400 font-medium w-6">
-                      4<i className="ri-star-fill text-base"></i>
-                    </span>
-
-                    <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
-                      <div
-                        className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (productDetail?.DETAIL_3?.filter(
-                            (item) => item.PRDCMARK == 4
-                          ).length /
-                            productDetail?.DETAIL_3?.length) *
-                            100 >
-                          40
-                            ? "bg-green-700"
-                            : "bg-red-700"
-                        }`}
-                        style={{
-                          width: `${
-                            (productDetail?.DETAIL_3?.filter(
-                              (item) => item.PRDCMARK == 4
-                            ).length /
-                              productDetail?.DETAIL_3?.length) *
-                            100
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div className="flex gap-x-2 items-center">
-                    <span className=" text-yellow-400 font-medium w-6">
-                      3<i className="ri-star-fill text-base"></i>
-                    </span>
-
-                    <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
-                      <div
-                        className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (productDetail?.DETAIL_3?.filter(
-                            (item) => item.PRDCMARK == 3
-                          ).length /
-                            productDetail?.DETAIL_3?.length) *
-                            100 >
-                          40
-                            ? "bg-green-700"
-                            : "bg-red-700"
-                        }`}
-                        style={{
-                          width: `${
-                            (productDetail?.DETAIL_3?.filter(
-                              (item) => item.PRDCMARK == 3
-                            ).length /
-                              productDetail?.DETAIL_3?.length) *
-                            100
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div className="flex gap-x-2 items-center">
-                    <span className=" text-yellow-400 font-medium w-6">
-                      2<i className="ri-star-fill text-base"></i>
-                    </span>
-
-                    <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
-                      <div
-                        className={`absolute left-0 top-0 w-1/4 h-full ${
-                          (productDetail?.DETAIL_3?.filter(
-                            (item) => item.PRDCMARK == 2
-                          ).length /
-                            productDetail?.DETAIL_3?.length) *
-                            100 >
-                          40
-                            ? "bg-green-700"
-                            : "bg-red-700"
-                        }`}
-                        style={{
-                          width: `${
-                            (productDetail?.DETAIL_3?.filter(
-                              (item) => item.PRDCMARK == 2
-                            ).length /
-                              productDetail?.DETAIL_3?.length) *
-                            100
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div className="flex gap-x-2 items-center">
-                    <span className=" text-yellow-400 font-medium w-6">
-                      1<i className="ri-star-fill text-base"></i>
-                    </span>
-
-                    <div className="relative w-[200px] bg-slate-300 h-2 rounded-md overflow-hidden">
-                      <div
-                        className={`absolute left-0 top-0  w-1/4 h-full ${
-                          (productDetail?.DETAIL_3?.filter(
-                            (item) => item.PRDCMARK == 1
-                          ).length /
-                            productDetail?.DETAIL_3?.length) *
-                            100 >
-                          40
-                            ? "bg-green-700"
-                            : "bg-red-700"
-                        }`}
-                        style={{
-                          width: `${
-                            (productDetail?.DETAIL_3?.filter(
-                              (item) => item.PRDCMARK == 1
-                            ).length /
-                              productDetail?.DETAIL_3?.length) *
-                            100
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <div className="flex gap-x-2 ml-5 mb-5 flex-wrap gap-y-1">
-                <h4 className="text-base text-gray-darked font-semibold">
-                  Xem đánh giá:
-                </h4>
-                <div>
-                  <div className="flex items-center gap-x-3 flex-wrap gap-y-3">
-                    <TagList
-                      data={tagsReview}
-                      tagName={"tagName"}
-                      tagID={"tagId"}
-                      onChange={onChangeTagRam}
-                    ></TagList>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-y-4 mb-16 min-h-[550px]">
-                {evaluate &&
-                  evaluate
-                    .slice(
-                      (currentPage - 1) * pageSize,
-                      pageSize * (currentPage - 1) + pageSize
-                    )
-                    .map((item) => {
-                      return (
-                        <CommentCard
-                          name={item.CUSTNAME}
-                          amountStar={item.MARKESTM}
-                          timeStamp={item.MARKDATE}
-                          content={item.IDEANOTE}
-                        ></CommentCard>
-                      );
-                    })}
-              </div>
-              {productDetail?.DETAIL_3?.length > 0 && (
-                <Panigation
-                  currentPage={currentPage}
-                  totalCount={productDetail?.DETAIL_3?.length}
-                  pageSize={pageSize}
-                  scrollTo="evaluate"
-                  onPageChange={(page) => {
-                    setCurrentPage(page);
-                  }}
-                ></Panigation>
-              )}
-            </div>
-          </div>
-        </Wrapper>
-      </div>
+      <ProductDetailEvaluate item={productDetail}></ProductDetailEvaluate>
 
       {/* <div className="mx-5 xl:container xl:mx-auto mb-5">
         <Wrapper>

@@ -10,7 +10,7 @@ import {
 } from "../reducer/userReducer";
 
 const axiosBaseQuery = fetchBaseQuery({
-  baseUrl: "https://api-dev.firstems.com",
+  baseUrl: "/api",
   timeout: 10000,
   prepareHeaders: (headers) => {
     headers.set(

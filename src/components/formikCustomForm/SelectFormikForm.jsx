@@ -1,7 +1,7 @@
 import { useField, useFormikContext } from "formik";
 import React, { useEffect, useState } from "react";
 
-const SelectForm = ({
+const SelectFormikForm = ({
   label,
   itemKey,
   itemValue,
@@ -10,12 +10,15 @@ const SelectForm = ({
   options = [],
   disabled = false,
   onChange,
+  ...props
 }) => {
+  const [field, meta, helpers] = useField(props);
   const [dataFilter, setDataFilter] = useState(options);
   const [show, setShow] = useState(false);
   const [selected, setSelected] = useState(options[0]);
   const handleSelectItem = (item) => {
     setSelected(item);
+    helpers.setValue(item[`${itemKey}`]);
     if (onChange) onChange(item);
     setShow(false);
   };
@@ -33,6 +36,7 @@ const SelectForm = ({
   useEffect(() => {
     if (options.length >= 1 && !loading) {
       setSelected(options[0]);
+      helpers.setValue(options[0][`${itemKey}`]);
     }
     setDataFilter(options);
     setShow(false);
@@ -45,10 +49,11 @@ const SelectForm = ({
         {important && <span className="text-red-500">*</span>}
       </label>
       <div
-        className={`border-gray-200
-         ${
-           disabled && "bg-slate-50"
-         } px-3 py-3 text-sm border outline-none rounded-sm w-full flex relative`}
+        className={`${
+          meta.error && meta.touched ? "border-red-500" : "border-gray-200"
+        } ${
+          disabled && "bg-slate-50"
+        } px-3 py-3 text-sm border outline-none rounded-sm w-full flex relative`}
       >
         {loading ? (
           <div className="flex-auto">
@@ -76,6 +81,7 @@ const SelectForm = ({
               onBlur={(e) => {
                 if (e.target.value == "" && options.length >= 1) {
                   setSelected(options[0]);
+                  helpers.setValue(options[0][`${itemKey}`]);
                   if (onChange) onChange(options[0]);
                 }
                 setShow(false);
@@ -85,6 +91,13 @@ const SelectForm = ({
               value={selected && selected[`${itemValue}`]}
               autoComplete="off"
               className="flex-auto outline-none disabled:bg-transparent"
+            />
+            <input
+              autoComplete="off"
+              {...props}
+              {...field}
+              onChange={field.onChange}
+              hidden
             />
           </>
         )}
@@ -119,8 +132,11 @@ const SelectForm = ({
           )}
         </div>
       </div>
+      {meta.error && meta.touched && (
+        <span className="text-red-500 text-xs">{meta.error}</span>
+      )}
     </div>
   );
 };
 
-export default SelectForm;
+export default SelectFormikForm;

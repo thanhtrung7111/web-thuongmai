@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { errorServerOn } from "../reducer/exceptionReducer";
 import { toast } from "react-toastify";
 const axiosBaseQuery = fetchBaseQuery({
-  baseUrl: "https://api-dev.firstems.com",
+  baseUrl: "/api",
   timeout: 10000,
   prepareHeaders: (headers) => {
     headers.set(
@@ -35,7 +35,7 @@ export const evaluateApiSlice = createApi({
   refetchOnFocus: true,
   tagTypes: ["Evaluates"],
   endpoints: (builder) => ({
-    fetchEvaluate: builder.query({
+    fetchEvaluate: builder.mutation({
       query: (data) => ({
         url: "/Api/data/runApi_Data?run_Code=DTA004",
         method: "POST",
@@ -47,20 +47,28 @@ export const evaluateApiSlice = createApi({
           PAGENUMB: "1",
         },
       }),
-      providesTags: ["Evaluates"],
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
           const listData = await response(data, dispatch, null);
-          dispatch(
-            evaluateApiSlice.util.updateQueryData(
-              "fetchEvaluate",
-              undefined,
-              (draft) => {
-                return listData;
-              }
-            )
-          );
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
+    postEvaluate: builder.mutation({
+      query: (data) => ({
+        url: "/Api/data/runApi_Data?run_Code=DTA007",
+        method: "POST",
+        body: {
+          DCMNCODE: "INPMARKESTM",
+          HEADER: [{ ...data }],
+        },
+      }),
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch, null);
         } catch (error) {
           console.log(error);
         }
@@ -69,4 +77,5 @@ export const evaluateApiSlice = createApi({
   }),
 });
 
-export const { useLazyFetchEvaluateQuery } = evaluateApiSlice;
+export const { useFetchEvaluateMutation, usePostEvaluateMutation } =
+  evaluateApiSlice;

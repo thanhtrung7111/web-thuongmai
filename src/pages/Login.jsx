@@ -7,11 +7,11 @@ import {
 } from "../redux/query/authQuery";
 import { errorServerOff } from "../redux/reducer/exceptionReducer";
 import { Form, Formik } from "formik";
-import InputForm from "../components/commonForm/InputForm";
-import PasswordForm from "../components/commonForm/PasswordForm";
+import InputFormikForm from "../components/formikCustomForm/InputFormikForm";
+import PasswordFormikForm from "../components/formikCustomForm/PasswordFormikForm";
 import * as Yup from "yup";
 import ButtonForm from "../components/commonForm/ButtonForm";
-import SelectForm from "../components/commonForm/SelectForm";
+import SelectFormikForm from "../components/formikCustomForm/SelectFormikForm";
 import PopupProductEvaluate from "../components/commonPopup/PopupProductEvaluate";
 const Login = () => {
   const navigate = useNavigate();
@@ -136,22 +136,22 @@ const Login = () => {
                 <Form id="formLogin">
                   <div className="flex flex-col gap-y-4">
                     <div className="flex flex-col gap-y-4">
-                      <InputForm
+                      <InputFormikForm
                         name="username"
                         label={"Tài khoản"}
                         disabled={isLoadingLogin}
                         important={true}
                         placeholder="Nhập tên tài khoản..."
-                      ></InputForm>
+                      ></InputFormikForm>
                     </div>
                     <div className="flex flex-col gap-y-4">
-                      <PasswordForm
+                      <PasswordFormikForm
                         name="password"
                         label={"Mật khẩu"}
                         disabled={isLoadingLogin}
                         important={true}
                         placeholder="Nhập mật khẩu..."
-                      ></PasswordForm>
+                      ></PasswordFormikForm>
                     </div>
                     <div className="text-gray-dark flex gap-x-1 text-xs">
                       <input
@@ -197,7 +197,7 @@ const Login = () => {
               {({ values, setFieldValue }) => (
                 <Form id="formLctn">
                   <div className="flex flex-col mb-4 gap-y-3 text-gray-dark">
-                    <SelectForm
+                    <SelectFormikForm
                       itemValue={"COMPNAME"}
                       disabled={isLoadingLoginLCTN}
                       itemKey={"COMPCODE"}
@@ -209,8 +209,8 @@ const Login = () => {
                         console.log(e);
                         setLctnList(e?.LCTNLIST);
                       }}
-                    ></SelectForm>
-                    <SelectForm
+                    ></SelectFormikForm>
+                    <SelectFormikForm
                       itemValue={"LCTNNAME"}
                       disabled={isLoadingLoginLCTN}
                       itemKey={"LCTNCODE"}
@@ -218,7 +218,7 @@ const Login = () => {
                       name="LCTNCODE"
                       important={true}
                       options={lctnList ? lctnList : []}
-                    ></SelectForm>
+                    ></SelectFormikForm>
                   </div>
                   <div className="flex gap-x-2">
                     <ButtonForm

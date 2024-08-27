@@ -14,7 +14,7 @@ const ButtonForm = ({
   return (
     <button
       onClick={onClick}
-      className={`bg-second gap-x-2 text-white disabled:bg-slate-400 py-3 w-full flex justify-center items-center px-3 hover:bg-opacity-90 transition-all duration-200 ${className}`}
+      className={`bg-second gap-x-2 text-white disabled:bg-slate-400 h-10 text-sm w-full flex justify-center items-center px-3 hover:bg-opacity-90 transition-all duration-200 ${className}`}
       disabled={loading || disabled}
       type={type}
     >

@@ -13,12 +13,12 @@ const ChooseStar = ({
     return (
       <div className="flex items-center gap-x-3">
         <div
-          className={`text-sm rounded-3xl px-2 py-1 ${
+          className={`text-xs rounded-3xl px-2 py-1 border ${
             value >= levels.high.level
               ? "text-yellow-600 border-yellow-600"
-              : value > levels.high.medium
-              ? "text-red-600 border-red-600"
-              : "text-gray-dark border-gray-dark"
+              : value >= levels.medium.level
+              ? "text-gray-dark border-gray-dark"
+              : "text-red-600 border-red-600"
           }`}
         >
           Chất lượng{" "}
