@@ -2,55 +2,53 @@ import React, { useEffect, useState } from "react";
 import AnimateSkeleton from "./AnimateSkeleton";
 import { useSelector } from "react-redux";
 import axios from "axios";
-const ImageFetch = ({ url, className, imageDefault = "" }) => {
-  const [image, setImage] = useState({
-    data: null,
-    isLoading: true,
-  });
-  const [isLoading, setIsLoading] = useState(true);
+import {
+  useFetchImageQuery,
+  useLazyFetchImageQuery,
+} from "../redux/query/imageQuery";
+const ImageFetch = ({ url, id, className, imageDefault = "" }) => {
+  const [image, setImage] = useState("");
+  // const urlDemo =
+  //   "https://api-dev.firstems.com/Api/data/runApi_File?run_Code=DTA001&CompCode=PMC&DcmnCode=Product_New&Key_Code=PMC000000907001&Key_Load=00015218110920";
+  // const idDemo = 1;
+  const {
+    data: dataImage,
+    isLoading,
+    isError,
+    isSuccess,
+    refetch,
+  } = useFetchImageQuery({ id: id, url: url }, { skip: !id });
+
+  // console.log(dataImage);
 
   useEffect(() => {
-    // Cleanup function to revoke object URLs
-    return () => {
-      if (image.data) {
-        URL.revokeObjectURL(image.data);
-      }
+    const fetchData = async () => {
+      await refetch();
     };
-  }, [image.data]);
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      setImage({ data: null, isLoading: true });
-      try {
-        const response = await axios.get(url, {
-          responseType: "blob",
-          headers: {
-            TOKEN:
-              sessionStorage.getItem("tokenLocation") ||
-              sessionStorage.getItem("tokenUser") ||
-              sessionStorage.getItem("tokenInitial"),
-          },
-        });
-        const imageBlob = response.data;
-        const imageObjectURL = URL.createObjectURL(imageBlob);
-        setImage({ data: imageObjectURL, isLoading: false });
-      } catch (error) {
-        console.error("Error fetching the image:", error);
-      }
-    };
-
-    if (url != "" && url != null) {
-      fetchImage();
-    } else {
-      setImage({ data: null, isLoading: false });
+    if (!(dataImage instanceof Blob) || dataImage.size == 0) {
+      fetchData();
     }
-  }, [url]);
-  return image.isLoading ? (
+  }, [dataImage]);
+
+  useEffect(() => {
+    if (dataImage instanceof Blob) {
+      const objectURL = URL.createObjectURL(dataImage);
+      setImage(objectURL);
+
+      // Giải phóng URL khi không còn cần thiết
+      return () => {
+        URL.revokeObjectURL(objectURL);
+      };
+    }
+  }, [dataImage]);
+
+  // console.log(dataImage);
+  return isLoading ? (
     <AnimateSkeleton className={`size-36  ${className}`}></AnimateSkeleton>
   ) : (
     <img
       rel="prefetch"
-      src={url != "" && url ? image.data : imageDefault}
+      src={isSuccess && image != "" ? image : imageDefault}
       className={`size-36 object-top object-cover ${className}`}
     />
   );

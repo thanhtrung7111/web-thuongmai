@@ -189,6 +189,7 @@ const RowPayDetail = ({
                 <ImageFetch
                   url={item[image]}
                   className={"!size-20"}
+                  id={item[id]}
                 ></ImageFetch>
               </div>
               <span className="text-gray-dark text-wrap lg:w-60 line-clamp-2 w-0 font-bold">

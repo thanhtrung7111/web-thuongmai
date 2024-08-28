@@ -241,7 +241,7 @@ const PayDetailComponent = () => {
             acqId: data?.bin,
             amount: data?.amount,
             addInfo: data?.description,
-            format: "text",
+          format: "text",
             template: "qr_only",
           },
           {

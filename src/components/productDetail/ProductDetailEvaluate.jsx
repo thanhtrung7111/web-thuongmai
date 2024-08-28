@@ -179,7 +179,7 @@ const ProductDetailEvaluate = ({ item }) => {
                         return (
                           <CommentCard
                             disabledAction={
-                              !(item.USERLGIN == currentUser?.USERLGIN)
+                              item.USERLGIN == currentUser?.USERLGIN
                             }
                             name={item.USERNAME}
                             amountStar={item.MARKESTM}

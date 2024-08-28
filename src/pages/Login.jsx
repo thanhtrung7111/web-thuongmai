@@ -13,6 +13,7 @@ import * as Yup from "yup";
 import ButtonForm from "../components/commonForm/ButtonForm";
 import SelectFormikForm from "../components/formikCustomForm/SelectFormikForm";
 import PopupProductEvaluate from "../components/commonPopup/PopupProductEvaluate";
+import NumberFormikForm from "../components/formikCustomForm/NumberFormikForm";
 const Login = () => {
   const navigate = useNavigate();
   const [
@@ -112,135 +113,141 @@ const Login = () => {
           <h2 className="font-semibold text-3xl text-second text-center mb-8">
             Đăng nhập
           </h2>
-          {compList == null ? (
-            <Formik
-              key={"formLogin"}
-              initialValues={{
-                username: localStorage.getItem("remember")
-                  ? JSON.parse(localStorage.getItem("remember"))?.username
-                  : "",
-                password: localStorage.getItem("remember")
-                  ? JSON.parse(localStorage.getItem("remember"))?.password
-                  : "",
-                remember: localStorage.getItem("remember") ? true : false,
-                COMPCODE: "",
-                LCTNCODE: "",
-              }}
-              validationSchema={validationSchema}
-              onSubmit={(values) => {
-                console.log(values);
-                handleLogin(values);
-              }}
+          <div className="w-full overflow-y-hidden overflow-x-hidden">
+            <div
+              className={`w-[200%] h-full grid grid-cols-2 ${
+                compList ? "translate-x-[-50%]" : "translate-x-0"
+              } transition-transform duration-200`}
             >
-              {({ setFieldValue, handleChange, values }) => (
-                <Form id="formLogin">
-                  <div className="flex flex-col gap-y-4">
+              <Formik
+                key={"formLogin"}
+                initialValues={{
+                  username: localStorage.getItem("remember")
+                    ? JSON.parse(localStorage.getItem("remember"))?.username
+                    : "",
+                  password: localStorage.getItem("remember")
+                    ? JSON.parse(localStorage.getItem("remember"))?.password
+                    : "",
+                  remember: localStorage.getItem("remember") ? true : false,
+                  COMPCODE: "",
+                  LCTNCODE: "",
+                  // number: 0.0,
+                }}
+                validationSchema={validationSchema}
+                onSubmit={(values) => {
+                  console.log(values);
+                  handleLogin(values);
+                }}
+              >
+                {({ setFieldValue, handleChange, values }) => (
+                  <Form id="formLogin">
                     <div className="flex flex-col gap-y-4">
-                      <InputFormikForm
-                        name="username"
-                        label={"Tài khoản"}
-                        disabled={isLoadingLogin}
+                      <div className="flex flex-col gap-y-4">
+                        <InputFormikForm
+                          name="username"
+                          label={"Tài khoản"}
+                          disabled={isLoadingLogin}
+                          important={true}
+                          placeholder="Nhập tài khoản..."
+                        ></InputFormikForm>
+                      </div>
+                      <div className="flex flex-col gap-y-4">
+                        <PasswordFormikForm
+                          name="password"
+                          label={"Mật khẩu"}
+                          disabled={isLoadingLogin}
+                          important={true}
+                          placeholder="Nhập mật khẩu..."
+                        ></PasswordFormikForm>
+                      </div>
+                      <div className="text-gray-dark flex gap-x-1 text-xs">
+                        <input
+                          disabled={isLoadingLogin}
+                          type="checkbox"
+                          id="remember"
+                          name="remember"
+                          checked={values.remember}
+                          onChange={(e) =>
+                            setFieldValue("remember", e.target.checked)
+                          }
+                          className="w-4 h-4 disabled:opacity-90 accent-first"
+                        />
+                        <label htmlFor="remember" className="cursor-pointer">
+                          Ghi nhớ
+                        </label>
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      {isErrorLogin && (
+                        <div className="text-red-600 text-xs">Lỗi hệ thống</div>
+                      )}
+                      <ButtonForm
+                        loading={isLoadingLogin}
+                        label={"Đăng nhập"}
+                        type="submit"
+                      ></ButtonForm>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+              <Formik
+                key={"formLctn"}
+                initialValues={{
+                  COMPCODE: "",
+                  LCTNCODE: "",
+                }}
+                onSubmit={(values) => {
+                  handleSubmitLctn(values);
+                }}
+              >
+                {({ values, setFieldValue }) => (
+                  <Form id="formLctn">
+                    <div className="flex flex-col mb-4 gap-y-3 text-gray-dark">
+                      <SelectFormikForm
+                        itemValue={"COMPNAME"}
+                        disabled={isLoadingLoginLCTN}
+                        itemKey={"COMPCODE"}
+                        label={"Chọn công ty"}
+                        name="COMPCODE"
                         important={true}
-                        placeholder="Nhập tên tài khoản..."
-                      ></InputFormikForm>
-                    </div>
-                    <div className="flex flex-col gap-y-4">
-                      <PasswordFormikForm
-                        name="password"
-                        label={"Mật khẩu"}
-                        disabled={isLoadingLogin}
+                        options={compList ? compList : []}
+                        onChange={(e) => {
+                          console.log(e);
+                          setLctnList(e?.LCTNLIST);
+                        }}
+                      ></SelectFormikForm>
+                      <SelectFormikForm
+                        itemValue={"LCTNNAME"}
+                        disabled={isLoadingLoginLCTN}
+                        itemKey={"LCTNCODE"}
+                        label={"Chọn chi nhánh"}
+                        name="LCTNCODE"
                         important={true}
-                        placeholder="Nhập mật khẩu..."
-                      ></PasswordFormikForm>
+                        options={lctnList ? lctnList : []}
+                      ></SelectFormikForm>
                     </div>
-                    <div className="text-gray-dark flex gap-x-1 text-xs">
-                      <input
-                        disabled={isLoadingLogin}
-                        type="checkbox"
-                        id="remember"
-                        name="remember"
-                        checked={values.remember}
-                        onChange={(e) =>
-                          setFieldValue("remember", e.target.checked)
-                        }
-                        className="w-4 h-4 disabled:opacity-90 accent-first"
-                      />
-                      <label htmlFor="remember" className="cursor-pointer">
-                        Ghi nhớ
-                      </label>
+                    <div className="flex gap-x-2">
+                      <ButtonForm
+                        className="bg-slate-500"
+                        onClick={() => setCompList(null)}
+                        // loading={isLoadingLogin}
+                        label={"Quay về"}
+                        icon={<i className="ri-arrow-go-back-line"></i>}
+                        type="submit"
+                      ></ButtonForm>
+                      {/* <input type="submit" value={"SUbmit"} /> */}
+                      <ButtonForm
+                        loading={isLoadingLoginLCTN}
+                        disabled={isLoadingLoginLCTN}
+                        label={"Tiếp tục"}
+                        type="submit"
+                      ></ButtonForm>
                     </div>
-                  </div>
-                  <div className="mt-2">
-                    {isErrorLogin && (
-                      <div className="text-red-600 text-xs">Lỗi hệ thống</div>
-                    )}
-                    <ButtonForm
-                      loading={isLoadingLogin}
-                      label={"Đăng nhập"}
-                      type="submit"
-                    ></ButtonForm>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          ) : (
-            <Formik
-              key={"formLctn"}
-              initialValues={{
-                COMPCODE: "",
-                LCTNCODE: "",
-              }}
-              onSubmit={(values) => {
-                handleSubmitLctn(values);
-              }}
-            >
-              {({ values, setFieldValue }) => (
-                <Form id="formLctn">
-                  <div className="flex flex-col mb-4 gap-y-3 text-gray-dark">
-                    <SelectFormikForm
-                      itemValue={"COMPNAME"}
-                      disabled={isLoadingLoginLCTN}
-                      itemKey={"COMPCODE"}
-                      label={"Chọn công ty"}
-                      name="COMPCODE"
-                      important={true}
-                      options={compList ? compList : []}
-                      onChange={(e) => {
-                        console.log(e);
-                        setLctnList(e?.LCTNLIST);
-                      }}
-                    ></SelectFormikForm>
-                    <SelectFormikForm
-                      itemValue={"LCTNNAME"}
-                      disabled={isLoadingLoginLCTN}
-                      itemKey={"LCTNCODE"}
-                      label={"Chọn chi nhánh"}
-                      name="LCTNCODE"
-                      important={true}
-                      options={lctnList ? lctnList : []}
-                    ></SelectFormikForm>
-                  </div>
-                  <div className="flex gap-x-2">
-                    <ButtonForm
-                      className="bg-slate-500"
-                      onClick={() => setCompList(null)}
-                      // loading={isLoadingLogin}
-                      label={"Quay về"}
-                      icon={<i className="ri-arrow-go-back-line"></i>}
-                      type="submit"
-                    ></ButtonForm>
-                    {/* <input type="submit" value={"SUbmit"} /> */}
-                    <ButtonForm
-                      loading={isLoadingLoginLCTN}
-                      disabled={isLoadingLoginLCTN}
-                      label={"Tiếp tục"}
-                      type="submit"
-                    ></ButtonForm>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          )}
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </div>
           <div className="text-xs text-gray-dark justify-center flex gap-x-1">
             <span>Chưa có tài khoản?</span>
             <NavLink to={"/register"} className="text-second">

@@ -108,7 +108,9 @@ const SelectFormikForm = ({
         <div
           className={`${
             show == true ? "visible opacity-100" : "opacity-0 invisible"
-          } absolute w-full  z-50 top-[90%] right-0 h-60 overflow-y-scroll bg-white rounded-md border border-gray-300 transition-all duration-150`}
+          } absolute w-full  z-50 top-[90%] right-0 max-h-60 min-h-28 ${
+            options?.length > 5 && "overflow-y-scroll"
+          } bg-white rounded-md border border-gray-300 overflow-hidden transition-all duration-150`}
         >
           {dataFilter.length <= 0 ? (
             <div className="text-sm px-2 py-2">

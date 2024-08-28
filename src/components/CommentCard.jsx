@@ -9,31 +9,35 @@ const CommentCard = ({
   timeStamp,
   title,
   content,
-  disabledAction,
+  // disabledAction,
   handleDelete,
   image,
 }) => {
   const [openAction, setOpenAction] = useState(false);
   return (
     <div className="flex gap-x-1 border-b border-gray-100 pb-4 relative">
-      <div className="absolute top-0 right-0 cursor-pointer">
-        <i
-          class="ri-more-2-line text-xl"
-          onClick={() => setOpenAction(!openAction)}
-        ></i>
-        <ul
-          className={`${
-            openAction ? "visible opacity-100" : "opacity-0 invisible"
-          } absolute top-0 right-full w-36 bg-white shadow-md border-gray-200 border rounded-md transition-opacityVisibility`}
-        >
-          <li className="text-sm py-2 px-3 w-full hover:bg-slate-100 text-gray-500">
-            Xóa
-          </li>
-          <li className="text-sm py-2 px-3 w-full hover:bg-slate-100 text-gray-500">
-            Chỉnh sửa
-          </li>
-        </ul>
-      </div>
+      {/* <div className="absolute top-0 right-0 cursor-pointer">
+        {disabledAction && (
+          <>
+            <i
+              class="ri-more-2-line text-xl"
+              onClick={() => setOpenAction(!openAction)}
+            ></i>
+            <ul
+              className={`${
+                openAction ? "visible opacity-100" : "opacity-0 invisible"
+              } absolute top-0 right-full w-36 bg-white shadow-md border-gray-200 border rounded-md transition-opacityVisibility`}
+            >
+              <li className="text-sm py-2 px-3 w-full hover:bg-slate-100 text-gray-500">
+                Xóa
+              </li>
+              <li className="text-sm py-2 px-3 w-full hover:bg-slate-100 text-gray-500">
+                Chỉnh sửa
+              </li>
+            </ul>
+          </>
+        )}
+      </div> */}
       <ImageFetch
         url={image ? image : ""}
         className={"!size-16 !rounded-full mr-2"}

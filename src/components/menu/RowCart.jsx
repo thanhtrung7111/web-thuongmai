@@ -32,7 +32,7 @@ const RowCart = ({
             Xem chi tiết
           </NavLink>
         </div> */}
-        <ImageFetch url={item[image]} className={"!size-20"} />
+        <ImageFetch url={item[image]} id={item[id]} className={"!size-20"} />
       </div>
       <div className="flex flex-auto gap-x-10">
         <div className="flex-auto text-start flex flex-col gap-y-1">

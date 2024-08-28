@@ -15,6 +15,10 @@ import {
   useFetchProductsQuery,
   useFetchQUOMQuery,
 } from "../../redux/query/commonQuery";
+import { Form, Formik } from "formik";
+import NumberFormikForm from "../formikCustomForm/NumberFormikForm";
+import ButtonForm from "../commonForm/ButtonForm";
+import * as Yup from "yup";
 let pageSize = 20;
 const tagsSort = [
   {
@@ -99,25 +103,23 @@ const ProductListComponent = () => {
     setChangeTagSort(value);
   };
 
-  const filterPrice = () => {
-    if (minPrice.current.value && maxPrice.current.value == null) {
-      products.filter((item) => item.PRCEDSCN >= minPrice.current.value);
+  const filterPrice = (minValue, maxValue) => {
+    if (minValue && maxValue == null) {
+      products.filter((item) => item.PRCEDSCN >= minValue);
       return;
     }
 
-    if (minPrice.current.value == null && maxPrice.current.value) {
-      products.filter((item) => item.PRCEDSCN <= maxPrice.current.value);
+    if (minValue == null && maxValue) {
+      products.filter((item) => item.PRCEDSCN <= maxValue);
       return;
     }
-    if (minPrice.current.value > maxPrice.current.value) {
+    if (minValue > maxValue) {
       return;
     }
 
     setProductList(
       products.filter(
-        (item) =>
-          item.PRCEDSCN >= minPrice.current.value &&
-          item.PRCEDSCN <= maxPrice.current.value
+        (item) => item.PRCEDSCN >= minValue && item.PRCEDSCN <= maxValue
       )
     );
   };
@@ -258,29 +260,53 @@ const ProductListComponent = () => {
                     <h5 className="text-gray-dark font-medium">Khoảng giá</h5>
                     {/* <i className="ri-arrow-down-s-line"></i> */}
                   </div>
-                  <div className="flex gap-y-2 flex-col">
-                    <input
-                      type="number"
-                      ref={minPrice}
-                      min={100000}
-                      placeholder="Từ: 100.000VNĐ"
-                      className="border px-3 py-2 w-full outline-none text-gray-dark text-sm rounded-md"
-                    />
-                    <input
-                      type="number"
-                      min={100000}
-                      ref={maxPrice}
-                      p
-                      placeholder="Đến: 10.000.000VNĐ"
-                      className="border px-3 py-2 w-full outline-none text-gray-dark text-sm rounded-md"
-                    />
-                    <button
-                      onClick={filterPrice}
-                      className="py-2 px-1 text-white bg-second rounded-md"
-                    >
-                      Lọc
-                    </button>
-                  </div>
+                  <Formik
+                    initialValues={{
+                      minPrice: 0,
+                      maxPrice: 0,
+                    }}
+                    validationSchema={() =>
+                      Yup.object().shape({
+                        minPrice: Yup.number().min(
+                          90000,
+                          "Giá tối thiểu 90,000 VNĐ"
+                        ),
+                        maxPrice: Yup.number()
+                          .max(1000000, "Giá tối đa 1,000,000 VNĐ")
+                          .test(
+                            "greater-or-equal",
+                            "Giá trị tối đa phải lớn hơn giá trị tối thiểu!",
+                            function (value) {
+                              return value >= this.parent.minPrice;
+                            }
+                          ),
+                      })
+                    }
+                    onSubmit={(value) => {
+                      filterPrice(value.minPrice, value.maxPrice);
+                    }}
+                  >
+                    {() => {
+                      return (
+                        <Form className="flex flex-col gap-y-2">
+                          <NumberFormikForm
+                            unit="VNĐ"
+                            placeholder="Nhập giá trị tối thiểu..."
+                            name="minPrice"
+                          ></NumberFormikForm>
+                          <NumberFormikForm
+                            unit="VNĐ"
+                            placeholder="Nhập giá trị tối đa..."
+                            name="maxPrice"
+                          ></NumberFormikForm>
+                          <ButtonForm
+                            type="submit"
+                            label={"Tìm kiếm"}
+                          ></ButtonForm>
+                        </Form>
+                      );
+                    }}
+                  </Formik>
                 </div>
 
                 {/* NHU CẦU  */}

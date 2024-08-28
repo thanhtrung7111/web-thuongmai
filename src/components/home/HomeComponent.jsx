@@ -12,28 +12,28 @@ import CategorySlider from "../CategorySlider";
 import { useSelector } from "react-redux";
 import LoadingView from "../../pages/LoadingView";
 import HomeSkeleton from "./HomeSkeleton";
-import { useFetchProductsQuery } from "../../redux/query/commonQuery";
+import {
+  useFetchProductsQuery,
+  useLazyFetchProductsQuery,
+} from "../../redux/query/commonQuery";
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomeComponent = () => {
   const tokenLocation = sessionStorage.getItem("tokenLocation");
+  const tokenInitial = sessionStorage.getItem("tokenInitial");
   const { errorServer } = useSelector((state) => state.exception);
-  const {
-    data: products,
-    refetch,
-    isFetching,
-    isLoading,
-    isUninitialized,
-  } = useFetchProductsQuery(undefined, { skip: errorServer.isError });
+  const [
+    fetchProduct,
+    { data: products, refetch, isFetching, isLoading, isUninitialized },
+  ] = useLazyFetchProductsQuery(undefined, { skip: errorServer.isError });
 
   // const [getProducts, { isLoading: loadingProducts, isError }] =
   //   useGetProductsMutation();
 
   useEffect(() => {
-    if (tokenLocation != null && isUninitialized) {
-      console.log("hello 2");
-      refetch();
+    if (tokenLocation != null || tokenInitial) {
+      fetchProduct();
     }
-  }, []);
+  }, [tokenLocation]);
   return isLoading ? (
     <HomeSkeleton />
   ) : (
@@ -105,7 +105,7 @@ const HomeComponent = () => {
               </a>
             </div>
             <ProductSlider
-              data={products?.slice(0, 15)}
+              data={products?.length >= 1 ? products?.slice(0, 15) : []}
               id={"PRDCCODE"}
               name={"PRDCNAME"}
               image={"PRDCIMGE"}
@@ -171,7 +171,7 @@ const HomeComponent = () => {
             </div>
 
             <ProductSlider
-              data={products?.slice(0, 15)}
+              data={products?.length >= 1 ? products?.slice(0, 15) : []}
               id={"PRDCCODE"}
               name={"PRDCNAME"}
               image={"PRDCIMGE"}

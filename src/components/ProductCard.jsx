@@ -102,6 +102,7 @@ const ProductCard = ({
         </div>
         <ImageFetch
           url={item[image]}
+          id={item[id]}
           className={"!w-full !h-full"}
         ></ImageFetch>
         {item[discount] > 0 && (

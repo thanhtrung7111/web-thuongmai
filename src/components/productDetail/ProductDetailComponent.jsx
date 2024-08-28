@@ -194,6 +194,7 @@ const ProductDetailComponent = ({ id }) => {
                   <ImageFetch
                     className={"w-full h-full"}
                     url={mainImage}
+                    id={productDetail?.PRDCCODE}
                   ></ImageFetch>
                 </div>
                 <div className="min-w-full">
