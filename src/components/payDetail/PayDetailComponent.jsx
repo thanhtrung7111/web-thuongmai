@@ -432,7 +432,7 @@ const PayDetailComponent = () => {
       {/* Table thanh toán */}
       <div className="xl:container xl:mx-auto mx-5 mb-5">
         <Wrapper>
-          <div className="overflow-y-scroll lg:overflow-hidden overflow-x-scroll h-[500px]">
+          <div className="overflow-y-scroll  h-[500px]">
             <TableDetailProduct
               onHandleCheckAll={checkAll}
               onHandleChooseItem={checkItem}
