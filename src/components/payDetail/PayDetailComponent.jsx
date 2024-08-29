@@ -9,7 +9,7 @@ import Input from "../Input";
 import DatePicker from "../DatePicker";
 import moment from "moment";
 import TextArea from "../TextArea";
-import { Form, FormikProvider, useFormik } from "formik";
+import { Form, Formik, FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
 import { postOrder } from "../../redux/actions/orderActions";
 import ImageFetch from "../ImageFetch";
@@ -27,6 +27,7 @@ import { toast } from "react-toastify";
 import { base64StringToBlob } from "blob-util";
 import { postData } from "../../api/api";
 import TableDetailProduct from "./TableDetailProduct";
+import InputFormikForm from "../formikCustomForm/InputFormikForm";
 import {
   useFetchCUOMQuery,
   useFetchDCmnSbcdQuery,
@@ -41,6 +42,12 @@ import {
   useDeleteCartMutation,
   useUpdateCartMutation,
 } from "../../redux/query/cartQuery";
+import ButtonForm from "../commonForm/ButtonForm";
+import ProductSuggestion from "../productsuggestion/ProductSuggestion";
+import DatePickerFormikForm from "../formikCustomForm/DatePickerFormikForm";
+import SelectFormikForm from "../formikCustomForm/SelectFormikForm";
+import NumberFormikForm from "../formikCustomForm/NumberFormikForm";
+import TextareaFormikForm from "../formikCustomForm/TextareaFormikForm";
 const PayDetailComponent = () => {
   const {
     data: lstWareHouse,
@@ -108,246 +115,197 @@ const PayDetailComponent = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [openVietQR, setOpenVietQR] = useState(false);
   const [infoVietQR, setInfoVietQR] = useState(null);
-  const formik = useFormik({
-    initialValues: {
-      COMPCODE: "PMC", //Công ty
-      LCTNCODE: "001", //Chi nhánh
-      DCMNSBCD: lstDcmnSbCd?.length > 0 ? lstDcmnSbCd?.at(0)?.ITEMCODE : "", // phân loại
-      ODERCODE: "", //Mã đơn hàng
-      ODERDATE: moment(new Date()).format("yyyy-MM-DD"), //Ngày đơn hàng
-      CUSTCODE: currentUser?.CUSTCODE, //Mã khách hàng
-      MCUSTNME: currentUser?.CUSTNAME, //Tên khách hàng
-      CUSTADDR: currentUser?.CUSTADDR, //Địa chỉ khách hàng
-      CUST_TEL: currentUser?.USER_TEL, //Số điệnt thoại khách hàng
-      NOTETEXT: "", //Diễn giải
-      SUM_CRAM: 0, //Tổng tiền
-      SMPRQTTY: 0, //Tổng số lượng
-      RDTNRATE: 0, //%Chiết khấu
-      RDTNCRAM: 0, //Tiền chiết khấu
-      CSCMRATE: 0, //Huê hồng khách hàng
-      TAX_CODE: "", //Mã số thuế
-      VAT_RATE: 0, //THuế suất
-      VAT_CRAM: 0, //Tiền thuế
-      DLVRMTHD: lstDlvrMthd?.length > 0 ? lstDlvrMthd?.at(0)?.ITEMCODE : "", //Phương thức giao hàng
-      DLVRTYPE: lstDlvrType?.length > 0 ? lstDlvrType?.at(0)?.ITEMCODE : "", //PHương thức vận chuyển
-      DLVRDATE: moment(new Date()).format("yyyy-MM-DD"), //Ngày giao hàng
-      DLVRHOUR: lstListHour?.length > 0 ? lstListHour?.at(0)?.ITEMCODE : "", //Giờ giao hàng
-      DLVRPLCE: "", //Nơi giao hàng
-      DLVRADDR: "", //Địa chỉ giao
-      RCVREMPL: "", //Người nhận hàng
-      RCVR_TEL: "", //Điện thoại
-      PAY_MTHD:
-        lstDcmnSbCd?.length > 0 ? lstinpCustOdMtPayMthd2?.at(0)?.ITEMCODE : "", //Phương thức thanh toán
-      PYMNPERD: lstDcmnSbCd?.length > 0 ? lstTimeType?.at(0)?.ITEMCODE : "", //Chu kì thanh toán
-      PYMNNUMB: "", //Thời hạn thanh toán
-      SRC_DATA: "3", //Window hoặc web
-      EMPLCODE: "", //Mã nhân viên
-      SUM_AMNT: 0, //Tổng tiền qui đổi
-      RDTNAMNT: 0, //Tiền chiết khấu
-      VAT_AMNT: 0, //Tiền thuế qui đổi
-      DETAIL: null, //Chi tiết
-    },
-    validationSchema: Yup.object().shape({
-      // MCUSTNME: Yup.string().required("Không được để trống"),
-      // CUSTADDR: Yup.string().required("Địa chỉ không được để trống"),
-      // CUST_TEL: Yup.string().required("Số điện thoại không được để trống"),
-      // ODERDATE: Yup.string().required("Ngày đặt hàng không để trống"),
-      // DCMNSBCD: Yup.string().required("Không để trống phân loại"),
-      // DLVRMTHD: Yup.string().required("Không để trống phân loại"),
-    }),
-    onSubmit: (value) => {
-      console.log(value.SMPRQTTY);
-      if (value.SMPRQTTY == 0) {
-        toast.warning("Bạn chưa chọn sản phẩm thanh toán!", {
-          autoClose: 1500,
-          hideProgressBar: true,
-          position: "top-center",
-        });
-        return;
-      }
-
-      switch (stateButton) {
-        case "vnpay":
-          // console.log("payment");
-          handlePayment();
-          break;
-        case "order":
-          // console.log("order");
-          // const body = { ...value };
-          // console.log(body);
-          // dispatch(postOrder({ DCMNCODE: "DDHKH", HEADER: [body] }));
-          break;
-        case "vietqr":
-          handleQR();
-          break;
-        default:
-          toast.warning("Bạn chưa chọn ngân hàng để thanh toán!", {
-            autoClose: 1500,
-            hideProgressBar: true,
-            position: "top-center",
-          });
-          break;
-      }
-    },
+  const [initialValue, setInitialValue] = useState({
+    COMPCODE: "PMC", //Công ty
+    LCTNCODE: "001", //Chi nhánh
+    DCMNSBCD: lstDcmnSbCd?.length > 0 ? lstDcmnSbCd?.at(0)?.ITEMCODE : "", // phân loại
+    ODERCODE: "", //Mã đơn hàng
+    ODERDATE: { startDate: new Date() }, //Ngày đơn hàng
+    CUSTCODE: currentUser?.CUSTCODE, //Mã khách hàng
+    MCUSTNME: currentUser?.CUSTNAME, //Tên khách hàng
+    CUSTADDR: currentUser?.CUSTADDR, //Địa chỉ khách hàng
+    CUST_TEL: currentUser?.USER_TEL, //Số điệnt thoại khách hàng
+    NOTETEXT: "", //Diễn giải
+    SUM_CRAM: 0, //Tổng tiền
+    SMPRQTTY: 0, //Tổng số lượng
+    RDTNRATE: 0, //%Chiết khấu
+    RDTNCRAM: 0, //Tiền chiết khấu
+    CSCMRATE: 0, //Huê hồng khách hàng
+    TAX_CODE: "", //Mã số thuế
+    VAT_RATE: 0, //THuế suất
+    VAT_CRAM: 0, //Tiền thuế
+    DLVRMTHD: lstDlvrMthd?.length > 0 ? lstDlvrMthd?.at(0)?.ITEMCODE : "", //Phương thức giao hàng
+    DLVRTYPE: lstDlvrType?.length > 0 ? lstDlvrType?.at(0)?.ITEMCODE : "", //PHương thức vận chuyển
+    DLVRDATE: moment(new Date()).format("yyyy-MM-DD"), //Ngày giao hàng
+    DLVRHOUR: lstListHour?.length > 0 ? lstListHour?.at(0)?.ITEMCODE : "", //Giờ giao hàng
+    DLVRPLCE: "", //Nơi giao hàng
+    DLVRADDR: "", //Địa chỉ giao
+    RCVREMPL: "", //Người nhận hàng
+    RCVR_TEL: "", //Điện thoại
+    PAY_MTHD:
+      lstDcmnSbCd?.length > 0 ? lstinpCustOdMtPayMthd2?.at(0)?.ITEMCODE : "", //Phương thức thanh toán
+    PYMNPERD: lstDcmnSbCd?.length > 0 ? lstTimeType?.at(0)?.ITEMCODE : "", //Chu kì thanh toán
+    PYMNNUMB: "", //Thời hạn thanh toán
+    SRC_DATA: "3", //Window hoặc web
+    EMPLCODE: "", //Mã nhân viên
+    SUM_AMNT: 0, //Tổng tiền qui đổi
+    RDTNAMNT: 0, //Tiền chiết khấu
+    VAT_AMNT: 0, //Tiền thuế qui đổi
+    DETAIL: [],
   });
+  console.log(initialValue);
+  // const handleQR = async function () {
+  //   if (infoVietQR == null) {
+  //     const id = toast.loading("Đang tạo VietQR", {
+  //       position: "top-center",
+  //     });
+  //     const body = {
+  //       orderCode: new Date(Date.now()).getTime(),
+  //       amount: formik.values.SUM_AMNT,
+  //       description: "Thanh toan HD",
+  //       buyerAddress: "số nhà, đường, phường, tỉnh hoặc thành phố",
+  //       items: [],
+  //       cancelUrl: "http://localhost:5173/promotion",
+  //       returnUrl: "http://localhost:5173/promotion",
+  //       expiredAt: Math.floor(
+  //         (new Date(Date.now()).getTime() + 15 * 60000) / 1000
+  //       ),
+  //       template: "compact",
+  //     };
+  //     const query = `amount=${body.amount}&cancelUrl=${body.cancelUrl}&description=${body.description}&orderCode=${body.orderCode}&returnUrl=${body.returnUrl}`;
+  //     const hmac = Base64.stringify(
+  //       HmacSHA256(
+  //         query,
+  //         "dff2b663051b6bc4d07668b7c4e7a4f7f7365540fb8db84055b26156739a56e6"
+  //       )
+  //     );
+  //     const data = await axios
+  //       .post(
+  //         "https://api-merchant.payos.vn/v2/payment-requests",
+  //         { ...body, signature: hmac },
+  //         {
+  //           headers: {
+  //             "x-client-id": "b8a76f89-11ab-4065-b0d8-bb3df22a7f58",
+  //             "x-api-key": "57420532-9fb3-4c6f-89f9-d009a4859076",
+  //           },
+  //         }
+  //       )
+  //       .then((resp) => {
+  //         setInfoVietQR({ ...resp.data.data });
+  //         return resp.data.data;
+  //       })
+  //       .catch((e) => console.log(e));
+  //     const data2 = await axios
+  //       .post(
+  //         "https://api.vietqr.io/v2/generate",
+  //         {
+  //           accountNo: data?.accountNumber,
+  //           accountName: data?.accountName,
+  //           acqId: data?.bin,
+  //           amount: data?.amount,
+  //           addInfo: data?.description,
+  //           format: "text",
+  //           template: "qr_only",
+  //         },
+  //         {
+  //           headers: {
+  //             "x-client-id": "b8a76f89-11ab-4065-b0d8-bb3df22a7f58",
+  //             "x-api-key": "57420532-9fb3-4c6f-89f9-d009a4859076",
+  //           },
+  //         }
+  //       )
+  //       .then((resp) => {
+  //         // setInfoVietQR({ ...resp.data.data });
+  //         setInfoVietQR({ ...data, ...resp.data.data });
 
-  const handleQR = async function () {
-    if (infoVietQR == null) {
-      const id = toast.loading("Đang tạo VietQR", {
-        position: "top-center",
-      });
-      const body = {
-        orderCode: new Date(Date.now()).getTime(),
-        amount: formik.values.SUM_AMNT,
-        description: "Thanh toan HD",
-        buyerAddress: "số nhà, đường, phường, tỉnh hoặc thành phố",
-        items: [],
-        cancelUrl: "http://localhost:5173/promotion",
-        returnUrl: "http://localhost:5173/promotion",
-        expiredAt: Math.floor(
-          (new Date(Date.now()).getTime() + 15 * 60000) / 1000
-        ),
-        template: "compact",
-      };
-      const query = `amount=${body.amount}&cancelUrl=${body.cancelUrl}&description=${body.description}&orderCode=${body.orderCode}&returnUrl=${body.returnUrl}`;
-      const hmac = Base64.stringify(
-        HmacSHA256(
-          query,
-          "dff2b663051b6bc4d07668b7c4e7a4f7f7365540fb8db84055b26156739a56e6"
-        )
-      );
-      const data = await axios
-        .post(
-          "https://api-merchant.payos.vn/v2/payment-requests",
-          { ...body, signature: hmac },
-          {
-            headers: {
-              "x-client-id": "b8a76f89-11ab-4065-b0d8-bb3df22a7f58",
-              "x-api-key": "57420532-9fb3-4c6f-89f9-d009a4859076",
-            },
-          }
-        )
-        .then((resp) => {
-          setInfoVietQR({ ...resp.data.data });
-          return resp.data.data;
-        })
-        .catch((e) => console.log(e));
-      const data2 = await axios
-        .post(
-          "https://api.vietqr.io/v2/generate",
-          {
-            accountNo: data?.accountNumber,
-            accountName: data?.accountName,
-            acqId: data?.bin,
-            amount: data?.amount,
-            addInfo: data?.description,
-          format: "text",
-            template: "qr_only",
-          },
-          {
-            headers: {
-              "x-client-id": "b8a76f89-11ab-4065-b0d8-bb3df22a7f58",
-              "x-api-key": "57420532-9fb3-4c6f-89f9-d009a4859076",
-            },
-          }
-        )
-        .then((resp) => {
-          // setInfoVietQR({ ...resp.data.data });
-          setInfoVietQR({ ...data, ...resp.data.data });
+  //         toast.update(id, {
+  //           render: "Tạo VietQR hoàn tất!",
+  //           type: "success",
+  //           isLoading: false,
+  //           autoClose: 1500,
+  //         });
+  //         const contentType = "image/png";
+  //         const b64Data = resp.data.data.qrDataURL.replace(
+  //           "data:image/png;base64,",
+  //           ""
+  //         );
 
-          toast.update(id, {
-            render: "Tạo VietQR hoàn tất!",
-            type: "success",
-            isLoading: false,
-            autoClose: 1500,
-          });
-          const contentType = "image/png";
-          const b64Data = resp.data.data.qrDataURL.replace(
-            "data:image/png;base64,",
-            ""
-          );
+  //         const blob = base64StringToBlob(b64Data, contentType);
+  //         // console.log(URL.createObjectURL(blob));
+  //       })
+  //       .catch((e) => console.log(e));
+  //   }
 
-          const blob = base64StringToBlob(b64Data, contentType);
-          // console.log(URL.createObjectURL(blob));
-        })
-        .catch((e) => console.log(e));
-    }
+  //   setOpenVietQR(true);
+  //   // dispatch(openBlock());
+  // };
 
-    setOpenVietQR(true);
-    // dispatch(openBlock());
-  };
-
-  useEffect(() => {
-    setInfoVietQR(null);
-  }, [formik.values.SUM_AMNT]);
+  // useEffect(() => {
+  //   setInfoVietQR(null);
+  // }, [formik.values.SUM_AMNT]);
 
   // useEffect(() => {
   // console.log(infoVietQR);
   // }, [infoVietQR]);
 
-  const handlePayment = async () => {
-    // let i = crypto
-    //   .createHmac("sha512", "KLGVGJQNZFBFRMFLTDAFTOHKUDKGZIQU")
-    //   .update(new Buffer(signData, "utf-8").digest("hex"));
-    const vnp_SecureHash = "KLGVGJQNZFBFRMFLTDAFTOHKUDKGZIQU";
+  // const handlePayment = async () => {
+  //   // let i = crypto
+  //   //   .createHmac("sha512", "KLGVGJQNZFBFRMFLTDAFTOHKUDKGZIQU")
+  //   //   .update(new Buffer(signData, "utf-8").digest("hex"));
+  //   const vnp_SecureHash = "KLGVGJQNZFBFRMFLTDAFTOHKUDKGZIQU";
 
-    const ip = await fetch("https://api.ipify.org?format=json")
-      .then((response) => response.json())
-      .then((data) => data.ip)
-      .catch((error) => console.log(error));
+  //   const ip = await fetch("https://api.ipify.org?format=json")
+  //     .then((response) => response.json())
+  //     .then((data) => data.ip)
+  //     .catch((error) => console.log(error));
 
-    const objecVNP = {
-      vnp_Amount: "1806000",
-      vnp_BankCode: "ncb",
-      vnp_Command: "pay",
-      vnp_CreateDate: moment(new Date()).format("yyyyMMDDHHmmss"),
-      vnp_CurrCode: "VND",
-      vnp_IpAddr: ip,
-      vnp_Locale: "vn",
-      vnp_OrderInfo: encodeURIComponent("Thanh toan hoa don").replaceAll(
-        "%20",
-        "+"
-      ),
-      vnp_OrderType: "other",
-      vnp_ReturnUrl: encodeURIComponent("http://localhost:5173/pay-success"),
-      vnp_TmnCode: "PH24SM6K",
-      vnp_TxnRef: "1211",
-      vnp_Version: "2.1.0",
-    };
+  //   const objecVNP = {
+  //     vnp_Amount: "1806000",
+  //     vnp_BankCode: "ncb",
+  //     vnp_Command: "pay",
+  //     vnp_CreateDate: moment(new Date()).format("yyyyMMDDHHmmss"),
+  //     vnp_CurrCode: "VND",
+  //     vnp_IpAddr: ip,
+  //     vnp_Locale: "vn",
+  //     vnp_OrderInfo: encodeURIComponent("Thanh toan hoa don").replaceAll(
+  //       "%20",
+  //       "+"
+  //     ),
+  //     vnp_OrderType: "other",
+  //     vnp_ReturnUrl: encodeURIComponent("http://localhost:5173/pay-success"),
+  //     vnp_TmnCode: "PH24SM6K",
+  //     vnp_TxnRef: "1211",
+  //     vnp_Version: "2.1.0",
+  //   };
 
-    let resultArray = [];
-    Object.keys(objecVNP).forEach((item) => {
-      resultArray.push(item + "=" + objecVNP[item]);
-    });
-    const query = resultArray.join("&");
-    console.log(query);
-    // console.log(query);
-    const hmac = Base64.stringify(hmacSHA512(query, vnp_SecureHash));
-    console.log(hmac);
-    console.log(hmacSHA512(query, vnp_SecureHash));
-    let url =
-      "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?" +
-      query +
-      "&vnp_SecureHash=" +
-      hmac;
-    window.open(url, "_blank");
-    // console.log("hello");
-    navigate("/");
-  };
+  //   let resultArray = [];
+  //   Object.keys(objecVNP).forEach((item) => {
+  //     resultArray.push(item + "=" + objecVNP[item]);
+  //   });
+  //   const query = resultArray.join("&");
+  //   console.log(query);
+  //   // console.log(query);
+  //   const hmac = Base64.stringify(hmacSHA512(query, vnp_SecureHash));
+  //   console.log(hmac);
+  //   console.log(hmacSHA512(query, vnp_SecureHash));
+  //   let url =
+  //     "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?" +
+  //     query +
+  //     "&vnp_SecureHash=" +
+  //     hmac;
+  //   window.open(url, "_blank");
+  //   // console.log("hello");
+  //   navigate("/");
+  // };
 
   // useEffect(() => {}, [chooseAll]);
 
   const updateFormik = () => {
-    const varFormik = formik.values.DETAIL?.filter(
+    const varFormik = initialValue.DETAIL?.filter(
       (item) => item.checked == true
     );
-    // console.log(formik.values.DETAIL);
-    formik.setValues({
-      DETAIL: formik.values.DETAIL,
-      SMPRQTTY: varFormik?.reduce(
-        (value, currentValue) => value + currentValue.PRDCQTTY,
-        0
-      ),
+    setInitialValue({
+      ...initialValue,
       RDTNCRAM:
         varFormik?.length > 0
           ? varFormik.reduce(
@@ -386,44 +344,60 @@ const PayDetailComponent = () => {
   };
 
   const checkAll = (checked) => {
-    const detail = productCarts?.map((item) => {
-      return {
-        PRDCCODE: item.PRDCCODE, //Mã sản phẩm
-        PRDCNAME: item.PRDCNAME,
-        ORGNCODE: "1", //Nguồn sản phẩm
-        SORTCODE: "1", //Phân loại sản phẩm
-        QUOMCODE: item.QUOMCODE, //Đơn vị tính
-        QUOMQTTY: 1, //Số lượng
-        CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
-        MNEYCRAM: item.PRCEDSCN, //Thành tiền
-        PRDCIMGE: item.PRDCIMAGE,
-        DISCRATE: 0, //%Chiết khấu
-        DCPRCRAM: 0, //Tiền giảm CK
-        PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
-        SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
-        MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
-        DCPRAMNT: 0, //Tiền giảm CK qui đổi
-        DSCNRATE: item.DSCNRATE,
-        KKKK0000: item["KKKK0000"],
-        COMPCODE: item["COMPCODE"],
-        LCTNCODE: item["LCTNCODE"],
-        checked: checked,
-        ...item,
-      };
+    initialValue.DETAIL = initialValue.DETAIL.map((item) => {
+      return { ...item, checked: checked };
     });
-    formik.values.DETAIL = detail;
     updateFormik();
   };
 
   const checkItem = (id) => {
-    formik.values.DETAIL.find((item) => item.PRDCCODE == id).checked =
-      !formik.values.DETAIL.find((item) => item.PRDCCODE == id).checked;
+    console.log(id);
+    let cloneInitialValue = initialValue;
+    cloneInitialValue.DETAIL.find((item) => item.PRDCCODE == id).checked =
+      !cloneInitialValue.DETAIL.find((item) => item.PRDCCODE == id).checked;
+    setInitialValue({ ...cloneInitialValue });
     updateFormik();
   };
+
+  // useEffect(() => {
+  //   function loadDetailCart() {
+  //     const detail = productCarts?.map((item) => {
+  //       return {
+  //         PRDCCODE: item.PRDCCODE, //Mã sản phẩm
+  //         PRDCNAME: item.PRDCNAME,
+  //         ORGNCODE: "1", //Nguồn sản phẩm
+  //         SORTCODE: "1", //Phân loại sản phẩm
+  //         QUOMCODE: item.QUOMCODE, //Đơn vị tính
+  //         QUOMQTTY: 1, //Số lượng
+  //         CRSLPRCE: item.PRCEDSCN, //Đơn giá theo tiền tệ
+  //         MNEYCRAM: item.PRCEDSCN, //Thành tiền
+  //         PRDCIMGE: item.PRDCIMAGE,
+  //         DISCRATE: 0, //%Chiết khấu
+  //         DCPRCRAM: 0, //Tiền giảm CK
+  //         PRDCQTTY: item.QUOMQTTY, //Số lượng qui đổi
+  //         SALEPRCE: item.SALEPRCE, //Đơn giá qui đổi
+  //         MNEYAMNT: item.SALEPRCE * item.QUOMQTTY, //Thành tiền qui đổi
+  //         DCPRAMNT: 0, //Tiền giảm CK qui đổi
+  //         DSCNRATE: item.DSCNRATE,
+  //         KKKK0000: item["KKKK0000"],
+  //         COMPCODE: item["COMPCODE"],
+  //         LCTNCODE: item["LCTNCODE"],
+  //         checked: false,
+  //         ...item,
+  //       };
+  //     });
+  //     console.log(detail);
+  //     formik.values.DETAIL = detail ? [...detail] : [];
+  //     updateFormik();
+  //   }
+
+  //   loadDetailCart();
+  // }, [actionCart]);
+
   useEffect(() => {
-    // if (productCarts?.length > 0) {
-    function loadDetailCart() {
-      const detail = productCarts?.map((item) => {
+    setInitialValue({
+      ...initialValue,
+      DETAIL: productCarts?.map((item) => {
         return {
           PRDCCODE: item.PRDCCODE, //Mã sản phẩm
           PRDCNAME: item.PRDCNAME,
@@ -447,423 +421,216 @@ const PayDetailComponent = () => {
           checked: false,
           ...item,
         };
-      });
-      console.log(detail);
-      formik.values.DETAIL = detail ? [...detail] : [];
-      updateFormik();
-    }
-
-    loadDetailCart();
-  }, [actionCart]);
-
+      }),
+    });
+  }, [productCarts]);
+  console.log(initialValue);
   return (
     <div className="product-detail">
-      <VietQRComponent
-        open={openVietQR}
-        value={infoVietQR}
-        handleClose={() => {
-          setOpenVietQR(false);
-          // dispatch(closeBlock());
-        }}
-      ></VietQRComponent>
-      <img src="" alt="" />
       <InfoPage data={["Giỏ hàng", "Thanh toán và đặt hàng"]} />
-      <FormikProvider value={formik}>
-        <Form onSubmit={formik.handleSubmit}>
-          <div className="grid grid-cols-1 xl:container xl:mx-auto mx-5 gap-x-2 mb-5">
-            <div
-              style={{ marginBottom: "10px" }}
-              className="shadow-md border-t border-gray-200 h-[600px]  rounded-lg overflow-hidden border"
-            >
-              <div className="overflow-y-scroll h-full">
-                <TableDetailProduct
-                  data={formik.values.DETAIL}
-                  onHandleCheckAll={checkAll}
-                  onHandleChooseItem={checkItem}
-                  maincode={"KKKK0000"}
-                  name={"PRDCNAME"}
-                  id={"PRDCCODE"}
-                  image={"PRDCIMGE"}
-                  saleoff={"DSCNRATE"}
-                  price={"SALEPRCE"}
-                  quantity={"PRDCQTTY"}
-                  choose={"checked"}
-                ></TableDetailProduct>
-              </div>
-            </div>
-            <div className="mb-5">
+
+      {/* Table thanh toán */}
+      <div className="xl:container xl:mx-auto mx-5 mb-5">
+        <Wrapper>
+          <div className="overflow-y-scroll lg:overflow-hidden overflow-x-scroll h-[500px]">
+            <TableDetailProduct
+              onHandleCheckAll={checkAll}
+              onHandleChooseItem={checkItem}
+              data={initialValue.DETAIL}
+            ></TableDetailProduct>
+          </div>
+        </Wrapper>
+      </div>
+
+      <Formik
+        initialValues={initialValue}
+        enableReinitialize={true}
+        onSubmit={(values) => {
+          console.log(values);
+        }}
+      >
+        {() => {
+          return (
+            <Form className="xl:container xl:mx-auto mx-5 mb-5">
               <Wrapper>
                 <div className="px-3 py-5">
                   <h5 className="font-semibold text-gray-dark mb-3">
                     Thông tin đơn hàng
                   </h5>
-
-                  <div className="grid xl:grid-cols-3 grid-cols-2 gap-3 mb-5 px-5">
+                  <div className="grid xl:grid-cols-3 grid-cols-2 gap-5 mb-5 px-5">
                     <div className="flex flex-col gap-y-3">
                       {/* TÊn người dùng  */}
-                      <Input
+                      <InputFormikForm
                         name="MCUSTNME"
-                        title={"Tên người dùng"}
-                        value={formik.values.MCUSTNME}
-                      ></Input>
-
-                      {/* Địa chi  */}
-                      <Input
+                        label={"Tên người dùng"}
+                        important={true}
+                        disabled={true}
+                      />
+                      <InputFormikForm
                         name="CUSTADDR"
-                        title={"Địa chỉ"}
-                        value={formik.values.CUSTADDR}
-                      ></Input>
-
-                      {/* Số điện thoại  */}
-                      <Input
+                        label={"Địa chỉ"}
+                        important={true}
+                        disabled={true}
+                      />
+                      <InputFormikForm
                         name={"CUST_TEL"}
-                        title={"Số điện thoại"}
-                        value={formik.values.CUST_TEL}
-                      ></Input>
-
-                      {/* Ngày đặt hàng */}
-                      <DatePicker
+                        label={"Số điện thoại"}
+                        important={true}
+                        disabled={true}
+                      ></InputFormikForm>
+                      <DatePickerFormikForm
                         name="ODERDATE"
-                        title="Ngày đặt hàng"
-                        value={formik.values.ODERDATE}
-                      ></DatePicker>
+                        label={"Ngày đặt hàng"}
+                        important={true}
+                        // disabled={true}
+                      ></DatePickerFormikForm>
 
-                      {/* Phân loại  */}
-                      <Combobox
-                        data={lstDcmnSbCd}
+                      <SelectFormikForm
+                        options={lstDcmnSbCd ? lstDcmnSbCd : []}
                         itemKey={"ITEMCODE"}
-                        itemName="ITEMNAME"
+                        itemValue={"ITEMNAME"}
+                        important={true}
                         name="DCMNSBCD"
-                        title="Phân loại"
-                        value={formik.values.DCMNSBCD}
-                      ></Combobox>
+                        label={"Phân lọai"}
+                      ></SelectFormikForm>
 
-                      {/* %Chiết khấu  */}
-                      <Input
-                        value={formik.values.RDTNRATE}
-                        name="RDTNRATE"
-                        title={"%Chiết khấu"}
-                        type="number"
-                      ></Input>
-                      {/* Huê hồng khách hàng */}
-                      <Input
-                        value={formik.values.CSCMRATE}
-                        name="CSCMRATE"
-                        title={"Huê hồng khách hàng"}
-                        // type={"number"}
-                      ></Input>
+                      <NumberFormikForm
+                        name={"RDTNRATE"}
+                        label={"%Chiết khấu"}
+                        placeholder="Nhập phần trăm chiết khấu!"
+                        important={true}
+                        // disabled={true}
+                        unit="%"
+                      ></NumberFormikForm>
+
+                      <NumberFormikForm
+                        name={"CSCMRATE"}
+                        label={"Huê hồng khách hàng"}
+                        placeholder="Nhập huê hồng..."
+                        important={true}
+                        disabled={true}
+                        unit="VNĐ"
+                      ></NumberFormikForm>
                     </div>
                     <div className="flex flex-col gap-y-3">
-                      {/* Mã số thuế */}
-                      <Input
-                        value={formik.values.TAX_CODE}
-                        name="TAX_CODE"
-                        title={"Mã số thuế"}
-                        // type={"number"}
-                      ></Input>
-
-                      {/* Thuế xuất */}
-                      <Input
-                        value={formik.values.VAT_RATE}
-                        name="VAT_RATE"
-                        title={"Thuế xuất"}
-                        // type={"number"}
-                      ></Input>
-
-                      {/* Phương thức giao hàng  */}
-                      <Combobox
-                        data={lstDlvrMthd}
+                      <InputFormikForm
+                        name={"TAX_CODE"}
+                        label={"Mã số thuế"}
+                        important={true}
+                        placeholder="Nhập mã số huế..."
+                        // disabled={true}
+                      ></InputFormikForm>
+                      <NumberFormikForm
+                        name={"VAT_RATE"}
+                        label={"Thuế suất"}
+                        important={true}
+                        placeholder="Nhập thuế suất..."
+                        // disabled={true}
+                      ></NumberFormikForm>
+                      <SelectFormikForm
+                        options={lstDlvrMthd ? lstDlvrMthd : []}
                         itemKey={"ITEMCODE"}
-                        itemName="ITEMNAME"
+                        itemValue={"ITEMNAME"}
+                        important={true}
                         name="DLVRMTHD"
-                        title="Phương thức giao hàng"
-                        value={formik.values.DLVRMTHD}
-                      ></Combobox>
-
-                      {/* Phương thức vận chuyển */}
-                      <Combobox
-                        data={lstDlvrType}
-                        value={formik.values.DLVRTYPE}
+                        label={"Phương thức giao hàng"}
+                      ></SelectFormikForm>
+                      <SelectFormikForm
+                        options={lstDlvrType ? lstDlvrType : []}
+                        itemKey={"ITEMCODE"}
+                        itemValue={"ITEMNAME"}
+                        important={true}
                         name="DLVRTYPE"
-                        itemKey={"ITEMCODE"}
-                        itemName={"ITEMNAME"}
-                        title="Phương thức vận chuyển"
-                      ></Combobox>
-
-                      {/* Ngày giao hàng  */}
-                      <DatePicker
-                        value={formik.values.ODERDATE}
-                        name="ODERDATE"
-                        title="Ngày giao hàng"
-                      ></DatePicker>
-
-                      {/* Thời gian giao hàng */}
-                      <Combobox
-                        data={lstListHour}
-                        value={formik.values.DLVRHOUR}
-                        name="DLVRHOUR"
-                        itemKey={"ITEMCODE"}
-                        itemName={"ITEMNAME"}
-                        title="Giờ giao hàng"
-                      ></Combobox>
-                      {/* Nơi giao hàng */}
-                      <Input
-                        value={formik.values.DLVRPLCE}
+                        label={"Phương thức vận chuyển"}
+                      ></SelectFormikForm>
+                      <DatePickerFormikForm
                         name="DLVRPLCE"
-                        title={"Nơi giao hàng"}
-                        // type={"number"}
-                      ></Input>
+                        label={"Ngày giao hàng"}
+                        important={true}
+                        // disabled={true}
+                      ></DatePickerFormikForm>
+                      <SelectFormikForm
+                        options={lstListHour ? lstListHour : []}
+                        itemKey={"ITEMCODE"}
+                        itemValue={"ITEMNAME"}
+                        important={true}
+                        name="DLVRHOUR"
+                        label={"Thời gian giao hàng"}
+                      ></SelectFormikForm>
+                      <InputFormikForm
+                        name={"DLVRPLCE"}
+                        label={"Nơi giao hàng"}
+                        important={true}
+                        placeholder="Nhập nơi giao hàng..."
+                        // disabled={true}
+                      ></InputFormikForm>
                     </div>
                     <div className="flex flex-col gap-y-3">
-                      {/* Địa chỉ giao hàng */}
-                      <Input
-                        value={formik.values.DLVRADDR}
-                        name="DLVRADDR"
-                        title={"Địa chỉ giao hàng"}
-                        // type={"number"}
-                      ></Input>
-
-                      {/* Người nhận hàng */}
-                      <Input
-                        value={formik.values.RCVREMPL}
-                        name="RCVREMPL"
-                        title={"Người nhận hàng"}
-                        // type={"number"}
-                      ></Input>
-
-                      {/* Số điện thoại người nhận*/}
-                      <Input
-                        value={formik.values.RCVR_TEL}
-                        name="RCVR_TEL"
-                        title={"Số điện thoại người nhận"}
-                        // type={"number"}
-                      ></Input>
-                      {/* Phương thức thanh toán  */}
-                      <Combobox
-                        data={lstinpCustOdMtPayMthd2}
-                        value={formik.values.PAY_MTHD}
+                      <InputFormikForm
+                        name={"DLVRADDR"}
+                        label={"Địa chỉ giao hàng"}
+                        important={true}
+                        placeholder="Nhập địa chỉ giao hàng..."
+                        // disabled={true}
+                      ></InputFormikForm>
+                      <InputFormikForm
+                        name={"RCVREMPL"}
+                        label={"Người nhận hàng"}
+                        important={true}
+                        placeholder="Nhập họ tên người nhận hàng..."
+                        // disabled={true}
+                      ></InputFormikForm>
+                      <InputFormikForm
+                        name={"RCVR_TEL"}
+                        label={"Số điện thoại người nhận"}
+                        important={true}
+                        placeholder="Nhập số điện thoại người nhận hàng..."
+                        // disabled={true}
+                      ></InputFormikForm>
+                      <SelectFormikForm
+                        options={
+                          lstinpCustOdMtPayMthd2 ? lstinpCustOdMtPayMthd2 : []
+                        }
                         itemKey={"ITEMCODE"}
-                        itemName={"ITEMNAME"}
+                        itemValue={"ITEMNAME"}
+                        important={true}
                         name="PAY_MTHD"
-                        title="Phương thức thanh toán"
-                      ></Combobox>
-
-                      {/*Chu kì thanh toán  */}
-                      <Combobox
-                        data={lstTimeType}
-                        value={formik.values.PYMNPERD}
+                        label={"Phương thức thanh toán"}
+                      ></SelectFormikForm>
+                      <SelectFormikForm
+                        options={lstTimeType ? lstTimeType : []}
                         itemKey={"ITEMCODE"}
-                        itemName={"ITEMNAME"}
+                        itemValue={"ITEMNAME"}
+                        important={true}
                         name="PYMNPERD"
-                        title="Chu kì thanh toán"
-                      ></Combobox>
-
-                      {/* Thời hạn thanh toán*/}
-                      <Input
-                        value={formik.values.PYMNNUMB}
-                        name="PYMNNUMB"
-                        title={"Thời hạn thanh toán"}
-                        // type={"number"}
-                      ></Input>
-                      {/* Diễn giải  */}
-                      <TextArea
-                        value={formik.values.NOTETEXT}
+                        label={"Chu kì thanh toán"}
+                      ></SelectFormikForm>
+                      <InputFormikForm
+                        name={"PYMNNUMB"}
+                        label={"Thời hạn thanh toáns"}
+                        important={true}
+                        placeholder="Nhập thời hạn thanh toán..."
+                        // disabled={true}
+                      ></InputFormikForm>
+                      <TextareaFormikForm
+                        row={5}
                         name="NOTETEXT"
-                        title={"Diễn giải"}
-                      ></TextArea>
+                        placeholder="Nhập diễn giải..."
+                        label={"Diễn giải"}
+                      ></TextareaFormikForm>
                     </div>
                   </div>
-                  {/* <div className="border-b gap-y-2 pb-3 mb-3">
-                    <div className="flex items-start ml-auto flex-col w-48 gap-y-2">
-                      <div className="text-gray-dark text-sm">
-                        <span className="font-semibold">Tổng số sản phẩm:</span>{" "}
-                        {
-                          productCarts.filter((item) => item.choose == true)
-                            .length
-                        }
-                      </div>
-                      <div className="text-gray-dark text-sm">
-                        <span className="font-semibold">
-                          Tổng số lượng sản phẩm:
-                        </span>{" "}
-                        {productCarts
-                          .filter((item) => item.choose == true)
-                          .reduce(
-                            (value, currentValue) =>
-                              value + currentValue["quantity"],
-                            0
-                          )}
-                      </div>
-                      <div className="text-gray-dark text-sm">
-                        <span className="font-semibold">Tổng tiền:</span>{" "}
-                        {productCarts
-                          .filter((item) => item.choose == true)
-                          .reduce(
-                            (value, currentVaue) =>
-                              value +
-                              currentVaue["PRCEDSCN"] * currentVaue["quantity"],
-                            0
-                          )
-                          .toLocaleString("vi", {
-                            style: "currency",
-                            currency: "VND",
-                          })}
-                      </div>
-                      <div className="text-gray-dark text-sm">
-                        <span className="font-semibold">Thuế(VAT):</span>{" "}
-                        9.800.000đ
-                      </div>
-
-                      <div className="text-gray-dark text-sm">
-                        <span className="font-semibold">Khuyến mãi:</span>{" "}
-                        9.800.000đ
-                      </div>
-                    </div>
-                  </div> */}
                 </div>
               </Wrapper>
-            </div>
-            <Wrapper>
-              <div className="p-5">
-                <h5 className="font-semibold text-gray-dark mb-3">
-                  Phương thức thanh toán
-                </h5>
-                <div className="flex gap-x-5 gap-y-3 mb-3">
-                  <div
-                    className={`border  ${
-                      stateButton == "vnpay"
-                        ? "border-second shadow-sm shadow-second"
-                        : "border-gray-300 shadow-lg"
-                    } border-gray-300 h-28 w-28 p-3 cursor-pointe transition-colors duration-300`}
-                    onClick={() => setStateButton("vnpay")}
-                  >
-                    <img
-                      src={VNPay}
-                      alt=""
-                      className="w-full object-cover h-full"
-                    />
-                  </div>
-                  <div
-                    className={`border ${
-                      stateButton == "vietqr"
-                        ? "border-second shadow-sm shadow-second"
-                        : "border-gray-300 shadow-lg"
-                    } w-28 h-28 p-3 cursor-pointer  transition-colors duration-300`}
-                    onClick={() => setStateButton("vietqr")}
-                  >
-                    <img
-                      src={VietQR}
-                      alt=""
-                      className={`w-full object-contain h-full object-center`}
-                    />
-                  </div>
-                </div>
-                <div className="border-t pt-2 mt-2  border-gray-100 flex items-end flex-col mb-10 gap-y-3">
-                  <div className="flex">
-                    <span className="text-gray-dark font-medium">
-                      Tổng số lượng:
-                    </span>
-                    <div className="w-64 text-end text-gray-dark">
-                      {formik.values.SMPRQTTY ? formik.values.SMPRQTTY : 0}
-                    </div>
-                  </div>
-                  <div className="flex">
-                    <span className="text-gray-dark font-medium">
-                      Tổng tiền:
-                    </span>
-                    <div className="w-64 text-end text-gray-dark">
-                      +
-                      {formik.values.SUM_CRAM
-                        ? formik.values.SUM_CRAM?.toLocaleString("vi", {
-                            style: "currency",
-                            currency: "VND",
-                          })
-                        : Number(0).toLocaleString("vi", {
-                            style: "currency",
-                            currency: "VND",
-                          })}
-                    </div>
-                  </div>
-                  <div className="flex">
-                    <span className="text-gray-dark font-medium">
-                      Tiền chiết khấu:
-                    </span>
-                    <div className="w-64 text-end text-gray-dark">
-                      -
-                      {formik.values.RDTNCRAM
-                        ? formik.values.RDTNCRAM?.toLocaleString("vi", {
-                            style: "currency",
-                            currency: "VND",
-                          })
-                        : Number(0).toLocaleString("vi", {
-                            style: "currency",
-                            currency: "VND",
-                          })}
-                    </div>
-                  </div>
-                  <div className="flex">
-                    <span className="text-gray-dark font-medium">
-                      Tiền thuế:
-                    </span>
-                    <div className="w-64 text-end text-gray-dark">
-                      {formik.values.VAT_CRAM}
-                    </div>
-                  </div>
-
-                  <div className="flex border-t pt-3">
-                    <span className="text-gray-dark font-medium">
-                      Thành tiền:
-                    </span>
-                    <div className="w-64 text-end text-gray-dark font-bold">
-                      {formik.values.SUM_AMNT
-                        ? formik.values.SUM_AMNT?.toLocaleString("vi", {
-                            style: "currency",
-                            currency: "VND",
-                          })
-                        : Number(0).toLocaleString("vi", {
-                            style: "currency",
-                            currency: "VND",
-                          })}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-y-3 items-center gap-x-2 justify-end">
-                  <button
-                    type="submit"
-                    className="bg-second text-white rounded-md shadow-none px-5 py-2 border hover:text-white text-sm cursor-pointer"
-                  >
-                    Đặt hàng
-                  </button>
-                </div>
-              </div>
-            </Wrapper>
-          </div>
-        </Form>
-      </FormikProvider>
-      {/* <div className="mx-5 xl:container xl:mx-auto mb-5">
-        <Wrapper>
-          <div className="p-5">
-            <div className="flex items-center justify-between mb-5">
-              <h4 className="font-semibold text-2xl text-first">
-                Sản phẩm bán chạy
-              </h4>
-              <a href="#" className="text-gray-light">
-                Xem thêm <i className="ri-arrow-right-s-line"></i>
-              </a>
-            </div> */}
-      {/* <ProductSlider
-              data={products?.slice(5, 30)}
-              id="PRDCCODE"
-              name={"PRDCNAME"}
-              image={"PRDCIMGE"}
-              price={"PRCEDSCN"}
-              reviews={"rating"}
-              stars={"rating"}
-              saleOff={""}
-              sold={""}
-    //         ></ProductSlider> */}
-      //{" "}
+              <Wrapper>
+                <ButtonForm type="submit" label={"Đặt hàng"}></ButtonForm>
+              </Wrapper>
+            </Form>
+          );
+        }}
+      </Formik>
     </div>
+
     //     </Wrapper>
     //   </div>
     // </div>

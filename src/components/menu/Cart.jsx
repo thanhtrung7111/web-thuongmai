@@ -47,7 +47,7 @@ const Cart = () => {
       try {
         await fetchCart({
           DCMNCODE: "APPCARTPRDC",
-          CONDFLTR: "UserLogin like '000005'",
+          CONDFLTR: "UserLogin like '" + currentUser?.USERLGIN + "'",
         }).unwrap();
       } catch (error) {
         console.log(error);

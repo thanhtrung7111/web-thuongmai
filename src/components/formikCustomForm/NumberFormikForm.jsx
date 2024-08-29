@@ -28,11 +28,14 @@ const NumberFormikForm = ({
       <div
         className={`${
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
-        } px-3 py-3 flex items-center text-sm disabled:bg-slate-50 border outline-none rounded-sm w-full`}
+        } px-3 ${
+          disabled && "bg-slate-100"
+        } py-3 flex items-center text-sm  border outline-none rounded-sm w-full`}
       >
         <input
           {...props}
           type="text"
+          disabled={disabled}
           onChange={(e) => {
             const inputValue = e.target.value;
             if (inputValue == "") {
@@ -50,7 +53,7 @@ const NumberFormikForm = ({
             }
           }}
           value={value}
-          className="outline-none flex-auto"
+          className="outline-none flex-auto bg-transparentF"
         />
         <div className="flex gap-x-1 items-center">
           {unit != "" && <span className="text-gray-400">{unit}</span>}

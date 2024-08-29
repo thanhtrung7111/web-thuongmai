@@ -1,8 +1,6 @@
 import React, { useEffect } from "react"; // import Asus from "@assets/img/asus.jpg";
 import ImageMagnifier from "../components/ImageMagnifier";
 
-import Column from "../components/grid/Column";
-import GridComponent from "../components/grid/GridComponent";
 const ElemetHead = (...props) => {
   return <input type="CheckBox" />;
 };

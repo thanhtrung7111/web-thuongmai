@@ -11,10 +11,13 @@ const InputFormikForm = ({
   const [field, meta, helpers] = useField(props);
   return (
     <div className="flex flex-col gap-y-1 w-full">
-      <label htmlFor="">
-        <span className="text-gray-600">{label} </span>{" "}
-        {important && <span className="text-red-500">*</span>}
-      </label>
+      {label && (
+        <label htmlFor="">
+          <span className="text-gray-600">{label} </span>{" "}
+          {important && <span className="text-red-500">*</span>}
+        </label>
+      )}
+
       <input
         {...props}
         {...field}

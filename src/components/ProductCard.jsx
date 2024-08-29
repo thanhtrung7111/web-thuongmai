@@ -75,6 +75,8 @@ const ProductCard = ({
     if (isSuccessAdd) {
       toast.success("Thêm sản phẩm vào giỏ thành công", {
         autoClose: 2000,
+        hideProgressBar: true,
+        position: "top-center",
       });
     }
   }, [isSuccessAdd]);

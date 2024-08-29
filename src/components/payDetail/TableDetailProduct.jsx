@@ -9,7 +9,7 @@ const TableDetailProduct = ({ data, onHandleCheckAll, onHandleChooseItem }) => {
   const [chooseAll, setChooseAll] = useState(
     data?.find((item) => item.checked == false) ? false : true
   );
- 
+
   useEffect(() => {
     const findItem = data?.find((item) => item.checked == false);
     console.log(data);
@@ -22,7 +22,7 @@ const TableDetailProduct = ({ data, onHandleCheckAll, onHandleChooseItem }) => {
   }, [data]);
   return (
     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
-      <thead class="text-xs text-gray-600 z-10 bg-gray-200 dark:bg-gray-700 dark:text-gray-400 sticky top-0 right-0 ">
+      <thead class="text-xs text-gray-600 z-20 bg-gray-200 dark:bg-gray-700 dark:text-gray-400 sticky top-0 right-0 ">
         <th class="px-6 py-3 uppercase">
           <div className="flex gap-x-2 items-center">
             <input
@@ -45,7 +45,7 @@ const TableDetailProduct = ({ data, onHandleCheckAll, onHandleChooseItem }) => {
         <th class="px-6 py-3 uppercase">Đơn giá</th>
         <th class="px-6 py-3 uppercase">Phần trăm giảm</th>
         <th class="px-6 py-3 uppercase">Thành tiền</th>
-        <th class="px-6 py-3 w-32 uppercase">Xóa tất cả</th>
+        <th class="px-6 py-3 w-48 uppercase">Xóa tất cả</th>
       </thead>
       <tbody>
         {data?.length >= 1

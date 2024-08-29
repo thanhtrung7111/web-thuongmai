@@ -113,7 +113,7 @@ const Login = () => {
           <h2 className="font-semibold text-3xl text-second text-center mb-8">
             Đăng nhập
           </h2>
-          <div className="w-full overflow-y-hidden overflow-x-hidden">
+          <div className="w-full h-64 overflow-y-hidden overflow-x-hidden">
             <div
               className={`w-[200%] h-full grid grid-cols-2 ${
                 compList ? "translate-x-[-50%]" : "translate-x-0"

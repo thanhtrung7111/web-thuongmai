@@ -27,6 +27,7 @@ const ImageFetch = ({ url, id, className, imageDefault = "" }) => {
     };
     if (!(dataImage instanceof Blob) || dataImage.size == 0) {
       fetchData();
+      console.log("fetch");
     }
   }, [dataImage]);
 

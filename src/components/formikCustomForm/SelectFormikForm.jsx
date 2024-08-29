@@ -37,8 +37,10 @@ const SelectFormikForm = ({
     if (options.length >= 1 && !loading) {
       setSelected(options[0]);
       helpers.setValue(options[0][`${itemKey}`]);
+      setDataFilter(options);
+    } else {
+      setDataFilter([]);
     }
-    setDataFilter(options);
     setShow(false);
   }, [options]);
 
@@ -108,7 +110,7 @@ const SelectFormikForm = ({
         <div
           className={`${
             show == true ? "visible opacity-100" : "opacity-0 invisible"
-          } absolute w-full  z-50 top-[90%] right-0 max-h-60 min-h-28 ${
+          } absolute w-full  z-50 top-[90%] right-0 max-h-60 min-h-24 ${
             options?.length > 5 && "overflow-y-scroll"
           } bg-white rounded-md border border-gray-300 overflow-hidden transition-all duration-150`}
         >

@@ -9,11 +9,9 @@ import {
   useLazyFetchProductsQuery,
 } from "../../redux/query/commonQuery";
 let pageSize = 4;
-const ProductSuggestion = ({ keyword }) => {
+const ProductSuggestion = ({ keyword, open = false, onClose }) => {
   const [fetchProduct, { data: products, isLoading, isError, isSuccess }] =
     useLazyFetchProductsQuery();
-  const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
   const [lstProduct, setLstProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
@@ -35,15 +33,8 @@ const ProductSuggestion = ({ keyword }) => {
   }, [isSuccess]);
   return (
     <>
-      <span
-        onClick={() => setOpen(!open)}
-        className="w-32 text-center hover:text-second transition-colors duration-100 text-xs cursor-pointer"
-      >
-        Tìm các sản phẩm liên quan ?{" "}
-      </span>
-
       <div
-        className={`${
+        className={`product-suggest ${
           open ? "visible opacity-100 z-10" : "invisible opacity-0"
         } absolute top-full right-0 w-[1000px] h-fit rounded-lg bg-white border shadow-2xl`}
       >
@@ -51,10 +42,7 @@ const ProductSuggestion = ({ keyword }) => {
           <span className="font-semibold text-second text-xl">
             Sản phẩm liên quan
           </span>
-          <i
-            class="ri-close-line cursor-pointer text-xl"
-            onClick={() => setOpen(false)}
-          ></i>
+          <i class="ri-close-line cursor-pointer text-xl" onClick={onClose}></i>
         </div>
         {isLoading ? (
           <div className="p-5 pt-1 min-h-96">
@@ -105,7 +93,7 @@ const ProductSuggestion = ({ keyword }) => {
                   currentPage={currentPage}
                   totalCount={lstProduct?.length > 0 ? lstProduct.length : 0}
                   pageSize={pageSize}
-                  scrollTo="product-list"
+                  scrollTo="product-suggest"
                   onPageChange={(page) => setCurrentPage(page)}
                 ></Panigation>
               )}
