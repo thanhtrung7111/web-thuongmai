@@ -8,11 +8,41 @@ const cartSlice = createSlice({
   },
 
   reducers: {
+    checkAllProduct: (state, action) => {
+      state.productCarts = [
+        ...state.productCarts.map((item) => ({
+          ...item,
+          checked: action.payload.checked,
+        })),
+      ];
+    },
+    unCheckAllProduct: (state, action) => {
+      state.productCarts = [
+        ...state.productCarts.map((item) => ({
+          ...item,
+          checked: false,
+        })),
+      ];
+    },
+    checkProduct: (state, action) => {
+      const findIndex = state.productCarts.findIndex(
+        (item) => item.PRDCCODE == action.payload.id
+      );
+      const itemFind = state.productCarts.find(
+        (item) => item.PRDCCODE == action.payload.id
+      );
+      itemFind.checked = !itemFind.checked;
+      state.productCarts[findIndex] = itemFind;
+    },
     loadCartByUser: (state, action) => {
-      state.productCarts = action.payload.list;
+      state.productCarts = [
+        ...action.payload.list.map((item) => {
+          return { ...item, checked: false };
+        }),
+      ];
     },
     addCartByUser: (state, action) => {
-      state.productCarts.push(action.payload.product);
+      state.productCarts.push({ ...action.payload.product, checked: false });
     },
     updateCartByUser: (state, action) => {
       const index = state.productCarts.findIndex(
@@ -46,4 +76,7 @@ export const {
   chooseProduct,
   chooseAllProduct,
   changeActionCart,
+  checkAllProduct,
+  checkProduct,
+  unCheckAllProduct,
 } = cartSlice.actions;

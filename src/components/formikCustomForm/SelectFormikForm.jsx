@@ -54,7 +54,7 @@ const SelectFormikForm = ({
         className={`${
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
         } ${
-          disabled && "bg-slate-50"
+          (disabled || loading) && "bg-slate-50"
         } px-3 py-3 text-sm border outline-none rounded-sm w-full flex relative`}
       >
         {loading ? (
@@ -88,7 +88,7 @@ const SelectFormikForm = ({
                 }
                 setShow(false);
               }}
-              disabled={disabled}
+              disabled={disabled || loading}
               onChange={(e) => filterChange(e)}
               value={selected && selected[`${itemValue}`]}
               autoComplete="off"

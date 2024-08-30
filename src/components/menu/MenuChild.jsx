@@ -7,6 +7,7 @@ import Triangle from "../../assets/img/triangle.png";
 import Apple from "../../assets/img/appple.png";
 import Android from "../../assets/img/android.png";
 import { useDispatch, useSelector } from "react-redux";
+import { closePopup } from "../../redux/reducer/popupReducer";
 const data = [
   {
     name: "Danh mục",
@@ -47,7 +48,6 @@ const data = [
 ];
 const MenuChild = () => {
   const [openOverlay, setOpenOverlay] = useState(false);
-  const { block } = useSelector((state) => state.popup);
   const dispatch = useDispatch();
   const handleOpenShowMenu = () => {
     document.getElementById("menu-child").classList.add("show-men-child");
@@ -58,11 +58,11 @@ const MenuChild = () => {
   const handleCloseShowMenu = () => {
     document.getElementById("menu-child").classList.remove("show-men-child");
     setOpenOverlay(false);
-    dispatch(closeBlock());
+    dispatch(closePopup());
   };
 
   const closeOverlay = () => {
-    dispatch(closeBlock());
+    dispatch(closePopup());
     document.getElementById("menu-child").classList.remove("show-men-child");
     setOpenOverlay(false);
   };

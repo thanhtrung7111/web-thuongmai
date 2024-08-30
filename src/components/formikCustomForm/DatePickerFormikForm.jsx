@@ -9,6 +9,25 @@ const DatePickerFormikForm = ({
   ...props
 }) => {
   const [field, meta, helpers] = useField(props);
+  const [currentDate, setCurrentDate] = useState({
+    startDate: null,
+    endDate: null,
+  });
+
+  useEffect(() => {
+    setCurrentDate({
+      startDate: field.value,
+      endDate: field.value,
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log(field.value);
+    setCurrentDate({
+      endDate: field.value,
+      startDate: field.value,
+    });
+  }, [field.value]);
   return (
     <div className="flex flex-col gap-y-1 w-full">
       {label && (
@@ -27,23 +46,29 @@ const DatePickerFormikForm = ({
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
         } px-3 py-3 text-sm disabled:bg-slate-50 border outline-none rounded-sm w-full`}
       ></Datepicker> */}
-
-      <Datepicker
-        useRange={false}
-        disabled={disabled}
-        asSingle={true}
-        i18n="vn"
-        containerClassName="relative"
-        inputClassName={`Datepicker ${
+      <div
+        className={`${
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
-        } px-3 py-3 text-sm disabled:bg-slate-50 border outline-none rounded-sm w-full`}
-        toggleClassName="absolute bg-slate-400 text-white right-0 h-full px-3 text-gray-400 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
-        displayFormat={"DD/MM/YYYY"}
-        value={field.value}
-        onChange={(newValue) => helpers.setValue(newValue)}
-        {...props}
-      ></Datepicker>
-
+        } text-sm disabled:bg-slate-50 border outline-none rounded-sm w-full`}
+      >
+        <Datepicker
+          useRange={false}
+          primaryColor="orange"
+          disabled={disabled}
+          asSingle={true}
+          i18n="vn"
+          containerClassName="relative"
+          inputClassName={`Datepicker px-3 py-3 w-full outline-none`}
+          toggleClassName="absolute bg-slate-400 text-white right-0 h-full px-3 text-gray-400 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+          displayFormat={"DD/MM/YYYY"}
+          value={currentDate}
+          onChange={(newValue) => {
+            console.log(newValue);
+            helpers.setValue(newValue.startDate);
+          }}
+        ></Datepicker>
+        <input type="date" hidden {...props} {...field} />
+      </div>
       {meta.error && meta.touched && (
         <span className="text-red-500 text-xs">{meta.error}</span>
       )}

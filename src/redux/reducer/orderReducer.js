@@ -4,11 +4,7 @@ import {
   isPending,
   isRejected,
 } from "@reduxjs/toolkit";
-import {
-  getAllOrder,
-  getOrderDetail,
-  postOrder,
-} from "../actions/orderActions";
+import { getAllOrder, getOrderDetail } from "../actions/orderActions";
 
 const orderSlice = createSlice({
   name: "order",
@@ -52,26 +48,6 @@ const orderSlice = createSlice({
         state.listOrder.isLoading = false;
         state.listOrder.isError = true;
         state.listOrder.errorMessage = action.payload;
-      });
-
-    builder
-      .addCase(postOrder.pending, (state, action) => {
-        state.resultOrder.data = null;
-        state.resultOrder.isLoading = true;
-        state.resultOrder.isError = false;
-        state.resultOrder.errorMessage = "";
-      })
-      .addCase(postOrder.fulfilled, (state, action) => {
-        state.resultOrder.data = action.payload;
-        state.resultOrder.isLoading = false;
-        state.resultOrder.isError = false;
-        state.resultOrder.errorMessage = "";
-      })
-      .addCase(postOrder.rejected, (state, action) => {
-        state.resultOrder.data = null;
-        state.resultOrder.isLoading = false;
-        state.resultOrder.isError = true;
-        state.resultOrder.errorMessage = action.payload;
       });
 
     builder

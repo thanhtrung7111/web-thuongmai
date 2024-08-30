@@ -16,6 +16,7 @@ const ImageFetch = ({ url, id, className, imageDefault = "" }) => {
     isLoading,
     isError,
     isSuccess,
+    isFetching,
     refetch,
   } = useFetchImageQuery({ id: id, url: url }, { skip: !id });
 

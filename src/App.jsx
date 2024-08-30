@@ -8,28 +8,26 @@ import {
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Test from "./pages/Test";
-import PersonalInfomation from "./pages/PersonalInfomation";
-import DetailOrder from "./components/personalInfomation/DetailOrder";
 import Promotion from "./pages/Promotion";
-import AppNotifycation from "./components/AppNotification/AppNotifycation";
-import ErrorServer from "./pages/ErrorServer";
+import ErrorServer from "./pages/error/ErrorServer";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PaySuccessVietQR } from "./pages/PaySuccessVietQR";
-import ProductSearch from "./pages/ProductSearch";
 import AppLayout from "./routes/AppLayout";
-import Home from "./pages/Home";
 import Footer from "./components/Footer";
-import ProductDetail from "./pages/ProductDetail";
-import ProductList from "./pages/ProductList";
-import PayDetail from "./pages/PayDetail";
 import AppLogin from "./routes/AppLogin";
-import Login from "./pages/Login";
-import { api } from "./api/api";
 import { useFetchInitialTokenQuery } from "./redux/query/authQuery";
-import Register from "./pages/Register";
 import SpinnerLoading from "./components/commonAnimtaion/SpinnerLoading";
+import HomePage from "./pages/home/HomePage";
+import ProductDetailPage from "./pages/product_detail/ProductDetailPage";
+import ProductListPage from "./pages/product_list/ProductListPage";
+import ShoppingCartPage from "./pages/shopping_cart/ShoppingCartPage";
+import RegisterPage from "./pages/register/RegisterPage";
+import LoginPage from "./pages/login/LoginPage";
+import ProductSearchPage from "./pages/product_search/ProductSearchPage";
+import PersonalInfomationPage from "./pages/personal_infomation/PersonalInfomationPage";
+import PaymentPage from "./pages/payment/PaymentPage";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -63,24 +61,34 @@ function App() {
         {/* <AppNotifycation></AppNotifycation> */}
         <Routes>
           <Route element={<AppLayout></AppLayout>}>
-            <Route path="/" element={<Home></Home>}></Route>
+            <Route path="/" element={<HomePage></HomePage>}></Route>
             <Route
               path="/products/:id"
-              element={<ProductDetail></ProductDetail>}
+              element={<ProductDetailPage></ProductDetailPage>}
             ></Route>
             <Route
               path="/products/search"
-              element={<ProductSearch></ProductSearch>}
+              element={<ProductSearchPage></ProductSearchPage>}
             ></Route>
             <Route
               path="/products"
-              element={<ProductList></ProductList>}
+              element={<ProductListPage></ProductListPage>}
+            ></Route>
+            <Route
+              path="/cart"
+              element={
+                currentUser ? (
+                  <ShoppingCartPage></ShoppingCartPage>
+                ) : (
+                  <Navigate to={"/login"} />
+                )
+              }
             ></Route>
             <Route
               path="/pay"
               element={
                 currentUser ? (
-                  <PayDetail></PayDetail>
+                  <PaymentPage></PaymentPage>
                 ) : (
                   <Navigate to={"/login"} />
                 )
@@ -100,7 +108,7 @@ function App() {
               path="/personal"
               element={
                 currentUser ? (
-                  <PersonalInfomation></PersonalInfomation>
+                  <PersonalInfomationPage></PersonalInfomationPage>
                 ) : (
                   <Navigate to={"/login"} />
                 )
@@ -125,14 +133,14 @@ function App() {
               path="/login"
               element={
                 // currentUser ? <Navigate to={"/"} /> :
-                <Login></Login>
+                <LoginPage></LoginPage>
               }
             ></Route>
             <Route
               path="/register"
               element={
                 // currentUser ? <Navigate to={"/"} /> :
-                <Register></Register>
+                <RegisterPage></RegisterPage>
               }
             ></Route>
           </Route>

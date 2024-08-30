@@ -39,7 +39,7 @@ const Cart = () => {
   const handlePayment = () => {
     handleCloseCart();
     window.scroll(0, 0);
-    navigate("/pay");
+    navigate("/cart");
   };
 
   useEffect(() => {

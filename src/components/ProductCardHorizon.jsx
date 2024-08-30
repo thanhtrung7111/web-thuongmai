@@ -6,7 +6,7 @@ import NoImage from "../assets/img/noimage.png";
 import ImageFetch from "./ImageFetch";
 import { toast } from "react-toastify";
 import { useAddToCartMutation } from "../redux/query/cartQuery";
-const ProductCard = ({
+const ProductCardHorizon = ({
   item,
   id,
   name,
@@ -194,4 +194,4 @@ const ProductCard = ({
   );
 };
 
-export default ProductCard;
+export default ProductCardHorizon;

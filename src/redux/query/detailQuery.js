@@ -31,7 +31,7 @@ const response = async (data, dispatch, defaultValue = []) => {
 };
 
 export const detailApiSlice = createApi({
-  reducerPath: "detailItemApi",
+  reducerPath: "detailApi",
   baseQuery: axiosBaseQuery,
   keepUnusedDataFor: 7200,
   refetchOnFocus: true,
@@ -46,7 +46,8 @@ export const detailApiSlice = createApi({
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          const listData = response(data, dispatch, null);
+          console.log(data);
+          const listData = await response(data, dispatch, null);
           return listData;
         } catch (error) {
           console.log(error);

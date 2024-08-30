@@ -20,24 +20,6 @@ export const getAllOrder = createAsyncThunk(
   }
 );
 
-export const postOrder = createAsyncThunk(
-  "order/post",
-  async (data, { rejectWithValue }) => {
-    try {
-      const listOrder = await postData(data).then((res) => res?.data);
-      console.log(listOrder);
-      if (listOrder) {
-        return listOrder;
-      } else {
-        return rejectWithValue("Không tải được dữ liệu!");
-      }
-    } catch (error) {
-      console.log(error);
-      rejectWithValue("Lỗi hệ thống!");
-    }
-  }
-);
-
 export const getOrderDetail = createAsyncThunk(
   "order/detail",
   async (data, { rejectWithValue }) => {
