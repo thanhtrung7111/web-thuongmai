@@ -34,6 +34,16 @@ const cartSlice = createSlice({
       itemFind.checked = !itemFind.checked;
       state.productCarts[findIndex] = itemFind;
     },
+    checkProductPay: (state, action) => {
+      const findIndex = state.productCarts.findIndex(
+        (item) => item.PRDCCODE == action.payload.id
+      );
+      const itemFind = state.productCarts.find(
+        (item) => item.PRDCCODE == action.payload.id
+      );
+      itemFind.checked = true;
+      state.productCarts[findIndex] = itemFind;
+    },
     loadCartByUser: (state, action) => {
       state.productCarts = [
         ...action.payload.list.map((item) => {
@@ -82,4 +92,5 @@ export const {
   checkAllProduct,
   checkProduct,
   unCheckAllProduct,
+  checkProductPay,
 } = cartSlice.actions;

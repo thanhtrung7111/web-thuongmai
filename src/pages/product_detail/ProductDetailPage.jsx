@@ -11,7 +11,12 @@ import "swiper/css/scrollbar";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { chooseProduct } from "../../redux/reducer/cartReducer";
+import {
+  checkProduct,
+  checkProductPay,
+  chooseProduct,
+  unCheckAllProduct,
+} from "../../redux/reducer/cartReducer";
 import {
   useAddToCartMutation,
   useUpdateCartMutation,
@@ -105,7 +110,7 @@ const ProductDetailPage = () => {
         COMPCODE: productDetail.COMPCODE,
         LCTNCODE: "001",
         USERLOGIN: currentUser?.USERLGIN,
-        PRDCCODE: productDetail.COMPCODE,
+        PRDCCODE: productDetail.PRDCCODE,
         QUOMQTTY: qty,
         QUOMCODE: 27,
         SALEPRCE: productDetail.PRCESALE,
@@ -122,10 +127,26 @@ const ProductDetailPage = () => {
       });
     }
   };
-
-  const handlePay = async (value) => {
-    await addCart(value);
-    dispatch(chooseProduct({ id: productDetail.PRDCCODE, checked: true }));
+  console.log(cartData);
+  const handlePay = async () => {
+    try {
+      await addToCart({
+        COMPCODE: productDetail.COMPCODE,
+        LCTNCODE: "001",
+        USERLOGIN: currentUser?.USERLGIN,
+        PRDCCODE: productDetail.PRDCCODE,
+        QUOMQTTY: qty,
+        QUOMCODE: 27,
+        SALEPRCE: productDetail.PRCESALE,
+        DSCNRATE: productDetail.DSCNRATE,
+        PRDCNAME: productDetail.PRDCNAME,
+        PRDCIMAGE: productDetail?.DETAIL_4[0]?.IMGE_URL,
+      });
+    } catch (error) {
+      return;
+    }
+    dispatch(unCheckAllProduct());
+    dispatch(checkProduct({ id: productDetail?.PRDCCODE, checked: true }));
     navigate("/pay");
   };
 

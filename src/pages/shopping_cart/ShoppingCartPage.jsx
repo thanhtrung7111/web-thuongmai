@@ -45,7 +45,6 @@ const ShoppingCartPage = () => {
     navigate("/products");
   };
 
-
   return (
     <div className="product-detail">
       <InfoPage data={["Giỏ hàng"]} />
