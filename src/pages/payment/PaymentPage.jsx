@@ -222,8 +222,8 @@ const PaymentPage = () => {
         description: "Thanh toan HD",
         buyerAddress: "số nhà, đường, phường, tỉnh hoặc thành phố",
         items: [],
-        cancelUrl: "https://thanhtrung7111.github.io/web-thuongmai/#/promotion",
-        returnUrl: "https://thanhtrung7111.github.io/web-thuongmai/#/promotion",
+        cancelUrl: "http://localhost:5173/promotion",
+        returnUrl: "http://localhost:5173/promotion",
         expiredAt: Math.floor(
           (new Date(Date.now()).getTime() + 15 * 60000) / 1000
         ),
