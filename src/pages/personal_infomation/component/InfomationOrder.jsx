@@ -87,7 +87,7 @@ const InfomationOrder = () => {
         STTESIGN: 7,
         BEG_DATE: "2024-01-01",
         END_DATE: "2024-12-31",
-        ADD_COND: "CustCode = " + "'" + currentUser.CUSTCODE + "'",
+        ADD_COND: "CustCode = " + "'" + currentUser?.CUSTCODE + "'",
       })
     );
   }, []);
@@ -150,7 +150,7 @@ const InfomationOrder = () => {
         </div>
         <Panigation
           currentPage={currentPage}
-          totalCount={10}
+          totalCount={listOrder.data?.length > 0 ? listOrder.data?.length : 0}
           pageSize={pageSize}
           scrollTo="infomation_order"
           onPageChange={(page) => {

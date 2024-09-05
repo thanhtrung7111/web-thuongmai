@@ -8,6 +8,7 @@ import {
 } from "../redux/query/imageQuery";
 const ImageFetch = ({ url, id, className, imageDefault = "" }) => {
   const [image, setImage] = useState("");
+  let countFetch = 0;
   // const urlDemo =
   //   "https://api-dev.firstems.com/Api/data/runApi_File?run_Code=DTA001&CompCode=PMC&DcmnCode=Product_New&Key_Code=PMC000000907001&Key_Load=00015218110920";
   // const idDemo = 1;
@@ -26,8 +27,12 @@ const ImageFetch = ({ url, id, className, imageDefault = "" }) => {
     const fetchData = async () => {
       await refetch();
     };
-    if (!(dataImage instanceof Blob) || dataImage.size == 0) {
+    if (
+      !(dataImage instanceof Blob) ||
+      (dataImage.size == 0 && countFetch <= 2)
+    ) {
       fetchData();
+      countFetch++;
       console.log("fetch");
     }
   }, [dataImage]);
