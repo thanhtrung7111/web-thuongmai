@@ -62,7 +62,7 @@ const ProductSuggestion = ({ keyword, open = false, onClose }) => {
                   Không có sản phẩm bạn tìm thấy!{" "}
                 </p>
               ) : (
-                <div className="grid gap-4 mb-10 grid-cols-4">
+                <div className="grid gap-4 mb-10 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   {lstProduct
                     ?.slice(
                       (currentPage - 1) * pageSize,

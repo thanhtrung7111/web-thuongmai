@@ -52,7 +52,7 @@ const ShoppingCartPage = () => {
       {/* Table thanh toán */}
       <div className="xl:container xl:mx-auto mx-5 mb-5">
         <Wrapper>
-          <div>
+          <div className="overflow-x-scroll lg:overflow-x-visible">
             <TableDetailProduct
               onHandleCheckAll={checkAll}
               onHandleChooseItem={checkItem}

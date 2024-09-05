@@ -1,6 +1,9 @@
 import { Form, FormikProvider, useFormik } from "formik";
 import React from "react";
 import * as Yup from "yup";
+import Input from "../../../components/Input";
+import Combobox from "../../../components/Combobox";
+import DatePicker from "../../../components/DatePicker";
 const Information = () => {
   const formik = useFormik({
     initialValues: {
@@ -22,14 +25,12 @@ const Information = () => {
           <div className="grid grid-cols-3 gap-3 px-2">
             <div className="flex flex-col gap-y-2">
               {/* //Tài khoản */}
-              {/* <Input
+              <Input
                 name="MCUSTNME"
                 title={"Tên tài khoản:"}
                 placeholder="Tên tài khoản"
                 value={formik.values.MCUSTNME}
               ></Input>
-
-   
               <Input
                 name="MCUSTNME"
                 title={"Mật khẩu:"}
@@ -37,31 +38,27 @@ const Information = () => {
                 type="password"
                 value={formik.values.MCUSTNME}
               ></Input>
-
               <Input
                 name="MCUSTNME"
                 title={"Email:"}
                 placeholder="Email"
                 value={formik.values.MCUSTNME}
               ></Input>
-
               <Input
                 name="MCUSTNME"
                 title={"Số điện thoại:"}
                 placeholder="Email"
                 value={formik.values.MCUSTNME}
               ></Input>
-    
               <DatePicker
                 name="ODERDATE"
                 title="Ngày sinh:"
                 value={formik.values.ODERDATE}
               ></DatePicker>{" "}
-              */}
             </div>
             <div className="flex flex-col gap-y-2">
               {/*Tỉnh  */}
-              {/* <Combobox
+              <Combobox
                 data={[]}
                 itemKey={"ITEMCODE"}
                 itemName="ITEMNAME"
@@ -69,7 +66,6 @@ const Information = () => {
                 title="Tỉnh:"
                 value={formik.values.DCMNSBCD}
               ></Combobox>
-
               <Combobox
                 data={[]}
                 itemKey={"ITEMCODE"}
@@ -78,7 +74,6 @@ const Information = () => {
                 title="Huyện/Thành phố:"
                 value={formik.values.DCMNSBCD}
               ></Combobox>
-
               <Combobox
                 data={[]}
                 itemKey={"ITEMCODE"}
@@ -87,14 +82,12 @@ const Information = () => {
                 title="Phường/xã:"
                 value={formik.values.DCMNSBCD}
               ></Combobox>
-
               <Input
                 name="MCUSTNME"
                 title={"Địa chỉ:"}
                 placeholder="Địa chỉ"
                 value={formik.values.MCUSTNME}
               ></Input>{" "}
-              */}
             </div>
 
             <div></div>

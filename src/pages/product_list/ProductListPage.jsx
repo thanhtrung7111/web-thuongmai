@@ -318,7 +318,7 @@ const ProductListPage = () => {
             <div className="flex flex-col gap-y-2" id="product-list">
               <Wrapper>
                 <div className="px-5 py-4">
-                  <div className="flex items-center justify-between">
+                  <div className="grid grid-cols-1 gap-y-5 md:flex items-center justify-between">
                     <div className="flex items-center gap-x-3 flex-wrap">
                       <button
                         className="text-gray-dark text-sm cursor-pointer"
