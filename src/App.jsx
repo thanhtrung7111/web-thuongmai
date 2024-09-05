@@ -69,7 +69,7 @@ function App() {
     <div>
       <ToastContainer></ToastContainer>
       {/* <BrowserRouter basename={import.meta.env.BASE_URL}> */}
-      <BrowserRouter>
+      <HashRouter>
         {/* <DetailOrder></DetailOrder> */}
         {/* <AppNotifycation></AppNotifycation> */}
         <Routes>
@@ -184,7 +184,7 @@ function App() {
         </Routes>
 
         <Footer></Footer>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }

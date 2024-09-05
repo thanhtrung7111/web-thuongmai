@@ -5,7 +5,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { unCheckAllProduct } from "../../../redux/reducer/cartReducer";
-import { usePostNewReceiptMutation } from "../../../redux/query/orderQuery";
+import {
+  useDeleteOrderMutation,
+  usePostNewReceiptMutation,
+} from "../../../redux/query/orderQuery";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { useReactToPrint } from "react-to-print";
@@ -26,13 +29,32 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
     status: "",
   });
   const [
+    genearateQR,
+    {
+      data: dataGenerateQR,
+      isLoading: isLoadingGenerateQR,
+      isError: isErrorGenerateQR,
+      isSuccess: isSuccessGenerateQR,
+    },
+  ] = useGenerateQRMutation();
+  const [
     postNewReceipt,
     {
       data: dataNewReceipt,
       isLoading: isLoadingNewReceipt,
       isError: isErrorNewReceipt,
+      isSuccess: isSuccessNewReceipt,
     },
   ] = usePostNewReceiptMutation();
+  const [
+    deleteOrder,
+    {
+      data: dataDeleteOrder,
+      isLoading: isLoadingDeleteOrder,
+      isError: isErrorDeleteOrder,
+      isSuccess: isSuccessDeleteOrder,
+    },
+  ] = useDeleteOrderMutation();
   const navigate = useNavigate();
   const payOsConfig = {
     RETURN_URL: "https://web-thuongmai.vercel.app/", // required
@@ -46,6 +68,7 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
       dispatch(unCheckAllProduct());
     },
     onCancel: (event) => {
+      // deleteOrder()
       console.log("Payment cancel: ", event);
     },
     onExit: (event) => {
@@ -53,15 +76,6 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
     },
   };
   const { open, exit } = usePayOS(payOsConfig);
-  const [
-    genearateQR,
-    {
-      data: dataGenerateQR,
-      isLoading: isLoadingGenerateQR,
-      isError: isErrorGenerateQR,
-      isSuccess: isSuccessGenerateQR,
-    },
-  ] = useGenerateQRMutation();
 
   const handlePaymentSuccess = async () => {
     const body = {
@@ -435,15 +449,15 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
         </div>
 
         <div className="w-full h-full flex flex-col pt-20">
-          <h5 className="text-gray-500 italic text-base mx-auto mb-5">
+          <h5 className="text-gray-500 italic mx-auto mb-5 text-2xl">
             {successPay.status == "PAID"
               ? isLoadingNewReceipt
                 ? "Đang xử lí thanh toán..."
-                : dataNewReceipt?.RETNCODE
+                : isSuccessNewReceipt
                 ? "Thanh toán thành công!"
                 : "Thanh toán thành công. Server lỗi cập nhật!"
               : successPay.status == "CANCELLED"
-              ? "Đã hủy thanh toán"
+              ? "Đã hủy thanh toán..."
               : "Thanh toán không thành công"}
           </h5>
           <div className="flex justify-center gap-x-5">

@@ -50,6 +50,17 @@ export const orderApiSlice = createApi({
       }),
       providesTags: ["Orders"],
     }),
+    deleteOrder: builder.mutation({
+      query: (data) => ({
+        url: "/Api/data/runApi_Data?run_Code=DTA009",
+        method: "POST",
+        body: {
+          DCMNCODE: "DDHKH",
+          KEY_CODE: data,
+        },
+      }),
+      providesTags: ["Orders"],
+    }),
     postNewReceipt: builder.mutation({
       query: (data) => ({
         url: "/Api/data/runApi_Data?run_Code=DTA007",
@@ -64,5 +75,8 @@ export const orderApiSlice = createApi({
   }),
 });
 
-export const { usePostNewOrderMutation, usePostNewReceiptMutation } =
-  orderApiSlice;
+export const {
+  usePostNewOrderMutation,
+  usePostNewReceiptMutation,
+  useDeleteOrderMutation,
+} = orderApiSlice;
