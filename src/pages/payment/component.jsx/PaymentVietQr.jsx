@@ -35,7 +35,7 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
   ] = usePostNewReceiptMutation();
   const navigate = useNavigate();
   const payOsConfig = {
-    RETURN_URL: "http://localhost:5173/promotion", // required
+    RETURN_URL: "https://web-thuongmai.vercel.app/", // required
     ELEMENT_ID: "info_vietqr", // required
     CHECKOUT_URL: infoPayemnt?.checkoutUrl, // required
     embedded: false, // Nếu dùng giao diện nhúng

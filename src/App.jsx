@@ -177,6 +177,10 @@ function App() {
               )
             }
           ></Route>
+          <Route
+            path="/pay-success"
+            element={<PaymentSuccess></PaymentSuccess>}
+          ></Route>
         </Routes>
 
         <Footer></Footer>
