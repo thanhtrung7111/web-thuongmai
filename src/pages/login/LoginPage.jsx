@@ -64,6 +64,7 @@ const LoginPage = () => {
         PHONNAME: "",
         TKENDEVC: "",
       }).unwrap;
+      dispath(initialError());
       if (values.remember) {
         console.log(values);
         const dataRemember = {
