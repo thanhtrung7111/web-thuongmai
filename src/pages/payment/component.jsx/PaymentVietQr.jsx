@@ -40,8 +40,8 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
     CHECKOUT_URL: infoPayemnt?.checkoutUrl, // required
     embedded: false, // Nếu dùng giao diện nhúng
     onSuccess: (event) => {
-      setSuccessPay(event);
       console.log(event);
+      setSuccessPay(event);
       handlePaymentSuccess();
       dispatch(unCheckAllProduct());
     },
