@@ -13,8 +13,6 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   checkProduct,
-  checkProductPay,
-  chooseProduct,
   unCheckAllProduct,
 } from "../../redux/reducer/cartReducer";
 import {

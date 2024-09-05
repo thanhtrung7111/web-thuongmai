@@ -23,8 +23,8 @@ const axiosBaseQuery = fetchBaseQuery({
 
 const response = async (data, dispatch) => {
   console.log(data);
-  if (data?.RETNCODE == false) {
-    dispatch(errorServerOn({ message: data.RETNMSSG }));
+  if (data?.RETNCODE == false || data?.RETNDATA == null) {
+    dispatch(errorServerOn({ message: "Lỗi server" }));
     // console.log();
     toast.error(data.RETNMSSG, {
       position: "top-center",

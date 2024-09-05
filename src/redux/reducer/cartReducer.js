@@ -25,24 +25,25 @@ const cartSlice = createSlice({
       ];
     },
     checkProduct: (state, action) => {
-      const findIndex = state.productCarts.findIndex(
-        (item) => item.PRDCCODE == action.payload.id
-      );
-      const itemFind = state.productCarts.find(
-        (item) => item.PRDCCODE == action.payload.id
-      );
-      itemFind.checked = !itemFind.checked;
-      state.productCarts[findIndex] = itemFind;
-    },
-    checkProductPay: (state, action) => {
-      const findIndex = state.productCarts.findIndex(
-        (item) => item.PRDCCODE == action.payload.id
-      );
-      const itemFind = state.productCarts.find(
-        (item) => item.PRDCCODE == action.payload.id
-      );
-      itemFind.checked = true;
-      state.productCarts[findIndex] = itemFind;
+      if (action.payload?.checked) {
+        const findIndex = state.productCarts.findIndex(
+          (item) => item.PRDCCODE == action.payload.id
+        );
+        const itemFind = state.productCarts.find(
+          (item) => item.PRDCCODE == action.payload.id
+        );
+        itemFind.checked = action.payload.checked;
+        state.productCarts[findIndex] = itemFind;
+      } else {
+        const findIndex = state.productCarts.findIndex(
+          (item) => item.PRDCCODE == action.payload.id
+        );
+        const itemFind = state.productCarts.find(
+          (item) => item.PRDCCODE == action.payload.id
+        );
+        itemFind.checked = !itemFind.checked;
+        state.productCarts[findIndex] = itemFind;
+      }
     },
     loadCartByUser: (state, action) => {
       state.productCarts = [
@@ -92,5 +93,4 @@ export const {
   checkAllProduct,
   checkProduct,
   unCheckAllProduct,
-  checkProductPay,
 } = cartSlice.actions;
