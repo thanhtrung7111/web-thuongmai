@@ -222,8 +222,8 @@ const PaymentPage = () => {
         description: "Thanh toan HD",
         buyerAddress: "số nhà, đường, phường, tỉnh hoặc thành phố",
         items: [],
-        cancelUrl: "http://localhost:5173/promotion",
-        returnUrl: "http://localhost:5173/promotion",
+        cancelUrl: "https://web-thuongmai.vercel.app/pay",
+        returnUrl: "https://web-thuongmai.vercel.app/pay",
         expiredAt: Math.floor(
           (new Date(Date.now()).getTime() + 15 * 60000) / 1000
         ),
