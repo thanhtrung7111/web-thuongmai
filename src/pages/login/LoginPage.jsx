@@ -11,6 +11,10 @@ import InputFormikForm from "../../components/formikCustomForm/InputFormikForm";
 import PasswordFormikForm from "../../components/formikCustomForm/PasswordFormikForm";
 import ButtonForm from "../../components/commonForm/ButtonForm";
 import SelectFormikForm from "../../components/formikCustomForm/SelectFormikForm";
+import {
+  errorServerOff,
+  initialError,
+} from "../../redux/reducer/exceptionReducer";
 const LoginPage = () => {
   const navigate = useNavigate();
   const [
@@ -60,8 +64,8 @@ const LoginPage = () => {
         PHONNAME: "",
         TKENDEVC: "",
       }).unwrap;
-      dispath(errorServerOff());
       if (values.remember) {
+        console.log(values);
         const dataRemember = {
           remember: true,
           username: values.username,
@@ -71,12 +75,18 @@ const LoginPage = () => {
       } else {
         localStorage.removeItem("remember");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      return;
+    }
 
-    dispath(errorServerOff());
     // dispatch(errorServerOff());
     window.scroll(0, 0);
   };
+
+  useEffect(() => {
+    dispath(initialError());
+  }, []);
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required("Không để trống tài khoản!"),
@@ -230,7 +240,7 @@ const LoginPage = () => {
                         // loading={isLoadingLogin}
                         label={"Quay về"}
                         icon={<i className="ri-arrow-go-back-line"></i>}
-                        type="submit"
+                        type="button"
                       ></ButtonForm>
                       {/* <input type="submit" value={"SUbmit"} /> */}
                       <ButtonForm

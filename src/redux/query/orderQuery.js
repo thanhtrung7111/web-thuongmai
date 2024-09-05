@@ -3,7 +3,8 @@ import { toast } from "react-toastify";
 import { errorServerOn } from "../reducer/exceptionReducer";
 
 const axiosBaseQuery = fetchBaseQuery({
-  baseUrl: "/api",
+  // baseUrl: "/api",
+  baseUrl: import.meta.env.VITE_API_URL,
   timeout: 15000,
   prepareHeaders: (headers) => {
     headers.set(
@@ -36,6 +37,7 @@ export const orderApiSlice = createApi({
   baseQuery: axiosBaseQuery,
   refetchOnFocus: true,
   keepUnusedDataFor: 7200,
+  tagTypes: ["Orders", "Receipts"],
   endpoints: (builder) => ({
     postNewOrder: builder.mutation({
       query: (data) => ({
@@ -46,8 +48,21 @@ export const orderApiSlice = createApi({
           HEADER: [{ ...data }],
         },
       }),
+      providesTags: ["Orders"],
+    }),
+    postNewReceipt: builder.mutation({
+      query: (data) => ({
+        url: "/Api/data/runApi_Data?run_Code=DTA007",
+        method: "POST",
+        body: {
+          DCMNCODE: "HDBHD",
+          HEADER: [{ ...data }],
+        },
+      }),
+      providesTags: ["Receipts"],
     }),
   }),
 });
 
-export const { usePostNewOrderMutation } = orderApiSlice;
+export const { usePostNewOrderMutation, usePostNewReceiptMutation } =
+  orderApiSlice;

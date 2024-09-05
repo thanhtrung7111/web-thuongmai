@@ -30,12 +30,14 @@ import { usePostNewOrderMutation } from "../../redux/query/orderQuery";
 import { unCheckAllProduct } from "../../redux/reducer/cartReducer";
 import axios from "axios";
 import { base64StringToBlob } from "blob-util";
-
+import { usePayOS, PayOSConfig } from "payos-checkout";
+import PaymentVietQr from "./component.jsx/PaymentVietQr";
 const PaymentPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [successPayment, setSuccessPayment] = useState(false);
   const [element, setElement] = useState(null);
+  const { errorServer } = useSelector((state) => state.exception);
   const [typePayment, setTypePayment] = useState("");
   const { productCarts } = useSelector((state) => state.cart);
   const { currentUser } = useSelector((state) => state.user);
@@ -44,42 +46,44 @@ const PaymentPage = () => {
     data: lstWareHouse,
     isLoading: isLoadingWareHouse,
     isError: isErrorWareHouse,
-  } = useFetchWareHouseQuery();
+  } = useFetchWareHouseQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstCUOM,
     isLoading: isLoadingCUOM,
     isError: isErrorCUOM,
-  } = useFetchCUOMQuery();
+  } = useFetchCUOMQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstDcmnSbCd,
     isLoading: isLoadingDcmnSbCd,
     isError: isErrorDcmnSbCd,
-  } = useFetchDCmnSbcdQuery();
+  } = useFetchDCmnSbcdQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstDlvrMthd,
     isLoading: isLoadingDlvrMthd,
     isError: isErrorDlvrMthd,
-  } = useFetchDlvrMthdQuery();
+  } = useFetchDlvrMthdQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstDlvrType,
     isLoading: isLoadingDlvrType,
     isError: isErrorDlvrType,
-  } = useFetchDlvrTypeQuery();
+  } = useFetchDlvrTypeQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstListHour,
     isLoading: isLoadingListHour,
     isError: isErrorListHour,
-  } = useFetchListHourQuery();
+  } = useFetchListHourQuery(undefined, { skip: errorServer.isError });
   const {
     data: lstinpCustOdMtPayMthd2,
     isLoading: isLoadingInpCustOdMtPayMthd,
     isError: isErrorInpCustOdMtPayMthd,
-  } = useFetchInpCustOdMtPayMthd2Query();
+  } = useFetchInpCustOdMtPayMthd2Query(undefined, {
+    skip: errorServer.isError,
+  });
   const {
     data: lstTimeType,
     isLoading: isLoadingTimeType,
     isError: isErrorTimeType,
-  } = useFetchTimeTypeQuery();
+  } = useFetchTimeTypeQuery(undefined, { skip: errorServer.isError });
   const [
     postNewOrder,
     {
@@ -88,11 +92,11 @@ const PaymentPage = () => {
       isError: isErrorNewOrder,
       isSuccess: isSuccessNewOrder,
     },
-  ] = usePostNewOrderMutation();
+  ] = usePostNewOrderMutation(undefined, { skip: errorServer.isError });
   const [initialValue, setInitialValue] = useState({
     COMPCODE: "PMC", //Công ty
     LCTNCODE: "001", //Chi nhánh
-    DCMNSBCD: lstDcmnSbCd?.length > 0 ? lstDcmnSbCd?.at(0)?.ITEMCODE : "", // phân loại
+    DCMNSBCD: lstDcmnSbCd?.length > 0 ? lstDcmnSbCd?.at(0)?.ITEMCODE : "001", // phân loại
     ODERCODE: "", //Mã đơn hàng
     ODERDATE: new Date(), //Ngày đơn hàng
     CUSTCODE: currentUser?.CUSTCODE, //Mã khách hàng
@@ -118,17 +122,19 @@ const PaymentPage = () => {
     TAX_CODE: "", //Mã số thuế
     VAT_RATE: 0, //THuế suất
     VAT_CRAM: 0, //Tiền thuế
-    DLVRMTHD: lstDlvrMthd?.length > 0 ? lstDlvrMthd?.at(0)?.ITEMCODE : "", //Phương thức giao hàng
+    DLVRMTHD: lstDlvrMthd?.length > 0 ? lstDlvrMthd?.at(0)?.ITEMCODE : "0", //Phương thức giao hàng
     DLVRTYPE: lstDlvrType?.length > 0 ? lstDlvrType?.at(0)?.ITEMCODE : "", //PHương thức vận chuyển
     DLVRDATE: new Date(), //Ngày giao hàng
-    DLVRHOUR: lstListHour?.length > 0 ? lstListHour?.at(0)?.ITEMCODE : "", //Giờ giao hàng
+    DLVRHOUR: lstListHour?.length > 0 ? lstListHour?.at(0)?.ITEMCODE : "0", //Giờ giao hàng
     DLVRPLCE: currentUser?.CUSTADDR, //Nơi giao hàng
     DLVRADDR: currentUser?.CUSTADDR, //Địa chỉ giao
     RCVREMPL: currentUser?.USERNAME, //Người nhận hàng
     RCVR_TEL: currentUser?.USER_TEL, //Điện thoại người nhận hàng
     PAY_MTHD:
-      lstDcmnSbCd?.length > 0 ? lstinpCustOdMtPayMthd2?.at(0)?.ITEMCODE : "", //Phương thức thanh toán
-    PYMNPERD: lstDcmnSbCd?.length > 0 ? lstTimeType?.at(0)?.ITEMCODE : "", //Chu kì thanh toán
+      lstinpCustOdMtPayMthd2?.length > 0
+        ? lstinpCustOdMtPayMthd2?.at(0)?.ITEMCODE
+        : "001", //Phương thức thanh toán
+    PYMNPERD: lstTimeType?.length > 0 ? lstTimeType?.at(0)?.ITEMCODE : "", //Chu kì thanh toán
     PYMNNUMB: 1, //Thời hạn thanh toán
     SRC_DATA: "3", //Window hoặc web
     EMPLCODE: "", //Mã nhân viên
@@ -203,22 +209,25 @@ const PaymentPage = () => {
     setSuccessPayment(true);
   };
   const handleQR = async function (values) {
+    try {
+      await handlePostOrder(values);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
     if (infoVietQR == null) {
-      const id = toast.loading("Đang tạo VietQR", {
-        position: "top-center",
-      });
       const body = {
         orderCode: new Date(Date.now()).getTime(),
-        amount: values.SUM_AMNT,
+        amount: 10000,
         description: "Thanh toan HD",
         buyerAddress: "số nhà, đường, phường, tỉnh hoặc thành phố",
         items: [],
-        cancelUrl: "http://localhost:5173/promotion",
-        returnUrl: "http://localhost:5173/promotion",
+        cancelUrl: "https://thanhtrung7111.github.io/web-thuongmai/#/promotion",
+        returnUrl: "https://thanhtrung7111.github.io/web-thuongmai/#/promotion",
         expiredAt: Math.floor(
           (new Date(Date.now()).getTime() + 15 * 60000) / 1000
         ),
-        template: "compact",
+        template: "info",
       };
       const query = `amount=${body.amount}&cancelUrl=${body.cancelUrl}&description=${body.description}&orderCode=${body.orderCode}&returnUrl=${body.returnUrl}`;
       const hmac = Base64.stringify(
@@ -227,7 +236,7 @@ const PaymentPage = () => {
           "dff2b663051b6bc4d07668b7c4e7a4f7f7365540fb8db84055b26156739a56e6"
         )
       );
-      const data = await axios
+      await axios
         .post(
           "https://api-merchant.payos.vn/v2/payment-requests",
           { ...body, signature: hmac },
@@ -240,6 +249,7 @@ const PaymentPage = () => {
         )
         .then((resp) => {
           setInfoVietQR({ ...resp.data.data });
+          setSuccessPayment(true);
           return resp.data.data;
         })
         .catch((e) => console.log(e));
@@ -357,10 +367,15 @@ const PaymentPage = () => {
       );
     } else if (typePayment == "vietqr") {
       setElement(
-        <div>
-          <h5>Vui lòng thanh toán theo thông tin bên dưới!</h5>
-          <div className="w-full" id="info_vietqr"></div>
-        </div>
+        <PaymentVietQr
+          infoPayemnt={infoVietQR}
+          openPayment={infoVietQR != null && typePayment == "vietqr"}
+          detailPayment={
+            dataNewOrder?.RETNDATA?.length > 0
+              ? dataNewOrder?.RETNDATA[0]
+              : null
+          }
+        ></PaymentVietQr>
       );
     }
   }, [typePayment, infoVietQR]);
@@ -408,20 +423,46 @@ const PaymentPage = () => {
                                   id={item.PRDCCODE}
                                   className={"!size-20"}
                                 />
-                                <span className="text-sm">{item.PRDCNAME}</span>
-                                <span className="text-gray-800 font-semibold">
-                                  {" "}
-                                  x{item.QUOMQTTY}
-                                </span>
+                                <div className="flex flex-col gap-y-1">
+                                  <div>
+                                    <span className="text-sm">
+                                      {item.PRDCNAME}
+                                    </span>
+                                    <span className="text-gray-600 font-semibold">
+                                      {" "}
+                                      x{item.QUOMQTTY}
+                                    </span>
+                                  </div>
+                                  <div className="flex gap-x-2">
+                                    <span className="text-gray-500 text-sm italic">
+                                      Đơn giá:
+                                    </span>
+                                    <span className="text-gray-500 text-sm">
+                                      {item.SALEPRCE.toLocaleString("vi", {
+                                        style: "currency",
+                                        currency: "VND",
+                                      })}{" "}
+                                      ( -
+                                      {(
+                                        (item.DSCNRATE * item.SALEPRCE) /
+                                        100
+                                      )?.toLocaleString("vi", {
+                                        style: "currency",
+                                        currency: "VND",
+                                      })}
+                                      )
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
 
                               <div className="flex flex-col">
-                                <span className="text-gray-800 font-semibold">
+                                <span className="text-gray-600 font-semibold">
                                   {" "}
                                   {(
-                                    item.SALEPRCE -
-                                    ((item.DSCNRATE * item.SALEPRCE) / 100) *
-                                      item.QUOMQTTY
+                                    (item.SALEPRCE -
+                                      (item.DSCNRATE * item.SALEPRCE) / 100) *
+                                    item.QUOMQTTY
                                   )?.toLocaleString("vi", {
                                     style: "currency",
                                     currency: "VND",
@@ -430,14 +471,21 @@ const PaymentPage = () => {
                                 <span className="text-gray text-sm">
                                   ( -
                                   {(
-                                    (item.DSCNRATE * item.SALEPRCE) /
-                                    100
+                                    ((item.DSCNRATE * item.SALEPRCE) / 100) *
+                                    item.QUOMQTTY
                                   )?.toLocaleString("vi", {
                                     style: "currency",
                                     currency: "VND",
                                   })}
                                   )
                                 </span>
+                                {/* <span>
+                                  Đơn giá:
+                                  {item.SALEPRCE.toLocaleString("vi", {
+                                    style: "currency",
+                                    currency: "VND",
+                                  })}
+                                </span> */}
                               </div>
                             </div>
                           );
@@ -446,13 +494,13 @@ const PaymentPage = () => {
                       <div className="flex flex-col gap-y-1">
                         <div className="flex items-center justify-between">
                           <span className="italic">Tổng số lượng:</span>
-                          <span className="text-gray-700 font-semibold text-base">
+                          <span className="text-gray-600 font-semibold text-base">
                             {values.SMPRQTTY} sản phẩm
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="italic">Tạm tính:</span>
-                          <span className="text-gray-700 font-semibold text-base">
+                          <span className="text-gray-600 font-semibold text-base">
                             {values.SUM_CRAM.toLocaleString("vi", {
                               style: "currency",
                               currency: "VND",
@@ -462,7 +510,7 @@ const PaymentPage = () => {
 
                         <div className="flex items-center justify-between">
                           <span className="italic">Tổng giảm:</span>
-                          <span className="text-gray-700 font-semibold text-base">
+                          <span className="text-gray-600 font-semibold text-base">
                             -
                             {values.RDTNCRAM.toLocaleString("vi", {
                               style: "currency",
@@ -737,47 +785,65 @@ const PaymentPage = () => {
                                 onClick={() => setTypePayment("vnpay")}
                                 className={`${
                                   typePayment == "vnpay"
-                                    ? "border-second"
+                                    ? "border-red-600 shadow-md"
                                     : "border-gray-300"
-                                } border w-full rounded-md px-5 py-2 flex items-center justify-center cursor-pointer`}
+                                } border w-full rounded-md px-5 py-2 flex items-center justify-center cursor-pointer relative overflow-hidden`}
                               >
                                 <img
                                   src={VNPay}
                                   alt=""
-                                  className="w-36 h-12 object-contain"
+                                  className="w-36 h-12 object-contain z-10"
                                 />
+                                {typePayment == "vnpay" && (
+                                  <div class="absolute h-full w-16 bg-red-600 top-0 right-0 flex items-center justify-end pr-2">
+                                    <i class="ri-check-line text-white font-normal text-2xl"></i>
+                                    <div className="absolute -top-2 -left-14 size-20 rounded-full bg-white"></div>
+                                  </div>
+                                )}
                               </div>
                               <div
                                 onClick={() => setTypePayment("vietqr")}
                                 className={`${
                                   typePayment == "vietqr"
-                                    ? "border-second"
+                                    ? "border-red-600 shadow-md"
                                     : "border-gray-300"
-                                } border w-full rounded-md px-5 py-2 flex items-center justify-center cursor-pointer`}
+                                } border w-full rounded-md px-5 py-2 flex items-center justify-center cursor-pointer relative overflow-hidden`}
                               >
                                 <img
                                   src={VietQR}
                                   alt=""
-                                  className="w-36 h-7 object-contain"
+                                  className="w-36 h-7 object-contain z-10"
                                 />
+                                {typePayment == "vietqr" && (
+                                  <div class="absolute h-full w-16 bg-red-600 top-0 right-0 flex items-center justify-end pr-2">
+                                    <i class="ri-check-line text-white font-normal text-2xl"></i>
+                                    <div className="absolute -top-2 -left-14 size-20 rounded-full bg-white"></div>
+                                  </div>
+                                )}
                               </div>
                               <div
                                 onClick={() => setTypePayment("money")}
                                 className={`${
                                   typePayment == "money"
-                                    ? "border-second"
+                                    ? "border-red-600 shadow-md"
                                     : "border-gray-300"
-                                } border w-full rounded-md px-5 py-2 flex items-center justify-center cursor-pointer`}
+                                } border w-full rounded-md px-5 py-2 flex items-center justify-center cursor-pointer relative overflow-hidden`}
                               >
                                 <div
                                   alt=""
-                                  className="h-12 flex items-center justify-center"
+                                  className="h-12 flex items-center justify-center z-10"
                                 >
                                   <span className="text-base flex gap-x-1 font-medium text-gray-600">
                                     <i class="ri-wallet-2-line"></i> Thanh toán
                                     khi nhận hàng
                                   </span>
                                 </div>
+                                {typePayment == "money" && (
+                                  <div class="absolute h-full w-16 bg-red-600 top-0 right-0 flex items-center justify-end pr-2">
+                                    <i class="ri-check-line text-white font-normal text-2xl"></i>
+                                    <div className="absolute -top-2 -left-14 size-20 rounded-full bg-white"></div>
+                                  </div>
+                                )}
                               </div>
                             </div>
 

@@ -11,7 +11,8 @@ const exceptionSlice = createSlice({
   initialState: initializationState,
   reducers: {
     initialError: (state, action) => {
-      state = initializationState;
+      state.errorServer.message = "";
+      state.errorServer.isError = false;
     },
     errorServerOn: (state, action) => {
       state.errorServer.message = action.payload.message;

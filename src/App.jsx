@@ -31,9 +31,15 @@ import PaymentPage from "./pages/payment/PaymentPage";
 
 function App() {
   const [count, setCount] = useState(0);
-  const { data: token, isLoading, isError } = useFetchInitialTokenQuery();
+  const {
+    data: token,
+    isLoading,
+    isError,
+    refetch,
+  } = useFetchInitialTokenQuery();
   const { currentUser } = useSelector((state) => state.user);
   const { popup } = useSelector((state) => state.popup);
+  const { errorServer } = useSelector((state) => state.exception);
   useEffect(() => {
     if (popup) {
       document.getElementsByTagName("html")[0].style.overflowY = "hidden";
@@ -41,6 +47,13 @@ function App() {
       document.getElementsByTagName("html")[0].style.overflowY = "scroll";
     }
   }, [popup]);
+
+  useEffect(() => {
+    if (token?.ERROCODE == 21 || token?.RETNCODE == false) {
+      refetch();
+    }
+  }, [token]);
+  console.log(token);
   return isLoading ? (
     <div className="h-screen w-screen flex items-center justify-center gap-x-5">
       <SpinnerLoading
@@ -56,11 +69,19 @@ function App() {
     <div>
       <ToastContainer></ToastContainer>
       {/* <BrowserRouter basename={import.meta.env.BASE_URL}> */}
-      <HashRouter>
+      <BrowserRouter>
         {/* <DetailOrder></DetailOrder> */}
         {/* <AppNotifycation></AppNotifycation> */}
         <Routes>
-          <Route element={<AppLayout></AppLayout>}>
+          <Route
+            element={
+              errorServer.isError ? (
+                <Navigate to={"/error"}></Navigate>
+              ) : (
+                <AppLayout></AppLayout>
+              )
+            }
+          >
             <Route path="/" element={<HomePage></HomePage>}></Route>
             <Route
               path="/products/:id"
@@ -146,11 +167,20 @@ function App() {
           </Route>
 
           <Route path="/test" element={<Test></Test>}></Route>
-          <Route path="/error" element={<ErrorServer></ErrorServer>}></Route>
+          <Route
+            path="/error"
+            element={
+              errorServer?.isError ? (
+                <ErrorServer></ErrorServer>
+              ) : (
+                <Navigate to={"/"}></Navigate>
+              )
+            }
+          ></Route>
         </Routes>
 
         <Footer></Footer>
-      </HashRouter>
+      </BrowserRouter>
     </div>
   );
 }

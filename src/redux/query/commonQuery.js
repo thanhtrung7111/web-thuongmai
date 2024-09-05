@@ -7,7 +7,8 @@ const encryptAES = (path) => {
   return CryptoJS.AES.encrypt(path, secretKey).toString();
 };
 const axiosBaseQuery = fetchBaseQuery({
-  baseUrl: "/api",
+  // baseUrl: "/api",
+  baseUrl: import.meta.env.VITE_API_URL,
   timeout: 15000,
   prepareHeaders: (headers) => {
     headers.set(

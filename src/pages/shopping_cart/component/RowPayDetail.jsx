@@ -48,6 +48,7 @@ const RowPayDetail = ({
   const dispatch = useDispatch();
   const closeNotify = () => {
     dispatch(closePopup());
+    setQty(item[quantity]);
     setNotifyDelete(false);
   };
 
@@ -71,12 +72,10 @@ const RowPayDetail = ({
 
   const handleBlurAmount = async (e, id) => {
     const productFind = productCarts.find((item) => item.PRDCCODE == id);
-    if (parseInt(e.target.value) == 0) {
-      let result = productCarts.filter(
-        (item) => item.PRDCCODE != productFind.PRDCCODE
-      );
-      formik.values.DETAIL = result;
-      handleDeleteProduct(productFind.PRDCCODE, productFind.KKKK0000);
+    if (parseInt(e.target.value) <= 0) {
+      dispatch(openPopup());
+      setNotifyDelete(true);
+      return;
     } else {
       const body = {
         ...productFind,

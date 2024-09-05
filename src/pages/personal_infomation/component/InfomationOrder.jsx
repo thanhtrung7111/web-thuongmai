@@ -60,6 +60,7 @@ const dataDemo = [
     ],
   },
 ];
+const pageSize = 5;
 const InfomationOrder = () => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
@@ -101,7 +102,10 @@ const InfomationOrder = () => {
     <>
       <div>
         <div className="mb-4 flex justify-between items-center">
-          <h5 className="text-gray-dark font-medium text-xl">
+          <h5
+            className="text-gray-dark font-medium text-xl"
+            id="infomation_order"
+          >
             Thông tin đơn hàng
           </h5>
           <div className="px-2 py-1 border flex items-center">
@@ -125,25 +129,30 @@ const InfomationOrder = () => {
           ></TabComponent>
         </div>
         <div className="min-h-96 gap-y-2 flex flex-col mb-5">
-          {listOrder.data?.map((item) => {
-            return (
-              <RowOrder
-                item={item}
-                key={item["KKKK0000"]}
-                id={"KKKK0000"}
-                maincode={"MAINCODE"}
-                date={"MAINDATE"}
-                status={"complete"}
-                onClickDetail={onClickDetail}
-              ></RowOrder>
-            );
-          })}
+          {listOrder.data
+            ?.slice(
+              (currentPage - 1) * pageSize,
+              (currentPage - 1) * pageSize + pageSize
+            )
+            ?.map((item) => {
+              return (
+                <RowOrder
+                  item={item}
+                  key={item["KKKK0000"]}
+                  id={"KKKK0000"}
+                  maincode={"MAINCODE"}
+                  date={"MAINDATE"}
+                  status={"complete"}
+                  onClickDetail={onClickDetail}
+                ></RowOrder>
+              );
+            })}
         </div>
         <Panigation
           currentPage={currentPage}
           totalCount={10}
-          pageSize={3}
-          scrollTo="evaluate"
+          pageSize={pageSize}
+          scrollTo="infomation_order"
           onPageChange={(page) => {
             setCurrentPage(page);
           }}

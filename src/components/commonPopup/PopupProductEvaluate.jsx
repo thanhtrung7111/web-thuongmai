@@ -111,6 +111,7 @@ const PopupProductEvaluate = ({
       hanldeEvaluate(dataPostEvaluate);
     }
   }, [isSuccessPostEvaluate]);
+  console.log(item);
   return (
     <PopupCommon
       open={open}
@@ -131,6 +132,7 @@ const PopupProductEvaluate = ({
             <div className="flex gap-x-3 p-3 bg-slate-100 mb-3">
               <ImageFetch
                 className={"w-12 h-12 border"}
+                id={item?.PRDCCODE}
                 url={!item ? "" : item?.DETAIL_4[0]?.IMGE_URL}
               ></ImageFetch>
               <p className="text-gray-dark flex-auto text-sm font-semibold">

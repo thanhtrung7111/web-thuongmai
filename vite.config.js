@@ -11,13 +11,13 @@ export default defineConfig({
   base: "/web-thuongmai/",
   build: { chunkSizeWarningLimit: 1600 },
   define: { "process.env": {} },
-  server: {
-    proxy: {
-      "/api": {
-        target: "https://api-dev.firstems.com",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     "/api": {
+  //       target: "https://api-dev.firstems.com",
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/api/, ""),
+  //     },
+  //   },
+  // },
 });

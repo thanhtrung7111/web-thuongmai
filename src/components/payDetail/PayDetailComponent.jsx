@@ -248,55 +248,7 @@ const PayDetailComponent = () => {
   // console.log(infoVietQR);
   // }, [infoVietQR]);
 
-  // const handlePayment = async () => {
-  //   // let i = crypto
-  //   //   .createHmac("sha512", "KLGVGJQNZFBFRMFLTDAFTOHKUDKGZIQU")
-  //   //   .update(new Buffer(signData, "utf-8").digest("hex"));
-  //   const vnp_SecureHash = "KLGVGJQNZFBFRMFLTDAFTOHKUDKGZIQU";
-
-  //   const ip = await fetch("https://api.ipify.org?format=json")
-  //     .then((response) => response.json())
-  //     .then((data) => data.ip)
-  //     .catch((error) => console.log(error));
-
-  //   const objecVNP = {
-  //     vnp_Amount: "1806000",
-  //     vnp_BankCode: "ncb",
-  //     vnp_Command: "pay",
-  //     vnp_CreateDate: moment(new Date()).format("yyyyMMDDHHmmss"),
-  //     vnp_CurrCode: "VND",
-  //     vnp_IpAddr: ip,
-  //     vnp_Locale: "vn",
-  //     vnp_OrderInfo: encodeURIComponent("Thanh toan hoa don").replaceAll(
-  //       "%20",
-  //       "+"
-  //     ),
-  //     vnp_OrderType: "other",
-  //     vnp_ReturnUrl: encodeURIComponent("http://localhost:5173/pay-success"),
-  //     vnp_TmnCode: "PH24SM6K",
-  //     vnp_TxnRef: "1211",
-  //     vnp_Version: "2.1.0",
-  //   };
-
-  //   let resultArray = [];
-  //   Object.keys(objecVNP).forEach((item) => {
-  //     resultArray.push(item + "=" + objecVNP[item]);
-  //   });
-  //   const query = resultArray.join("&");
-  //   console.log(query);
-  //   // console.log(query);
-  //   const hmac = Base64.stringify(hmacSHA512(query, vnp_SecureHash));
-  //   console.log(hmac);
-  //   console.log(hmacSHA512(query, vnp_SecureHash));
-  //   let url =
-  //     "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?" +
-  //     query +
-  //     "&vnp_SecureHash=" +
-  //     hmac;
-  //   window.open(url, "_blank");
-  //   // console.log("hello");
-  //   navigate("/");
-  // };
+  
 
   // useEffect(() => {}, [chooseAll]);
 

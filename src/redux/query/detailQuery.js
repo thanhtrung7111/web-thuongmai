@@ -4,7 +4,8 @@ import { errorServerOn } from "../reducer/exceptionReducer";
 import { toast } from "react-toastify";
 
 const axiosBaseQuery = fetchBaseQuery({
-  baseUrl: "/api",
+  // baseUrl: "/api",
+  baseUrl: import.meta.env.VITE_API_URL,
   timeout: 10000,
   prepareHeaders: (headers) => {
     headers.set(

@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ButtonForm from "../../components/commonForm/ButtonForm";
 
 const ErrorServer = () => {
   const navigate = useNavigate();
@@ -13,12 +14,11 @@ const ErrorServer = () => {
       <p className="text-gray-dark">
         Chúng tôi sẽ sớm khắc phục. Xin lỗi vì sự bất tiện này!
       </p>
-      <button
-        className="border-none rounded-lg py-1 px-3"
+      <ButtonForm
+        label={"Về đăng nhập"}
+        className="!w-fit mt-5"
         onClick={() => navigate("/login")}
-      >
-        Đăng nhập
-      </button>
+      ></ButtonForm>
     </div>
   );
 };

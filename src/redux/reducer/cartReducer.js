@@ -48,7 +48,10 @@ const cartSlice = createSlice({
       const index = state.productCarts.findIndex(
         (item) => item.PRDCCODE == action.payload.product.PRDCCODE
       );
-      state.productCarts[index] = action.payload.product;
+      state.productCarts[index] = {
+        ...action.payload.product,
+        checked: state.productCarts[index]?.checked,
+      };
     },
     deleteCartByUser: (state, action) => {
       state.productCarts = state.productCarts.filter(
