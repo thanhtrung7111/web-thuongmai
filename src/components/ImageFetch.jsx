@@ -8,6 +8,7 @@ import {
 } from "../redux/query/imageQuery";
 const ImageFetch = ({ url, id, className, imageDefault = "" }) => {
   const [image, setImage] = useState("");
+  const { errorServer } = useSelector((state) => state.exception);
   let countFetch = 0;
   // const urlDemo =
   //   "https://api-dev.firstems.com/Api/data/runApi_File?run_Code=DTA001&CompCode=PMC&DcmnCode=Product_New&Key_Code=PMC000000907001&Key_Load=00015218110920";
@@ -19,7 +20,10 @@ const ImageFetch = ({ url, id, className, imageDefault = "" }) => {
     isSuccess,
     isFetching,
     refetch,
-  } = useFetchImageQuery({ id: id, url: url }, { skip: !id });
+  } = useFetchImageQuery(
+    { id: id, url: url },
+    { skip: !id || errorServer.isError }
+  );
 
   // console.log(dataImage);
 
@@ -29,13 +33,13 @@ const ImageFetch = ({ url, id, className, imageDefault = "" }) => {
     };
     if (
       !(dataImage instanceof Blob) ||
-      (dataImage.size == 0 && countFetch <= 2)
+      (dataImage.size == 0 && countFetch <= 2 && isError == false)
     ) {
       fetchData();
       countFetch++;
       console.log("fetch");
     }
-  }, [dataImage]);
+  }, [dataImage, isError]);
 
   useEffect(() => {
     if (dataImage instanceof Blob) {

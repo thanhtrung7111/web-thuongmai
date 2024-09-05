@@ -123,6 +123,7 @@ const RowPayDetail = ({
   return (
     <>
       <div
+        onClick={closeNotify}
         className={`${
           notifyDelete ? "visible opacity-100" : "invisible opacity-0"
         } fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-5 z-50 flex justify-center items-center transition-opacityVisibility`}

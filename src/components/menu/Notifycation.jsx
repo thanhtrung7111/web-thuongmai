@@ -10,7 +10,7 @@ const Notifycation = () => {
   return (
     <div className="group/notify  flex items-center justify-center gap-x-1 text-gray relative text-sm cursor-pointer">
       <i className="ri-notification-line text-xl relative">
-        <div className="absolute -top-2 -right-3 bg-second w-5 h-5 text-[12px] text-white rounded-full flex items-center justify-center">
+        <div className="absolute -top-3 -right-3 bg-second w-6 h-6 text-[11px] text-white rounded-full flex items-center justify-center">
           {7}
         </div>
       </i>
@@ -20,20 +20,19 @@ const Notifycation = () => {
         <div className="absolute -top-2 right-10">
           <img src={Triangle} className="w-4 h-2" alt="" />
         </div>
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <h5 className="p-3 pb-1">Thông báo mới</h5>
           <div className="flex flex-col gap-y-2 px-3">
             <div
               className="flex gap-x-2 items-start border-b py-2"
               onClick={openEvaluate}
             >
-              {/* <div className=" flex-grow"> */}
+ 
               <img
                 src="https://picsum.photos/id/237/300/300"
                 className="size-20 object-cover object-center"
                 alt=""
               />
-              {/* </div> */}
               <div className=" flex flex-col gap-y-1">
                 <h5 className="text-xs font-bold text-gray-dark line-clamp-1">
                   Chương trình khuyến mãi đặc biệt
@@ -51,13 +50,13 @@ const Notifycation = () => {
               className="flex gap-x-2 items-start border-b py-2"
               onClick={openEvaluate}
             >
-              {/* <div className=" flex-grow"> */}
+
               <img
                 src="https://picsum.photos/id/237/300/300"
                 className="size-20 object-cover object-center"
                 alt=""
               />
-              {/* </div> */}
+
               <div className=" flex flex-col gap-y-1">
                 <h5 className="text-xs font-bold text-gray-dark line-clamp-1">
                   Chương trình khuyến mãi đặc biệt
@@ -75,7 +74,7 @@ const Notifycation = () => {
           <button className="bg-gray-100 py-2 hover:opacity-40 transition-opacity duration-150 text-sm">
             Xem thêm...
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
