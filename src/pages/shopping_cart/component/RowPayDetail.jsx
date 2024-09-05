@@ -145,7 +145,7 @@ const RowPayDetail = ({
             <ButtonForm
               disabled={isLoadingDelete}
               type="button"
-              className="!w-fit !bg-red-500 !px-6"
+              className="!w-fit !bg-red-500 !px-6 disabled:!bg-slate-500"
               onClick={closeNotify}
               label={"Hủy"}
             ></ButtonForm>
@@ -255,7 +255,7 @@ const RowPayDetail = ({
             <ButtonForm
               loading={isLoadingDelete}
               type="button"
-              className="!bg-red-600 !w-24 px-7 py-2 text-xs cursor-pointer disabled:bg-gray-400"
+              className="!bg-red-600 !w-24 px-7 py-2 text-xs cursor-pointer disabled:!bg-gray-400"
               onClick={openNotify}
               label={"Xóa"}
             ></ButtonForm>

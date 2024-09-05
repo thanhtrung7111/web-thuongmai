@@ -148,7 +148,7 @@ const ProductDetailEvaluate = ({ item }) => {
           {isLoadingEvaluate ? (
             "Đang tải dữ liệu"
           ) : evaluate.length == 0 ? (
-            <div className="italic text-gray-700">Chưa có đánh giá nào!</div>
+            <div className="italic text-gray-700">Chưa có đánh giá!</div>
           ) : (
             <>
               <div>

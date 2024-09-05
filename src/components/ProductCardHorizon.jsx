@@ -102,6 +102,7 @@ const ProductCardHorizon = ({
         </div>
         <ImageFetch
           url={item[image]}
+          id={item[id]}
           className={"!w-full !h-full"}
         ></ImageFetch>
       </div>
