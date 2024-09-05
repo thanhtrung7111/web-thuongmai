@@ -8,7 +8,7 @@ export default defineConfig({
   optimizeDeps: {
     // include: ["source-map-js", "path"],
   },
-  base: "/web-thuongmai/",
+  // base: "/web-thuongmai/",
   build: { chunkSizeWarningLimit: 1600 },
   define: { "process.env": {} },
   // server: {
