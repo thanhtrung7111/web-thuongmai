@@ -55,15 +55,17 @@ function App() {
   }, [token]);
   console.log(token);
   return isLoading ? (
-    <div className="h-screen w-screen flex items-center justify-center gap-x-5">
-      <SpinnerLoading
-        width={10}
-        height={10}
-        color="fill-second"
-      ></SpinnerLoading>
-      <p className="text-2xl text-gray-700 font-semibold">
-        Đang tải dữ liệu...
-      </p>
+    <div>
+      <div className="h-screen w-screen flex items-center justify-center gap-x-5">
+        <SpinnerLoading
+          width={10}
+          height={10}
+          color="fill-second"
+        ></SpinnerLoading>
+        <p className="text-2xl text-gray-700 font-semibold">
+          Đang tải dữ liệu...
+        </p>
+      </div>
     </div>
   ) : (
     <div>
