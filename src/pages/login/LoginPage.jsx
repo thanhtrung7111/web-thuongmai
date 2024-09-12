@@ -100,7 +100,7 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    if (isSuccessLogin) {
+    if (isSuccessLogin && dataLogin?.RETNDATA != "") {
       setCompList(dataLogin?.RETNDATA?.COMPLIST);
       setLctnList(dataLogin?.RETNDATA?.COMPLIST[0].LCTNLIST);
     }
