@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { errorServerOn } from "../reducer/exceptionReducer";
 import { toast } from "react-toastify";
+import { apiQueue } from "./commonQuery";
 const axiosBaseQuery = fetchBaseQuery({
   // baseUrl: "/api",
   baseUrl: import.meta.env.VITE_API_URL,
@@ -37,17 +38,20 @@ export const evaluateApiSlice = createApi({
   tagTypes: ["Evaluates"],
   endpoints: (builder) => ({
     fetchEvaluate: builder.mutation({
-      query: (data) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA004",
-        method: "POST",
-        body: {
-          DCMNCODE: "INPMARKESTM",
-          // "PARACODE": "<Mã tham số> ",
-          CONDFLTR: "PRDCCODE = '" + data + "'",
-          PAGELINE: "0",
-          PAGENUMB: "1",
-        },
-      }),
+      queryFn: async (data, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA004",
+            method: "POST",
+            body: {
+              DCMNCODE: "INPMARKESTM",
+              CONDFLTR: "PRDCCODE = '" + data + "'",
+              PAGELINE: "0",
+              PAGENUMB: "1",
+            },
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
@@ -58,14 +62,18 @@ export const evaluateApiSlice = createApi({
       },
     }),
     postEvaluate: builder.mutation({
-      query: (data) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA007",
-        method: "POST",
-        body: {
-          DCMNCODE: "INPMARKESTM",
-          HEADER: [{ ...data }],
-        },
-      }),
+      queryFn: async (data, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA007",
+            method: "POST",
+            body: {
+              DCMNCODE: "INPMARKESTM",
+              HEADER: [{ ...data }],
+            },
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;

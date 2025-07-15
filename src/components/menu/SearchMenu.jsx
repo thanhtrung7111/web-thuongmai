@@ -127,10 +127,10 @@ const SearchMenu = () => {
   //   setKeyWord(dataFind[indexMove]);
   // }, [indexMove]);
   return (
-    <div className="relative w-[400px] items-center border-b justify-between px-0 pr-4 pl-3 h-10 hidden lg:flex">
+    <div className="relative w-[550px] items-center border rounded-md justify-between px-0 pr-4 pl-3 h-10 hidden lg:flex">
       <input
         type="text"
-        className="outline-none flex-auto tracking-widest text-xs text-gray-dark placeholder:font-extralight"
+        className="outline-none flex-auto text-sm text-gray-dark placeholder:font-medium"
         placeholder="Tìm sản phẩm, thương hiệu..."
         onChange={handleChangeSearch}
         onFocus={() => setFocus(true)}

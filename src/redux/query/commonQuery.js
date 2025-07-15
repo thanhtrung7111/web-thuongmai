@@ -2,10 +2,12 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { toast } from "react-toastify";
 import { errorServerOn } from "../reducer/exceptionReducer";
 import CryptoJS from "crypto-js";
+import PQueue from "p-queue";
 
 const encryptAES = (path) => {
   return CryptoJS.AES.encrypt(path, secretKey).toString();
 };
+export const apiQueue = new PQueue({ concurrency: 4 });
 const axiosBaseQuery = fetchBaseQuery({
   // baseUrl: "/api",
   baseUrl: import.meta.env.VITE_API_URL,
@@ -62,22 +64,26 @@ export const commonApiSlice = createApi({
   refetchOnFocus: true,
   endpoints: (builder) => ({
     fetchProducts: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA004",
-        method: "POST",
-        body: {
-          DCMNCODE: "appPrdcList",
-          PARACODE: "001",
-          LCTNCODE: "001",
-          LGGECODE: "{{0302}}",
-          SCTNCODE: 1,
-          JSTFDATE: "1990-01-01",
-          KEY_WORD: "%",
-          SHOPCODE: "%",
-          CUSTCODE: "%",
-          reload: true,
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA004",
+            method: "POST",
+            body: {
+              DCMNCODE: "appPrdcList",
+              PARACODE: "001",
+              LCTNCODE: "001",
+              LGGECODE: "{{0302}}",
+              SCTNCODE: 1,
+              JSTFDATE: "1990-01-01",
+              KEY_WORD: "%",
+              SHOPCODE: "%",
+              CUSTCODE: "%",
+              reload: true,
+            },
+          })
+        );
+      },
       providesTags: ["lstProduct"],
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -102,13 +108,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchWareHouse: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstWareHouse",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstWareHouse",
+            },
+          })
+        );
+      },
       providesTags: ["lstWareHouse"],
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -129,13 +139,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchLocation: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstLocation",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstLocation",
+            },
+          })
+        );
+      },
       providesTags: "lstLocation",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -156,13 +170,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchCUOM: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstCUOM",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstCUOM",
+            },
+          })
+        );
+      },
       providesTags: "lstCUOM",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -183,13 +201,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchTimeType: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstTimeType",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstTimeType",
+            },
+          })
+        );
+      },
       providesTags: "lstTimeType",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -210,13 +232,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchDlvrType: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstDlvrType",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstDlvrType",
+            },
+          })
+        );
+      },
       providesTags: "lstDlvrType",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -237,13 +263,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchDCmnSbcd: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstDcmnSbCd",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstDcmnSbCd",
+            },
+          })
+        );
+      },
       providesTags: "lstDcmnSbCd",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -264,13 +294,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchDlvrMthd: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstDlvrMthd",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstDlvrMthd",
+            },
+          })
+        );
+      },
       providesTags: "lstDlvrMthd",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -291,13 +325,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchListHour: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstListHour",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstListHour",
+            },
+          })
+        );
+      },
       providesTags: "lstListHour",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -318,13 +356,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchInpCustOdMtPayMthd2: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lst_inpCustOdMt_Pay_Mthd_2",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lst_inpCustOdMt_Pay_Mthd_2",
+            },
+          })
+        );
+      },
       providesTags: "lst_inpCustOdMt_Pay_Mthd_2",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -345,13 +387,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchQUOM: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstQUOM ",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstQUOM ",
+            },
+          })
+        );
+      },
       providesTags: "lstQUOM",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -372,21 +418,25 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchPmtPmtnPrgr: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA017",
-        method: "POST",
-        body: {
-          DCMNCODE: "pmtPmtnPrgr",
-          LCTNCODE: "001",
-          LGGECODE: "{{0302}}",
-          BEG_DATE: "1990-01-01",
-          PARA_001: "1",
-          PARA_002: "%",
-          PARA_003: "2",
-          PARA_004: "%",
-          PARA_005: "2",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA017",
+            method: "POST",
+            body: {
+              DCMNCODE: "pmtPmtnPrgr",
+              LCTNCODE: "001",
+              LGGECODE: "{{0302}}",
+              BEG_DATE: "1990-01-01",
+              PARA_001: "1",
+              PARA_002: "%",
+              PARA_003: "2",
+              PARA_004: "%",
+              PARA_005: "2",
+            },
+          })
+        );
+      },
       providesTags: "pmtPmtnPrgr",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -407,13 +457,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchCustomerGroup: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstCustomerGroup",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstCustomerGroup",
+            },
+          })
+        );
+      },
       providesTags: "lstCustomerGroup",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -436,13 +490,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchMaktStdr: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstMaktStdr",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstMaktStdr",
+            },
+          })
+        );
+      },
       providesTags: " lstMaktStdr",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -465,13 +523,17 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchProvince: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstProvince",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstProvince",
+            },
+          })
+        );
+      },
       providesTags: "lstProvince",
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -494,14 +556,18 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchDistrict: builder.mutation({
-      query: (provinceCode) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstDistrict",
-          CONDFLTR: "PrvnCode='" + provinceCode + "'",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstDistrict",
+              CONDFLTR: "PrvnCode='" + provinceCode + "'",
+            },
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
@@ -515,14 +581,18 @@ export const commonApiSlice = createApi({
       },
     }),
     fetchWard: builder.mutation({
-      query: (districtCode) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA002",
-        method: "POST",
-        body: {
-          LISTCODE: "lstWard",
-          CONDFLTR: "DistCode='" + districtCode + "'",
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: {
+              LISTCODE: "lstWard",
+              CONDFLTR: "DistCode='" + districtCode + "'",
+            },
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;

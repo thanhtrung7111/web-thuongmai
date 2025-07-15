@@ -416,7 +416,7 @@ const ProductListPage = () => {
                         })}
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-4 mb-10 lg:grid-cols-3  xl:grid-cols-5 ">
+                    <div className="grid grid-cols-2 gap-4 mb-10 lg:grid-cols-3  xl:grid-cols-4 ">
                       {productList
                         ?.slice(
                           (currentPage - 1) * pageSize,

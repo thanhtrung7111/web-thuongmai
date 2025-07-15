@@ -13,7 +13,7 @@ const InputFormikForm = ({
     <div className="flex flex-col gap-y-1 w-full">
       {label && (
         <label htmlFor="">
-          <span className="text-gray-600">{label} </span>{" "}
+          <span className="text-gray-500 font-medium">{label} </span>{" "}
           {important && <span className="text-red-500">*</span>}
         </label>
       )}
@@ -29,7 +29,7 @@ const InputFormikForm = ({
         disabled={disabled}
         className={`${
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
-        } px-3 py-3 text-sm disabled:bg-slate-50 border outline-none rounded-sm w-full`}
+        } px-3 py-2 text-sm disabled:bg-slate-50 border outline-none rounded-md w-full`}
       />
       {meta.error && meta.touched && (
         <span className="text-red-500 text-xs">{meta.error}</span>

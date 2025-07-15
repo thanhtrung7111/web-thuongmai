@@ -36,7 +36,7 @@ const RowCart = ({
       </div>
       <div className="flex flex-auto gap-x-10">
         <div className="flex-auto text-start flex flex-col gap-y-1">
-          <h5 className="line-clamp-2 font-medium text-gray-dark text-sm">
+          <h5 className="line-clamp-2 text-slate-500 text-sm font-semibold">
             {item[name]}
           </h5>
           {/* <div className="flex items-center gap-x-2">
@@ -64,7 +64,7 @@ const RowCart = ({
             </div>
           </div> */}
           <div className="flex items-baseline gap-x-2">
-            <span className="text-xs">Giá sản phẩm: </span>
+            <span className="text-xs text-slate-400">Giá sản phẩm: </span>
             <span className="font-semibold text-second flex items-start text-base">
               {(
                 item[price] -

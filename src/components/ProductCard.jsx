@@ -89,56 +89,55 @@ const ProductCard = ({
       }}
       className={`group/product cursor-pointer relative bg-white shadow-sm w-full rounded-lg border overflow-hidden border-gray-200 flex flex-col items-center`}
     >
-      <div className="relative w-full h-40 mb-3 overflow-hidden">
-        <div className="text-xs absolute top-2 left-2 bg-slate-500 px-2 py-1 text-white z-10 rounded-md">
-          {item[unit]}
-        </div>
-
-        <div className="opacity-0 group-hover/product:opacity-100 transition-opacity duration-300 absolute top-0 right-0 h-full w-full bg-black bg-opacity-20 flex items-center justify-center">
+      <div className="relative w-full h-48 object-contain mb-3 overflow-hidden">
+        {/* <div className="opacity-0 group-hover/product:opacity-100 transition-opacity duration-300 absolute top-0 right-0 h-full w-full bg-black bg-opacity-20 flex items-center justify-center">
           <button
             type="button"
             className="text-xs text-white bg-first bg-opacity-95 py-2 px-5 rounded-sm hover:opacity-85"
           >
             <i class="ri-error-warning-line font-thin"></i> Xem chi tiết
           </button>
-        </div>
+        </div> */}
         <ImageFetch
           url={item[image]}
           id={item[id]}
           className={"!w-full !h-full"}
         ></ImageFetch>
-        {item[discount] > 0 && (
-          <div className="absolute top-0 right-0 text-xs p-1 bg-red-600 text-white">
-            -{item[discount]}%
-          </div>
-        )}
       </div>
-      <div className="flex flex-col gap-y-1 w-full px-5 pb-8">
+      <div className="flex flex-col gap-y-1 w-full px-5 pb-3">
         <h5
-          className="line-clamp-2 font-semibold text-sm text-gray-600 h-10"
+          className="line-clamp-2 font-semibold text-base text-gray-600 max-h-12"
           title={item[name]}
         >
           {item[name]}
-        </h5>
-        <div className="flex gap-x-1">
-          <span className="text-second font-semibold text-xl flex items-start">
+        </h5>{" "}
+        <div className="text-xs bg-slate-200 px-3 py-2 text-slate-500 z-10 rounded-md">
+          Loại: {item[unit]}
+        </div>
+        <div className="flex gap-x-1 flex-col">
+          <div className="flex items-center gap-x-1">
+            <span className="text-gray-light font-thin text-base  line-through flex items-start">
+              {item[saleOff] < item[price] &&
+                item[price]?.toLocaleString("vi", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+            </span>
+            {item[discount] > 0 && (
+              <div className="text-sm p-1 text-second">-{item[discount]}%</div>
+            )}
+          </div>
+          <span className="text-red-500 font-bold text-2xl flex items-start">
             {item[saleOff]?.toLocaleString("vi", {
               style: "currency",
               currency: "VND",
             })}
           </span>
-          <span className="text-gray-light font-thin text-sm  line-through flex items-start">
-            {item[saleOff] < item[price] &&
-              item[price]?.toLocaleString("vi", {
-                style: "currency",
-                currency: "VND",
-              })}
-          </span>
         </div>
         <div className="flex items-end justify-between w-full">
           <div className="flex flex-col gap-y-1 curso">
             <p className="text-xs font-medium text-gray-dark flex items-center gap-x-1">
-              Đánh giá:{" "}
+              <span className="italic">Đánh giá:</span>
               <span className="rounded-md px-1 py-[1px] flex items-center justify-between text-white bg-second text-[10px] gap-x-[1px]">
                 {item[stars] ? item[stars] : 5} <i class="ri-star-fill"></i>
               </span>{" "}
@@ -152,7 +151,7 @@ const ProductCard = ({
             </p>
 
             <p className="text-xs font-medium text-gray-dark flex items-center gap-x-1">
-              Đã bán:{" "}
+              <span className="italic"> Đã bán:</span>
               <span className="font-thin text-xs">
                 {item[sold] ? item[sold] : Math.round(Math.random() * 100)}
               </span>
@@ -160,7 +159,7 @@ const ProductCard = ({
           </div>
         </div>
       </div>
-      <button
+      {/* <button
         type="button"
         title="Thêm vào giỏ hàng"
         disabled={isLoadingAdd}
@@ -191,7 +190,7 @@ const ProductCard = ({
         ) : (
           <i class="ri-shopping-cart-line text-white"></i>
         )}
-      </button>
+      </button> */}
     </div>
   );
 };

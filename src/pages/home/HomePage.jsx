@@ -7,37 +7,54 @@ import BannerSmall2 from "../../assets/img/bannersmall2.png";
 import Asus from "../../assets/img/asus.jpg";
 import { useSelector } from "react-redux";
 import HomeSkeleton from "./component/HomeSkeleton";
-import { useLazyFetchProductsQuery } from "../../redux/query/commonQuery";
+import {
+  useFetchProductsQuery,
+  useLazyFetchProductsQuery,
+} from "../../redux/query/commonQuery";
 import BannerSlider from "../../components/BannerSlider";
 import ProductSlider from "../../components/ProductSlider";
 import CategorySlider from "../../components/CategorySlider";
 import Wrapper from "../../components/Wrapper";
+import ProductCatalog from "../../components/menu/ProductCatalog";
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomePage = () => {
   const tokenLocation = sessionStorage.getItem("tokenLocation");
   const tokenInitial = sessionStorage.getItem("tokenInitial");
   const { errorServer } = useSelector((state) => state.exception);
-  const [
-    fetchProduct,
-    { data: products, refetch, isFetching, isLoading, isUninitialized },
-  ] = useLazyFetchProductsQuery(undefined, { skip: errorServer.isError });
 
+  const {
+    data: products,
+    refetch,
+    isFetching,
+    isLoading,
+  } = useFetchProductsQuery();
   // const [getProducts, { isLoading: loadingProducts, isError }] =
   //   useGetProductsMutation();
 
+  // useEffect(() => {
+  //   if (tokenLocation != null || tokenInitial) {
+  //     fetchProduct();
+  //   }
+  // }, [tokenLocation]);
   useEffect(() => {
-    if (tokenLocation != null || tokenInitial) {
-      fetchProduct();
-    }
-  }, [tokenLocation]);
-  return isLoading ? (
+    navigator.storage.estimate().then(({ usage, quota }) => {
+      const usedMB = (usage / 1024 / 1024).toFixed(2);
+      const totalMB = (quota / 1024 / 1024).toFixed(2);
+      console.log(`Đã dùng: ${usedMB} MB`);
+      console.log(`Tổng quota: ${totalMB} MB`);
+    });
+  }, []);
+  return isFetching ? (
     <HomeSkeleton />
   ) : (
     <>
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
-        <Wrapper padding={0}>
-          <div className="xl:container mx-auto mb-5">
-            <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3">
+      <div className="max-w-7xl mx-auto mb-5">
+        <div className="xl:container mx-auto mb-5">
+          <div className="flex gap-x-2">
+            <div className="w-64 shrink-0">
+              <ProductCatalog></ProductCatalog>
+            </div>
+            <div className="flex-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3 py-1">
               <BannerSlider data={dataBanner}></BannerSlider>
               <div className="grid lg:grid-rows-2 gap-3 grid-cols-2 grid-rows-1 lg:grid-cols-1">
                 <img
@@ -52,8 +69,10 @@ const HomePage = () => {
                 />
               </div>
             </div>
-            <div className=" grid-cols-3 px-10 py-3 items-center justify-between lg:grid hidden">
-              <div className="flex items-center gap-x-3 justify-center">
+          </div>
+          <div className=" grid-cols-3 gap-x-3 py-3 items-center justify-between lg:grid hidden">
+            <Wrapper>
+              <div className="flex items-center gap-x-3 justify-center py-5">
                 <i className="ri-refresh-line text-second text-4xl"></i>
                 <div>
                   <h6 className="font-semibold text-sm">
@@ -64,7 +83,9 @@ const HomePage = () => {
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-x-3 justify-center">
+            </Wrapper>
+            <Wrapper>
+              <div className="flex items-center gap-x-3 justify-center py-5">
                 <i className="ri-shield-cross-fill text-second text-4xl"></i>
                 <div>
                   <h6 className="font-semibold text-sm">
@@ -75,7 +96,9 @@ const HomePage = () => {
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-x-3 justify-center">
+            </Wrapper>
+            <Wrapper>
+              <div className="flex items-center gap-x-3 justify-center py-5">
                 <i className="ri-caravan-fill text-second text-4xl"></i>
                 <div>
                   <h6 className="font-semibold text-sm">Miễn phí vận chuyển</h6>
@@ -84,16 +107,16 @@ const HomePage = () => {
                   </span>
                 </div>
               </div>
-            </div>
+            </Wrapper>
           </div>
-        </Wrapper>
+        </div>
       </div>
       {/* SẢN PHẢM BÁN CHẠY  */}
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      <div className="mx-auto max-w-7xl mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="font-medium text-2xl text-first">
+              <h4 className="text-slate-600 text-2xl font-semibold">
                 Sản phẩm bán chạy
               </h4>
               <a href="#" className="text-gray-light text-sm hover:text-second">
@@ -116,11 +139,13 @@ const HomePage = () => {
           </div>
         </Wrapper>
       </div>
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      <div className="mx-auto max-w-7xl mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="font-medium text-2xl text-first">Danh mục</h4>
+              <h4 className="text-2xl text-slate-600 font-semibold">
+                Danh mục
+              </h4>
               <a href="#" className="text-gray-light text-sm hover:text-second">
                 Xem thêm <i className="ri-arrow-right-s-line"></i>
               </a>
@@ -154,11 +179,11 @@ const HomePage = () => {
         </Wrapper>
       </div>
       {/* SẢN PHẢM NỔI BẬT  */}
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      <div className="mx-auto max-w-7xl mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="font-medium text-2xl text-first">
+              <h4 className="text-2xl text-slate-600 font-semibold">
                 Sản phẩm nổi bật
               </h4>
               <a href="#" className="text-gray-light text-sm hover:text-second">

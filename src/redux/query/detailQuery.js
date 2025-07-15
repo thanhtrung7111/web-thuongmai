@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import session from "redux-persist/lib/storage/session";
 import { errorServerOn } from "../reducer/exceptionReducer";
 import { toast } from "react-toastify";
+import { apiQueue } from "./commonQuery";
 
 const axiosBaseQuery = fetchBaseQuery({
   // baseUrl: "/api",
@@ -39,11 +40,15 @@ export const detailApiSlice = createApi({
   tagTypes: ["ProductDetail", "OrderDetail"],
   endpoints: (builder) => ({
     fetchDetailProduct: builder.mutation({
-      query: (data) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA005",
-        method: "POST",
-        body: data,
-      }),
+      queryFn: async (data, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA005",
+            method: "POST",
+            body: data,
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;

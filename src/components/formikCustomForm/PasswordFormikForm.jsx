@@ -7,13 +7,13 @@ const PasswordFormikForm = ({ label, important = false, ...props }) => {
   return (
     <div className="flex flex-col gap-y-1 w-full">
       <label htmlFor="">
-        <span className="text-gray-600">{label} </span>{" "}
+        <span className="text-gray-500">{label} </span>{" "}
         {important && <span className="text-red-500">*</span>}
       </label>
       <div
         className={`${
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
-        } px-3 py-3 text-sm border outline-none rounded-sm w-full flex`}
+        } px-3 py-2 text-sm border outline-none rounded-md w-full flex`}
       >
         <input
           {...props}

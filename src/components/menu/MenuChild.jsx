@@ -79,7 +79,7 @@ const MenuChild = () => {
         onClick={closeOverlay}
       ></div>
       <div className="shadow-md py-2 border-b bg-[#ff8c4a]">
-        <div className="xl:container xl:mx-auto flex justify-between mx-5">
+        <div className="max-w-7xl mx-auto flex justify-between">
           <div className="flex gap-x-4">
             <div
               className="text-white cursor-pointer lg:hidden"
@@ -98,7 +98,25 @@ const MenuChild = () => {
                 <i class="ri-arrow-left-double-line text-2xl"></i>
               </div>
 
-              {data.map((item) => (
+              <div className="flex items-center gap-x-5">
+                <div className="text-white flex gap-x-1 items-center">
+                  <i className="ri-store-2-line"></i>
+                  <span className="text-xs">Hệ thống cửa hàng</span>
+                </div>
+                <div className="text-white flex gap-x-1 items-center">
+                  <i className="ri-headphone-line"></i>
+                  <span className="text-xs">Hotline: 1900 5252</span>
+                </div>{" "}
+                <div className="text-white flex gap-x-1 items-center">
+                  <i className="ri-discount-percent-line"></i>
+                  <span className="text-xs">Khuyến mãi</span>
+                </div>{" "}
+                <div className="text-white flex gap-x-1 items-center">
+                  <i className="ri-file-search-line"></i>
+                  <span className="text-xs">Tra cứu đơn hàng</span>
+                </div>
+              </div>
+              {/* {data.map((item) => (
                 <SubMenu
                   key={item[name]}
                   link={item.link}
@@ -108,7 +126,7 @@ const MenuChild = () => {
                   level={1}
                   handleCloseMenu={handleCloseShowMenu}
                 ></SubMenu>
-              ))}
+              ))} */}
             </div>
           </div>
 
@@ -118,7 +136,7 @@ const MenuChild = () => {
               className="group/download relative flex items-center gap-x-1 text-white w-fit cursor-pointer transition-colors duration-150 pr-3 border-r"
             >
               <img src={Phone} alt="" className="w-5" />
-              <span className="text-sm font-medium">Tải ứng dụng</span>
+              <span className="text-xs font-medium">Tải ứng dụng</span>
 
               <div className="absolute  border border-gray-200 rounded-md invisible opacity-0 group-hover/download:visible group-hover/download:opacity-100 transition-opacityVisibility z-50 top-[130%] -right-2 bg-white w-72 shadow-sm border-t px-4 py-8 text-center before:absolute before:w-full before:h-5 before:bg-transparent before:-top-4 before:right-0">
                 <div className="absolute -top-2 right-14 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-white"></div>
@@ -143,9 +161,9 @@ const MenuChild = () => {
             </div>
             <div
               href="#"
-              className="flex items-center gap-x-2 text-white w-fit cursor-pointer transition-colors duration-150 "
+              className="flex items-center gap-x-2 text-white w-fit cursor-pointer transition-colors duration-150"
             >
-              <span className="text-sm font-medium flex items-center gap-x-2">
+              <span className="text-xs font-medium flex items-center gap-x-2">
                 <img src={IconVN} alt="" className="w-6" />
                 Tiếng Việt
               </span>

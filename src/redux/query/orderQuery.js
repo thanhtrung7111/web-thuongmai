@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { toast } from "react-toastify";
 import { errorServerOn } from "../reducer/exceptionReducer";
+import { apiQueue } from "./commonQuery";
 
 const axiosBaseQuery = fetchBaseQuery({
   // baseUrl: "/api",
@@ -40,25 +41,33 @@ export const orderApiSlice = createApi({
   tagTypes: ["Orders", "Receipts"],
   endpoints: (builder) => ({
     postNewOrder: builder.mutation({
-      query: (data) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA007",
-        method: "POST",
-        body: {
-          DCMNCODE: "DDHKH",
-          HEADER: [{ ...data }],
-        },
-      }),
+      queryFn: async (data, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA007",
+            method: "POST",
+            body: {
+              DCMNCODE: "DDHKH",
+              HEADER: [{ ...data }],
+            },
+          })
+        );
+      },
       providesTags: ["Orders"],
     }),
     deleteOrder: builder.mutation({
-      query: (data) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA009",
-        method: "POST",
-        body: {
-          DCMNCODE: "DDHKH",
-          KEY_CODE: data,
-        },
-      }),
+      queryFn: async (data, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA009",
+            method: "POST",
+            body: {
+              DCMNCODE: "DDHKH",
+              KEY_CODE: data,
+            },
+          })
+        );
+      },
       providesTags: ["Orders"],
     }),
     postNewReceipt: builder.mutation({

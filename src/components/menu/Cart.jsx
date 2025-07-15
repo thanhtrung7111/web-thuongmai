@@ -83,7 +83,7 @@ const Cart = () => {
           <div className="relative">
             <i className="ri-shopping-cart-line text-xl"></i>
             {productCarts?.length > 0 && (
-              <div className="absolute -top-3 -right-3 bg-second w-6 h-6 text-[11px] text-white rounded-full flex items-center justify-center">
+              <div className="absolute -top-3 -right-3 bg-second w-5 h-5 text-[11px] text-white rounded-full flex items-center justify-center">
                 {productCarts?.length}
               </div>
             )}
@@ -106,7 +106,7 @@ const Cart = () => {
             ></i>
           </div>
           <h3 className="text-lg text-gray-500 font-normal text-start relative pb-2">
-            Sản phẩm trong giỏ
+            Sản phẩm
           </h3>
           {productCarts != null && productCarts?.length != 0 ? (
             <div className={`flex flex-col overflow-y-scroll h-96  shadow-sm`}>
@@ -144,11 +144,14 @@ const Cart = () => {
           )}
           {productCarts != null && productCarts?.length != 0 && (
             <div className="flex items-center justify-between mt-3 text-gray-dark text-sm">
-              <span>Tổng sản phẩm: {productCarts?.length}</span>
+              <div>
+                <span className="font-medium">Tổng sản phẩm: </span>
+                {productCarts?.length}
+              </div>
               <button
                 type="button"
                 onClick={handlePayment}
-                className="px-5 py-2 bg-second text-white hover:opacity-90 transition-all duration-100 text-xs rounded-sm"
+                className="px-5 py-2 bg-second text-white hover:opacity-90 transition-all duration-100 text-xs rounded-md cursor-pointer"
               >
                 Xem giỏ hàng
               </button>

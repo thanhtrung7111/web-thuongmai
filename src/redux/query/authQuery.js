@@ -8,6 +8,7 @@ import {
   saveTokenLocation,
   saveTokenUser,
 } from "../reducer/userReducer";
+import { apiQueue } from "./commonQuery";
 
 const axiosBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
@@ -45,15 +46,19 @@ export const authApiSlice = createApi({
   refetchOnFocus: true,
   endpoints: (builder) => ({
     fetchInitialToken: builder.query({
-      query: () => ({
-        url: "/Api/data/runApi_Syst?run_Code=SYS001",
-        method: "POST",
-        body: {
-          COMPCODE: "PMC",
-          APP_CODE: "AER",
-          SYSTCODE: 4,
-        },
-      }),
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Syst?run_Code=SYS001",
+            method: "POST",
+            body: {
+              COMPCODE: "PMC",
+              APP_CODE: "AER",
+              SYSTCODE: 4,
+            },
+          })
+        );
+      },
       providesTags: ["initialToken"],
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
@@ -77,11 +82,15 @@ export const authApiSlice = createApi({
       },
     }),
     login: builder.mutation({
-      query: (credential) => ({
-        url: "/Api/data/runApi_Syst?run_Code=SYS010",
-        method: "POST",
-        body: credential,
-      }),
+      queryFn: async (credential, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Syst?run_Code=SYS010",
+            method: "POST",
+            body: credential,
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
@@ -100,11 +109,15 @@ export const authApiSlice = createApi({
       },
     }),
     loginLCTN: builder.mutation({
-      query: (credential) => ({
-        url: "/Api/data/runApi_Syst?run_Code=SYS006",
-        method: "POST",
-        body: credential,
-      }),
+      queryFn: async (credential, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Syst?run_Code=SYS006",
+            method: "POST",
+            body: credential,
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
@@ -122,11 +135,15 @@ export const authApiSlice = createApi({
       },
     }),
     registerAccount: builder.mutation({
-      query: (credential) => ({
-        url: "/Api/data/runApi_Syst?run_Code=SYS007",
-        method: "POST",
-        body: credential,
-      }),
+      queryFn: async (credential, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Syst?run_Code=SYS006",
+            method: "POST",
+            body: credential,
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;

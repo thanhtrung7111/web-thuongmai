@@ -33,6 +33,7 @@ function App() {
   const [count, setCount] = useState(0);
   const {
     data: token,
+    isFetching,
     isLoading,
     isError,
     refetch,
@@ -54,7 +55,7 @@ function App() {
     }
   }, [token]);
   console.log(token);
-  return isLoading ? (
+  return isFetching ? (
     <div>
       <div className="h-screen w-screen flex items-center justify-center gap-x-5">
         <SpinnerLoading

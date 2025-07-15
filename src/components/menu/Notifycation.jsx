@@ -9,13 +9,13 @@ const Notifycation = () => {
   };
   return (
     <div className="group/notify  flex items-center justify-center gap-x-1 text-gray relative text-sm cursor-pointer">
-      <i className="ri-notification-line text-xl relative">
-        <div className="absolute -top-3 -right-3 bg-second w-6 h-6 text-[11px] text-white rounded-full flex items-center justify-center">
+      <div className="relative">
+        <i className="ri-notification-line text-xl"></i>
+        <div className="absolute -top-3 -right-3 bg-second w-5 h-5 text-[11px] text-white rounded-full flex items-center justify-center">
           {7}
         </div>
-      </i>
+      </div>
       <span className="hidden md:block">Thông báo</span>
-
       {/* <div className="lg:rounded-lg invisible lg:opacity-0 lg:border-gray-200 lg:border  lg:group-hover/notify:visible lg:group-hover/notify:opacity-100 duration-300 transition-opacityVisibility absolute bg-white top-[120%] -right-[10%] w-96 flex-col gap-y-2 shadow-md rounded-sm border-t z-50 after:absolute after:h-5 after:contents-[''] after:w-1/2 after:bg-transparent after:-top-[5%] after:right-0">
         <div className="absolute -top-2 right-10">
           <img src={Triangle} className="w-4 h-2" alt="" />

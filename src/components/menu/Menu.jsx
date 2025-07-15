@@ -40,21 +40,28 @@ const Menu = () => {
   }, []);
   return (
     <>
+      <MenuChild></MenuChild>
       <div className="py-2 border-b sticky top-0 bg-white z-30 shadow-md">
-        <div className="xl:container xl:mx-auto mx-5">
-          <div className="flex items-center gap-x-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-x-3">
             {/* logo  */}
-            <div
-              onClick={() => {
-                window.scroll(0, 0);
-                navigate("/");
-              }}
-              className="md:h-16 h-14 cursor-pointer"
-            >
-              <img loading="lazy" src={Logo} alt="" className="h-full" />
+            <div className="flex items-center">
+              <div
+                onClick={() => {
+                  window.scroll(0, 0);
+                  navigate("/");
+                }}
+                className="md:h-16 h-14 cursor-pointer flex items-center"
+              >
+                <img loading="lazy" src={Logo} alt="" className="h-full" />
+              </div>
+              <button className="text-sm flex gap-x-2 text-white bg-second  rounded-md px-2 py-2">
+                <i className="ri-menu-line"></i>
+                <span>Danh mục sản phẩm</span>
+              </button>
             </div>
 
-            <div className="flex gap-x-2 flex-auto md:gap-x-8 justify-end">
+            <div className="flex gap-x-1 flex-auto md:gap-x-8 justify-end">
               <SearchMenu></SearchMenu>
               <div className="flex items-center gap-x-8">
                 <Cart></Cart>
@@ -121,7 +128,6 @@ const Menu = () => {
           </div>
         </div>
       </div>
-      <MenuChild></MenuChild>
     </>
   );
 };

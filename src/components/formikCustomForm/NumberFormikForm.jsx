@@ -30,7 +30,7 @@ const NumberFormikForm = ({
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
         } px-3 ${
           disabled && "bg-slate-100"
-        } py-3 flex items-center text-sm  border outline-none rounded-sm w-full`}
+        } py-2 flex items-center text-sm  border outline-none rounded-md w-full`}
       >
         <input
           {...props}

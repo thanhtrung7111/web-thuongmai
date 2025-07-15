@@ -2,6 +2,9 @@ import axios from "axios";
 import { useContext } from "react";
 import { logout, saveCurrentUrl } from "../redux/reducer/userReducer";
 import { clearCart } from "../redux/reducer/cartReducer";
+import PQueue from "p-queue";
+
+const queue = new PQueue({ concurrency: 2 });
 
 export let store;
 export const injectStore = (_store) => {
@@ -53,18 +56,20 @@ apiFetchLogin.interceptors.response.use(
   }
 );
 
-export const loginCustom = (body) => {
-  try {
-    const result = apiFetchLogin.post(
-      "/Api/data/runApi_Syst?run_Code=SYS010",
-      body
-    );
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+export const loginCustom = async (body) => {
+  return queue.add(async () => {
+    try {
+      const result = await apiFetchLogin.post(
+        "/Api/data/runApi_Syst?run_Code=SYS010",
+        body
+      );
+      console.log(result);
+      return result;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  });
 };
 
 const apiFetchData = axios.create({
@@ -129,127 +134,146 @@ apiFetchData.interceptors.response.use(
   }
 );
 
-export const fetchLocationData = (body) => {
-  try {
-    const result = apiFetchData.post(
-      "/Api/data/runApi_Syst?run_Code=SYS006",
-      body
-    );
-    return result;
-  } catch (error) {
-    return error;
-  }
+export const fetchLocationData = async (body) => {
+  return queue.add(async () => {
+    try {
+      const result = await apiFetchData.post(
+        "/Api/data/runApi_Syst?run_Code=SYS006",
+        body
+      );
+      return result;
+    } catch (error) {
+      return error;
+    }
+  });
 };
 
-export const fetchCategoryList = (body) => {
-  try {
-    const result = apiFetchData.post(
-      "/Api/data/runApi_Data?run_Code=DTA002",
-      body
-    );
-    return result;
-  } catch (error) {
-    return error;
-  }
+export const fetchCategoryList = async (body) => {
+  return queue.add(async () => {
+    try {
+      const result = await apiFetchData.post(
+        "/Api/data/runApi_Data?run_Code=DTA002",
+        body
+      );
+      return result;
+    } catch (error) {
+      return error;
+    }
+  });
 };
 
-export const fetchListData = (body) => {
-  try {
-    const result = apiFetchData.post(
-      "/Api/data/runApi_Data?run_Code=DTA003",
-      body
-    );
-    return result;
-  } catch (error) {
-    return error;
-  }
+export const fetchListData = async (body) => {
+  return queue.add(async () => {
+    try {
+      const result = await apiFetchData.post(
+        "/Api/data/runApi_Data?run_Code=DTA003",
+        body
+      );
+      return result;
+    } catch (error) {
+      return error;
+    }
+  });
 };
 
-export const postData = (body) => {
-  try {
-    const result = apiFetchData.post(
-      "/Api/data/runApi_Data?run_Code=DTA007",
-      body
-    );
+export const postData = async (body) => {
+  return queue.add(async () => {
+    try {
+      const result = await apiFetchData.post(
+        "/Api/data/runApi_Data?run_Code=DTA007",
+        body
+      );
 
-    return result;
-  } catch (error) {
-    return error;
-  }
+      return result;
+    } catch (error) {
+      return error;
+    }
+  });
 };
 
-export const updateData = (body) => {
-  try {
-    const result = apiFetchData.post(
-      "/Api/data/runApi_Data?run_Code=DTA008",
-      body
-    );
-    console.log(result);
-    return result;
-  } catch (error) {
-    return error;
-  }
+export const updateData = async (body) => {
+  return queue.add(async () => {
+    try {
+      const result = await apiFetchData.post(
+        "/Api/data/runApi_Data?run_Code=DTA008",
+        body
+      );
+      console.log(result);
+      return result;
+    } catch (error) {
+      return error;
+    }
+  });
 };
 
-export const deleteData = (body) => {
-  try {
-    const result = apiFetchData.post(
-      "/Api/data/runApi_Data?run_Code=DTA009",
-      body
-    );
-    console.log(result);
-    return result;
-  } catch (error) {
-    return error;
-  }
+export const deleteData = async (body) => {
+  return queue.add(async () => {
+    try {
+      const result = await apiFetchData.post(
+        "/Api/data/runApi_Data?run_Code=DTA009",
+        body
+      );
+      console.log(result);
+      return result;
+    } catch (error) {
+      return error;
+    }
+  });
 };
 
-export const fetchDataCommon = (body) => {
-  try {
-    const result = apiFetchData.post(
-      "/Api/data/runApi_Data?run_Code=DTA004",
-      body
-    );
-    // console.log(result);
-    return result;
-  } catch (error) {
-    return error;
-  }
+export const fetchDataCommon = async (body) => {
+  return queue.add(async () => {
+    try {
+      const result = await apiFetchData.post(
+        "/Api/data/runApi_Data?run_Code=DTA004",
+        body
+      );
+      // console.log(result);
+      return result;
+    } catch (error) {
+      return error;
+    }
+  });
 };
 
-export const fetchDataDetail = (body) => {
-  try {
-    const result = apiFetchData.post(
-      "/Api/data/runApi_Data?run_Code=DTA005",
-      body
-    );
-    return result;
-  } catch (error) {
-    return error;
-    s;
-  }
+export const fetchDataDetail = async (body) => {
+  return queue.add(async () => {
+    try {
+      const result = await apiFetchData.post(
+        "/Api/data/runApi_Data?run_Code=DTA005",
+        body
+      );
+      return result;
+    } catch (error) {
+      return error;
+    }
+  });
 };
 
-export const postImage = (body) => {
-  try {
-    const result = apiFetchData.post(
-      "/Api/data/runApi_Data?run_Code=DTA021",
-      body
-    );
-    return result;
-  } catch (error) {
-    return error;
-  }
+export const postImage = async (body) => {
+  return queue.add(async () => {
+    try {
+      const result =await apiFetchData.post(
+        "/Api/data/runApi_Data?run_Code=DTA021",
+        body
+      );
+      return result;
+    } catch (error) {
+      return error;
+    }
+  });
 };
 
-export const fetchDataCommon17 = (body) => {
-  try {
-    const result = apiFetchData.post(
-      "/Api/data/runApi_Data?run_Code=DTA017",
-      body
-    );
-    return result;
-  } catch (error) {
-    return error;
-  }
+export const fetchDataCommon17 =async (body) => {
+  return queue.add(async () => {
+    try {
+      const result =await apiFetchData.post(
+        "/Api/data/runApi_Data?run_Code=DTA017",
+        body
+      );
+      return result;
+    } catch (error) {
+      return error;
+    }
+  });
 };

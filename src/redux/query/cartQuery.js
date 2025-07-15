@@ -6,6 +6,7 @@ import {
   loadCartByUser,
   updateCartByUser,
 } from "../reducer/cartReducer";
+import { apiQueue } from "./commonQuery";
 
 const axiosBaseQuery = fetchBaseQuery({
   // baseUrl: "/api",
@@ -44,11 +45,15 @@ export const cartApiSlice = createApi({
   tagTypes: ["Carts"],
   endpoints: (builder) => ({
     fetchCart: builder.mutation({
-      query: (data) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA004",
-        method: "POST",
-        body: data,
-      }),
+      queryFn: async (data, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA004",
+            method: "POST",
+            body: data,
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
@@ -61,14 +66,18 @@ export const cartApiSlice = createApi({
       },
     }),
     addToCart: builder.mutation({
-      query: (data) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA007",
-        method: "POST",
-        body: {
-          DCMNCODE: "APPCARTPRDC",
-          HEADER: [{ ...data }],
-        },
-      }),
+      queryFn: async (data, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA007",
+            method: "POST",
+            body: {
+              DCMNCODE: "APPCARTPRDC",
+              HEADER: [{ ...data }],
+            },
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
@@ -84,18 +93,22 @@ export const cartApiSlice = createApi({
       },
     }),
     updateCart: builder.mutation({
-      query: (data) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA008",
-        method: "POST",
-        body: {
-          DCMNCODE: "APPCARTPRDC",
-          HEADER: [
-            {
-              ...data,
+      queryFn: async (data, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA008",
+            method: "POST",
+            body: {
+              DCMNCODE: "APPCARTPRDC",
+              HEADER: [
+                {
+                  ...data,
+                },
+              ],
             },
-          ],
-        },
-      }),
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
@@ -117,11 +130,15 @@ export const cartApiSlice = createApi({
       },
     }),
     deleteCart: builder.mutation({
-      query: (data) => ({
-        url: "/Api/data/runApi_Data?run_Code=DTA009",
-        method: "POST",
-        body: { DCMNCODE: "appCartPrdc", KEY_CODE: data.id },
-      }),
+      queryFn: async (data, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA009",
+            method: "POST",
+            body: { DCMNCODE: "appCartPrdc", KEY_CODE: data.id },
+          })
+        );
+      },
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;

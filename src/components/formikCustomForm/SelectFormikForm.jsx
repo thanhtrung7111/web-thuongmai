@@ -47,7 +47,7 @@ const SelectFormikForm = ({
   return (
     <div className="flex flex-col gap-y-1 w-full">
       <label htmlFor="">
-        <span className="text-gray-600">{label} </span>{" "}
+        <span className="text-slate-500">{label} </span>{" "}
         {important && <span className="text-red-500">*</span>}
       </label>
       <div
@@ -55,7 +55,7 @@ const SelectFormikForm = ({
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
         } ${
           (disabled || loading) && "bg-slate-50"
-        } px-3 py-3 text-sm border outline-none rounded-sm w-full flex relative`}
+        } px-3 py-2 text-sm border outline-none rounded-md w-full flex relative`}
       >
         {loading ? (
           <div className="flex-auto">

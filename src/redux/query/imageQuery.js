@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { toast } from "react-toastify";
 import { errorServerOn } from "../reducer/exceptionReducer";
+import { apiQueue } from "./commonQuery";
 
 const axiosBaseQuery = fetchBaseQuery({
   timeout: 10000,
@@ -37,14 +38,18 @@ export const imageApiSlice = createApi({
   refetchOnFocus: true,
   endpoints: (builder) => ({
     fetchImage: builder.query({
-      query: ({ id, url }) => ({
-        url: url,
-        method: "GET",
-        responseHandler: async (response) => {
-          const blob = await response.blob();
-          return blob;
-        },
-      }),
+      queryFn: async ({ id, url }, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: url,
+            method: "GET",
+            responseHandler: async (response) => {
+              const blob = await response.blob();
+              return blob;
+            },
+          })
+        );
+      },
       providesTags: (result, error, { id, url }) => [{ type: "Images", id }],
       onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
         try {

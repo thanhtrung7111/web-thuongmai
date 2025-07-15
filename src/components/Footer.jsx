@@ -12,11 +12,11 @@ const Footer = () => {
   return (
     <div>
       <div className="bg-white border-t border-gray-100">
-        <div className="xl:container xl:mx-auto py-10 mx-5">
+        <div className="mx-auto max-w-7xl py-10">
           <div className="grid lg:grid-cols-5 grid-cols-2 gap-5 md:grid-cols-4">
             <div>
               {/* CHĂM SÓC KHÁCH HÀNG  */}
-              <h4 className="font-medium text-sm text-gray-dark mb-1">
+              <h4 className="font-semibold text-base text-slate-600 mb-1">
                 Chăm sóc khách hàng
               </h4>
               <ul className="flex flex-col gap-y-0">
@@ -72,7 +72,7 @@ const Footer = () => {
             </div>
             <div>
               {/* CHĂM SÓC KHÁCH HÀNG  */}
-              <h4 className="font-medium text-sm text-gray-dark mb-1">
+              <h4 className="font-semibold text-base text-slate-600 mb-1">
                 Về FirstEMS
               </h4>
               <ul className="flex flex-col gap-y-0">
@@ -128,7 +128,7 @@ const Footer = () => {
             </div>
             <div>
               {/* CHĂM SÓC KHÁCH HÀNG  */}
-              <h4 className="font-medium text-sm text-gray-dark mb-1">
+              <h4 className="font-semibold text-base text-slate-600 mb-1">
                 Thanh toán
               </h4>
               <div className="flex gap-x-3 flex-wrap">
@@ -145,7 +145,7 @@ const Footer = () => {
             </div>
             <div>
               {/* CHĂM SÓC KHÁCH HÀNG  */}
-              <h4 className="font-medium text-sm text-gray-dark mb-3">
+              <h4 className="font-semibold text-base text-slate-600 mb-1">
                 Liên hệ
               </h4>
               <div className="flex gap-x-3 flex-wrap flex-col gap-y-3">
@@ -174,7 +174,7 @@ const Footer = () => {
             </div>
             <div>
               {/* CHĂM SÓC KHÁCH HÀNG  */}
-              <h4 className="font-medium text-sm text-gray-dark mb-2">
+              <h4 className="font-semibold text-base text-slate-600 mb-1">
                 Tải ứng dụng
               </h4>
               <div className="flex items-center justify-center">

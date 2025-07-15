@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    font-family:Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
   }
 }
 
@@ -72,4 +72,13 @@ html {
 
 .p-left-4 {
   padding-left: 40px;
+}
+.menuChild {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.menuParent:hover > .menuChild {
+  opacity: 100;
+  visibility: visible;
 }

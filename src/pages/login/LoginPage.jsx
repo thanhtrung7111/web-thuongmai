@@ -117,7 +117,7 @@ const LoginPage = () => {
   return (
     <div className="relative">
       <div className="xl:container xl:mx-auto mx-5">
-        <div className="bg-white shadow-md py-14 px-10 flex flex-col gap-y-3 w-[450px] text-sm ml-auto">
+        <div className="bg-white shadow-md py-14 px-10 flex flex-col gap-y-3 w-[450px] text-sm ml-auto rounded-md border-t border-t-gray-100">
           <h2 className="font-semibold text-3xl text-second text-center mb-8">
             Đăng nhập
           </h2>
