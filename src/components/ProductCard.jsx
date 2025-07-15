@@ -116,7 +116,7 @@ const ProductCard = ({
         </div>
         <div className="flex gap-x-1 flex-col">
           <div className="flex items-center gap-x-1">
-            <span className="text-gray-light font-thin text-base  line-through flex items-start">
+            <span className="text-gray-light font-thin text-sm  line-through flex items-start">
               {item[saleOff] < item[price] &&
                 item[price]?.toLocaleString("vi", {
                   style: "currency",
@@ -127,7 +127,7 @@ const ProductCard = ({
               <div className="text-sm p-1 text-second">-{item[discount]}%</div>
             )}
           </div>
-          <span className="text-red-500 font-bold text-2xl flex items-start">
+          <span className="text-red-500 font-bold text-xl flex items-start">
             {item[saleOff]?.toLocaleString("vi", {
               style: "currency",
               currency: "VND",

@@ -116,7 +116,7 @@ const HomePage = () => {
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="text-slate-600 text-2xl font-semibold">
+              <h4 className="text-slate-600 text-xl font-semibold">
                 Sản phẩm bán chạy
               </h4>
               <a href="#" className="text-gray-light text-sm hover:text-second">
@@ -143,9 +143,7 @@ const HomePage = () => {
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="text-2xl text-slate-600 font-semibold">
-                Danh mục
-              </h4>
+              <h4 className="text-xl text-slate-600 font-semibold">Danh mục</h4>
               <a href="#" className="text-gray-light text-sm hover:text-second">
                 Xem thêm <i className="ri-arrow-right-s-line"></i>
               </a>
@@ -183,7 +181,7 @@ const HomePage = () => {
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="text-2xl text-slate-600 font-semibold">
+              <h4 className="text-xl text-slate-600 font-semibold">
                 Sản phẩm nổi bật
               </h4>
               <a href="#" className="text-gray-light text-sm hover:text-second">
