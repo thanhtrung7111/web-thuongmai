@@ -4,7 +4,7 @@ import Wrapper from "../../../components/Wrapper";
 
 const ProductDetailEvaluateSkeleton = () => {
   return (
-    <div id="evaluate" className="mx-5 xl:container xl:mx-auto mb-5">
+    <div id="evaluate" className="max-w-7xl mx-auto mb-5">
       <Wrapper>
         <div className="p-5">
           <div className="mb-5">

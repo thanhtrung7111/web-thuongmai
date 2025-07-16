@@ -255,12 +255,12 @@ const RowPayDetail = ({
             <ButtonForm
               loading={isLoadingDelete}
               type="button"
-              className="!bg-red-600 !w-24 px-7 py-2 text-xs cursor-pointer disabled:!bg-gray-400"
+              className="!bg-red-600 !w-20 !h-8 text-xs cursor-pointer disabled:!bg-gray-400"
               onClick={openNotify}
               label={"Xóa"}
             ></ButtonForm>
             <span
-              className="cursor-pointer text-center"
+              className="cursor-pointer text-center text-sm text-second"
               onClick={() => setOpenSuggest(!openSuggest)}
             >
               Tìm sản phẩm liên quan?

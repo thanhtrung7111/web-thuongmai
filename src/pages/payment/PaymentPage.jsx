@@ -406,18 +406,18 @@ const PaymentPage = () => {
         {({ values }) => {
           return (
             <Form>
-              <div className="xl:container xl:mx-auto mx-5 mb-5">
-                <div className="grid grid-cols-[1fr_2fr] gap-x-3">
+              <div className="max-w-7xl mx-auto mb-5">
+                <div className="grid grid-cols-[2fr_3fr] gap-x-3">
                   <Wrapper>
                     <div className="px-3 py-5">
-                      <h5 className="font-semibold text-xl text-gray-dark mb-3">
+                      <h5 className="font-semibold text-xl text-slate-600 mb-3">
                         Thông tin đơn hàng
                       </h5>
-                      <div className="flex flex-col gap-y-4 border-b pb-5 mb-5">
+                      <div className="flex flex-col gap-y-4 border-b pb-5 mb-5 h-[450px] overflow-y-scroll pr-1">
                         {values.DETAIL.map((item) => {
                           return (
                             <div className="flex justify-between">
-                              <div className="flex items-center gap-x-2">
+                              <div className="flex items-stretch gap-x-2">
                                 <ImageFetch
                                   url={item.PRDCIMAGE}
                                   id={item.PRDCCODE}
@@ -425,7 +425,7 @@ const PaymentPage = () => {
                                 />
                                 <div className="flex flex-col gap-y-1">
                                   <div>
-                                    <span className="text-sm">
+                                    <span className="text-sm text-slate-600">
                                       {item.PRDCNAME}
                                     </span>
                                     <span className="text-gray-600 font-semibold">
@@ -437,11 +437,13 @@ const PaymentPage = () => {
                                     <span className="text-gray-500 text-sm italic">
                                       Đơn giá:
                                     </span>
-                                    <span className="text-gray-500 text-sm">
+                                    <span className="text-red-500">
                                       {item.SALEPRCE.toLocaleString("vi", {
                                         style: "currency",
                                         currency: "VND",
-                                      })}{" "}
+                                      })}
+                                    </span>
+                                    <span className="text-gray-500 text-sm">
                                       ( -
                                       {(
                                         (item.DSCNRATE * item.SALEPRCE) /
@@ -457,8 +459,7 @@ const PaymentPage = () => {
                               </div>
 
                               <div className="flex flex-col">
-                                <span className="text-gray-600 font-semibold">
-                                  {" "}
+                                <span className="text-red-500 font-semibold">
                                   {(
                                     (item.SALEPRCE -
                                       (item.DSCNRATE * item.SALEPRCE) / 100) *
@@ -493,14 +494,18 @@ const PaymentPage = () => {
                       </div>
                       <div className="flex flex-col gap-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="italic">Tổng số lượng:</span>
-                          <span className="text-gray-600 font-semibold text-base">
-                            {values.SMPRQTTY} sản phẩm
+                          <span className="italic text-slate-600 text-sm">
+                            Tổng số lượng:
+                          </span>
+                          <span className="text-slate-600 text-sm">
+                            {values.SMPRQTTY}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="italic">Tạm tính:</span>
-                          <span className="text-gray-600 font-semibold text-base">
+                          <span className="italic text-slate-600 text-sm">
+                            Tạm tính:
+                          </span>
+                          <span className="text-slate-600 font-semibold text-base">
                             {values.SUM_CRAM.toLocaleString("vi", {
                               style: "currency",
                               currency: "VND",
@@ -509,7 +514,7 @@ const PaymentPage = () => {
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <span className="italic">Tổng giảm:</span>
+                          <span className="italic text-sm text-slate-600">Tổng giảm:</span>
                           <span className="text-gray-600 font-semibold text-base">
                             -
                             {values.RDTNCRAM.toLocaleString("vi", {
@@ -519,8 +524,8 @@ const PaymentPage = () => {
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="italic">Tổng tiền:</span>
-                          <span className="text-second font-bold text-2xl">
+                          <span className="italic text-slate-600 text-sm">Tổng tiền:</span>
+                          <span className="text-red-500 font-bold text-2xl">
                             {values.SUM_AMNT.toLocaleString("vi", {
                               style: "currency",
                               currency: "VND",
@@ -710,7 +715,7 @@ const PaymentPage = () => {
                   </Wrapper> */}
                   <Wrapper>
                     <div className="px-3 py-5">
-                      <h5 className="font-semibold text-xl text-gray-dark mb-3">
+                      <h5 className="font-semibold text-xl text-slate-600 mb-3">
                         Thông tin thanh toán
                       </h5>
                       <div className="w-full overflow-hidden">
@@ -776,7 +781,7 @@ const PaymentPage = () => {
                                 ></TextareaFormikForm>
                               </div>
                             </div>
-                            <h5 className="font-semibold text-xl text-gray-dark mb-3 mt-10">
+                            <h5 className="font-semibold text-xl text-slate-600 mb-3 mt-10">
                               Chọn hình thức thanh toán
                             </h5>
 

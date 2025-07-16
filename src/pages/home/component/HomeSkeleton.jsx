@@ -5,7 +5,7 @@ import AnimateSkeleton from "../../../components/AnimateSkeleton";
 const HomeSkeleton = () => {
   return (
     <div>
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      <div className="max-w-7xl mx-auto mb-5">
         <Wrapper padding={0}>
           <div className="xl:container mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3">
@@ -19,7 +19,7 @@ const HomeSkeleton = () => {
         </Wrapper>
       </div>
       {/* SẢN PHẢM BÁN CHẠY  */}
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      <div className="max-w-7xl mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
@@ -29,7 +29,7 @@ const HomeSkeleton = () => {
           </div>
         </Wrapper>
       </div>
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      <div className="max-w-7xl mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">

@@ -28,7 +28,7 @@ const TextareaFormikForm = ({
         disabled={disabled}
         className={`${
           meta.error && meta.touched ? "border-red-500" : "border-gray-200"
-        } px-3 py-3 text-sm disabled:bg-slate-50 border outline-none rounded-sm w-full`}
+        } px-3 py-3 text-sm disabled:bg-slate-50 border outline-none rounded-md w-full`}
       ></textarea>
       {meta.error && meta.touched && (
         <span className="text-red-500 text-xs">{meta.error}</span>

@@ -4,6 +4,7 @@ const popupSlice = createSlice({
   name: "popup",
   initialState: {
     popup: false,
+    catalog: false,
   },
 
   reducers: {
@@ -13,8 +14,15 @@ const popupSlice = createSlice({
     closePopup: (state, action) => {
       state.popup = false;
     },
+    openCatalog: (state, action) => {
+      state.catalog = true;
+    },
+    closeCatalog: (state, action) => {
+      state.catalog = false;
+    },
   },
 });
 
 export default popupSlice.reducer;
-export const { openPopup, closePopup } = popupSlice.actions;
+export const { openPopup, closePopup, openCatalog, closeCatalog } =
+  popupSlice.actions;

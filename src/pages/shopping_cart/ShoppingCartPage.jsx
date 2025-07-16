@@ -50,7 +50,7 @@ const ShoppingCartPage = () => {
       <InfoPage data={["Giỏ hàng"]} />
 
       {/* Table thanh toán */}
-      <div className="xl:container xl:mx-auto mx-5 mb-5">
+      <div className="mx-auto max-w-7xl mb-5">
         <Wrapper>
           <div className="overflow-x-scroll lg:overflow-x-visible">
             <TableDetailProduct
@@ -61,7 +61,7 @@ const ShoppingCartPage = () => {
           </div>
         </Wrapper>
       </div>
-      <div className="xl:container xl:mx-auto mx-5 mb-5">
+      <div className="mx-auto max-w-7xl mb-5">
         <div className="flex gap-x-3 justify-end">
           <ButtonForm
             className="!w-fit !bg-slate-500"

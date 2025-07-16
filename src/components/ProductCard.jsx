@@ -85,7 +85,7 @@ const ProductCard = ({
     <div
       onClick={() => {
         window.scroll(0, 0);
-        navigate(`/products/${item[id]}`);
+        navigate(`/product/${item[id]}`);
       }}
       className={`group/product cursor-pointer relative bg-white shadow-sm w-full rounded-lg border overflow-hidden border-gray-200 flex flex-col items-center`}
     >
@@ -111,7 +111,7 @@ const ProductCard = ({
         >
           {item[name]}
         </h5>{" "}
-        <div className="text-xs bg-slate-200 px-3 py-2 text-slate-500 z-10 rounded-md">
+        <div className="text-xs bg-slate-200 px-3 py-2 text-slate-500 rounded-md">
           Loại: {item[unit]}
         </div>
         <div className="flex gap-x-1 flex-col">

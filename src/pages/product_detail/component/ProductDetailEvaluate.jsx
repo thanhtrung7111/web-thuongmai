@@ -117,7 +117,7 @@ const ProductDetailEvaluate = ({ item }) => {
   return isLoadingEvaluate ? (
     <ProductDetailEvaluateSkeleton></ProductDetailEvaluateSkeleton>
   ) : (
-    <div id="evaluate" className="mx-5 xl:container xl:mx-auto mb-5">
+    <div id="evaluate" className="max-w-7xl mx-auto mb-5">
       <PopupProductEvaluate
         open={openPopup}
         item={item}

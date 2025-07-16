@@ -48,7 +48,7 @@ const ProductListSkeleton = ({ search }) => {
           </div>
         </div>
 
-        <div className="mx-5 xl:container xl:mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Wrapper>
             <div className="p-5">
               <AnimateSkeleton className={"h-9 w-full mb-2"} />

@@ -75,7 +75,7 @@ const MenuChild = () => {
       <div
         className={`fixed top-0 right-0 ${
           openOverlay ? "block" : "hidden"
-        } bg-black bg-opacity-20 w-screen h-screen z-40 lg:hidden`}
+        } bg-black bg-opacity-20 w-screen h-screen z-[100] lg:hidden`}
         onClick={closeOverlay}
       ></div>
       <div className="shadow-md py-2 border-b bg-[#ff8c4a]">

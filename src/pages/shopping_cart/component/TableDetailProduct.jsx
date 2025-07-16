@@ -46,7 +46,7 @@ const TableDetailProduct = ({ data, onHandleCheckAll, onHandleChooseItem }) => {
         <th class="px-6 py-3 uppercase">Đơn giá</th>
         <th class="px-6 py-3 uppercase">Phần trăm giảm</th>
         <th class="px-6 py-3 uppercase">Thành tiền</th>
-        <th class="px-6 py-3 w-48 uppercase">Xóa tất cả</th>
+        <th class="px-6 py-3 w-48 uppercase"></th>
       </thead>
       <tbody>
         {data?.length >= 1

@@ -25,7 +25,9 @@ const CheckBoxList = ({
   return (
     <div className="pb-3 border-b">
       <div className="flex items-center justify-between mb-2">
-        <h5 className="text-gray-dark font-medium">{title}</h5>
+        <h5 className="text-slate-600 text-sm font font-semibold">
+          {title}
+        </h5>
         <div
           className={`hover:text-second transform transition duration-500 ease-in-out cursor-pointer ${
             !extend && "rotate-180"

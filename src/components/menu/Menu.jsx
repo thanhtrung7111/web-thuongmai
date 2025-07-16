@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../../assets/img/Icon.png";
 
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SearchMenu from "./SearchMenu";
 import Triangle from "../../assets/img/triangle.png";
@@ -11,11 +11,14 @@ import MenuChild from "./MenuChild";
 import { clearSearch, logout } from "../../redux/reducer/userReducer";
 import { clearCart } from "../../redux/reducer/cartReducer";
 import { initialError } from "../../redux/reducer/exceptionReducer";
+import { closeCatalog, openCatalog } from "../../redux/reducer/popupReducer";
+import ProductCatalog from "./ProductCatalog";
 const Menu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentUser } = useSelector((state) => state.user);
-
+  const { catalog } = useSelector((state) => state.popup);
   const handleLogout = async (e) => {
     e.preventDefault();
     dispatch(clearCart());
@@ -38,14 +41,51 @@ const Menu = () => {
       });
     });
   }, []);
+
   return (
     <>
       <MenuChild></MenuChild>
-      <div className="py-2 border-b sticky top-0 bg-white z-30 shadow-md">
+      <div className="py-2 border-b sticky top-0 bg-white z-40 shadow-md">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-x-3">
             {/* logo  */}
             <div className="flex items-center">
+              {!location.pathname.includes("products") && (
+                <div className="">
+                  <button
+                    onClick={() => {
+                      if (catalog) {
+                        dispatch(closeCatalog());
+                      } else {
+                        dispatch(openCatalog());
+                      }
+                    }}
+                    className={`text-sm flex gap-x-1.5 border ${
+                      catalog
+                        ? "text-white bg-second border-second"
+                        : "text-slate-500 border-slate-500 bg-white"
+                    }  rounded-md px-2 py-1 transition-colors`}
+                  >
+                    <i className="ri-menu-line"></i>
+                    {/* <span>Danh mục sản phẩm</span> */}
+                  </button>
+                  <div
+                    className={`absolute top-[100%] w-screen h-screen left-0 z-10 ${
+                      catalog ? "visible opacity-100" : "invisible opacity-0"
+                    } transition-all`}
+                  >
+                    <div
+                      className="absolute top-0 right-0 bg-black bg-opacity-70 w-full h-full"
+                      onClick={() => dispatch(closeCatalog())}
+                    ></div>
+                    <div className="max-w-7xl mx-auto pt-1">
+                      <div className="w-64">
+                        <ProductCatalog></ProductCatalog>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div
                 onClick={() => {
                   window.scroll(0, 0);
@@ -55,10 +95,6 @@ const Menu = () => {
               >
                 <img loading="lazy" src={Logo} alt="" className="h-full" />
               </div>
-              <button className="text-sm flex gap-x-2 text-white bg-second  rounded-md px-2 py-2">
-                <i className="ri-menu-line"></i>
-                <span>Danh mục sản phẩm</span>
-              </button>
             </div>
 
             <div className="flex gap-x-1 flex-auto md:gap-x-8 justify-end">

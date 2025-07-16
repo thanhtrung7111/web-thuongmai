@@ -49,22 +49,41 @@ const HomePage = () => {
   ) : (
     <>
       <div className="max-w-7xl mx-auto mb-5">
-        <div className="xl:container mx-auto mb-5">
+        <div className="mb-5">
           <div className="flex gap-x-2">
             <div className="w-64 shrink-0">
               <ProductCatalog></ProductCatalog>
             </div>
-            <div className="flex-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3 py-1">
-              <BannerSlider data={dataBanner}></BannerSlider>
-              <div className="grid lg:grid-rows-2 gap-3 grid-cols-2 grid-rows-1 lg:grid-cols-1">
+            <div>
+              <div className="flex-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3 py-1">
+                <BannerSlider data={dataBanner}></BannerSlider>
+                <div className="grid lg:grid-rows-2 gap-3 grid-cols-2 grid-rows-1 lg:grid-cols-1">
+                  <img
+                    src={BannerSmall1}
+                    className="w-full h-full object-cover object-center rounded-md"
+                    alt=""
+                  />
+                  <img
+                    src={BannerSmall2}
+                    className="w-full h-full object-cover object-center  rounded-md"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div className="flex-auto grid grid-cols-1 lg:grid-cols-3 gap-3 py-1 rounded-md">
                 <img
                   src={BannerSmall1}
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-cover object-center rounded-md"
                   alt=""
                 />
                 <img
                   src={BannerSmall2}
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-cover object-center rounded-md"
+                  alt=""
+                />
+                <img
+                  src={BannerSmall2}
+                  className="w-full h-full object-cover object-center rounded-md"
                   alt=""
                 />
               </div>
@@ -206,7 +225,7 @@ const HomePage = () => {
         </Wrapper>
       </div>
       {/* Bàn phím
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      <div className="max-w-7xl mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">

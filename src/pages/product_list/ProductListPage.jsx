@@ -200,7 +200,7 @@ const ProductListPage = () => {
       ></div>
       <div className="product-list">
         <InfoPage data={["Danh mục sản phẩm"]} />
-        <div className="xl:container xl:mx-auto mx-5 mb-5">
+        <div className="max-w-7xl mx-auto mb-5">
           <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] lg:grid-cols-[1fr_3fr] xl:grid-cols-[1fr_4fr] gap-x-2 gap-y-2">
             {/* MENU  */}
             <div
@@ -255,7 +255,9 @@ const ProductListPage = () => {
                 {/* KHOẢNG GIÁ  */}
                 <div className="pb-5 border-b">
                   <div className="flex items-center justify-between mb-1">
-                    <h5 className="text-gray-dark font-medium">Khoảng giá</h5>
+                    <h5 className="text-sm text-slate-600 font-semibold">
+                      Khoảng giá
+                    </h5>
                     {/* <i className="ri-arrow-down-s-line"></i> */}
                   </div>
                   <Formik
@@ -458,11 +460,11 @@ const ProductListPage = () => {
           </div>
         </div>
 
-        <div className="mx-5 xl:container xl:mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Wrapper>
             <div className="p-5">
               <div className="flex items-center justify-between mb-5">
-                <h4 className="font-semibold text-2xl text-first">
+                <h4 className="font-semibold text-xl text-slate-600">
                   Sản phẩm liên quan
                 </h4>
                 <a href="#" className="text-gray-light">

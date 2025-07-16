@@ -5,7 +5,7 @@ const ProductDetailSkeleton = () => {
   return (
     <div className="product-detail">
       <AnimateSkeleton className={"w-20 h-9  xl:container mx-auto mb-3"} />
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      <div className="max-w-7xl mx-auto mb-5">
         <Wrapper>
           <div className="px-7 py-10">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] xl:grid-cols-[2fr_3fr] gap-x-16 gap-y-10">

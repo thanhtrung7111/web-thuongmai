@@ -213,7 +213,7 @@ const ProductDetailPage = () => {
         image={mainImage}
         onCloseManify={() => setOpenManify(false)}
       ></ImageMagnifier>
-      <div className="mx-5 xl:container xl:mx-auto mb-5">
+      <div className="max-w-7xl mx-auto mb-5">
         <Wrapper>
           <div className="px-7 py-10">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] xl:grid-cols-[2fr_3fr] gap-x-16 gap-y-10">
@@ -493,7 +493,7 @@ const ProductDetailPage = () => {
         </Wrapper>
       </div>
       <div className="hidden">
-        <div className="mx-5 xl:container xl:mx-auto mb-5">
+        <div className="max-w-7xl mx-auto mb-5">
           <Wrapper>
             <div className="p-5 px-5">
               <div className="grid lg:grid-cols-[2fr_1fr] gap-12">
@@ -705,7 +705,7 @@ const ProductDetailPage = () => {
       </div>
       <ProductDetailEvaluate item={productDetail}></ProductDetailEvaluate>
 
-      {/* <div className="mx-5 xl:container xl:mx-auto mb-5">
+      {/* <div className="max-w-7xl mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">

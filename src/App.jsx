@@ -87,7 +87,7 @@ function App() {
           >
             <Route path="/" element={<HomePage></HomePage>}></Route>
             <Route
-              path="/products/:id"
+              path="/product/:id"
               element={<ProductDetailPage></ProductDetailPage>}
             ></Route>
             <Route

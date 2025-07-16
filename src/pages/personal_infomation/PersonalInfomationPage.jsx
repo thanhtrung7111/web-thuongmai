@@ -25,7 +25,7 @@ const PersonalInfomationPage = () => {
     }
   }, [tabLink]);
   return (
-    <div className="xl:container xl:mx-auto mx-5">
+    <div className="mx-auto max-w-7xl">
       <div className="grid grid-cols-[1fr_3fr] gap-2">
         {/* Thông tin cơ bản  */}
         <Wrapper>
