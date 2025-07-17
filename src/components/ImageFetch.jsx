@@ -22,24 +22,24 @@ const ImageFetch = ({ url, id, className, imageDefault = "" }) => {
     refetch,
   } = useFetchImageQuery(
     { id: id, url: url },
-    { skip: !id || errorServer.isError }
+    { skip: !id || errorServer.isError || url == "" }
   );
 
   // console.log(dataImage);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await refetch();
-    };
-    if (
-      !(dataImage instanceof Blob) ||
-      (dataImage.size == 0 && countFetch <= 2 && isError == false)
-    ) {
-      fetchData();
-      countFetch++;
-      console.log("fetch");
-    }
-  }, [dataImage, isError]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await refetch();
+  //   };
+  //   if (
+  //     !(dataImage instanceof Blob) ||
+  //     (dataImage.size == 0 && countFetch <= 2 && isError == false)
+  //   ) {
+  //     fetchData();
+  //     countFetch++;
+  //     console.log("fetch");
+  //   }
+  // }, [dataImage, isError]);
 
   useEffect(() => {
     if (dataImage instanceof Blob) {

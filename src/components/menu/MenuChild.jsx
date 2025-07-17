@@ -99,19 +99,19 @@ const MenuChild = () => {
               </div>
 
               <div className="flex items-center gap-x-5">
-                <div className="text-white flex gap-x-1 items-center">
+                <div className="text-white flex gap-x-1 items-center cursor-pointer">
                   <i className="ri-store-2-line"></i>
                   <span className="text-xs">Hệ thống cửa hàng</span>
                 </div>
-                <div className="text-white flex gap-x-1 items-center">
+                <div className="text-white flex gap-x-1 items-center cursor-pointer">
                   <i className="ri-headphone-line"></i>
                   <span className="text-xs">Hotline: 1900 5252</span>
                 </div>{" "}
-                <div className="text-white flex gap-x-1 items-center">
+                <div className="text-white flex gap-x-1 items-center cursor-pointer">
                   <i className="ri-discount-percent-line"></i>
-                  <span className="text-xs">Khuyến mãi</span>
+                  <span className="text-xs">Tin tức và Khuyến mãi</span>
                 </div>{" "}
-                <div className="text-white flex gap-x-1 items-center">
+                <div className="text-white flex gap-x-1 items-center cursor-pointer">
                   <i className="ri-file-search-line"></i>
                   <span className="text-xs">Tra cứu đơn hàng</span>
                 </div>

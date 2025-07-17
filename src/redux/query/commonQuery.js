@@ -59,6 +59,9 @@ export const commonApiSlice = createApi({
     "lstDistrict",
     "lstWard",
     "lstMaktStdr",
+    "inpBanner",
+    "lstBannerType",
+    "lstBannerDataType",
   ],
   keepUnusedDataFor: 7200,
   refetchOnFocus: true,
@@ -605,6 +608,101 @@ export const commonApiSlice = createApi({
         }
       },
     }),
+    fetchBanner: builder.query({
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA004",
+            method: "POST",
+            body: {
+              DCMNCODE: "inpBanner",
+              // PARACODE: "001",
+              LCTNCODE: "001",
+              CURRDATE: "2024-09-17",
+              CUSTCODE: "%",
+              SHOPCODE: "%",
+              KEY_WORD: "%",
+            },
+          })
+        );
+      },
+      providesTags: "inpBanner",
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch);
+          dispatch(
+            commonApiSlice.util.updateQueryData(
+              "fetchBanner",
+              undefined,
+              (draft) => {
+                return listData;
+              }
+            )
+          );
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
+    fetchBannerType: builder.query({
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: { LISTCODE: "lstBannerType", CONDFLTR: "" },
+          })
+        );
+      },
+      providesTags: "lstBannerType",
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch);
+          dispatch(
+            commonApiSlice.util.updateQueryData(
+              "fetchBannerType",
+              undefined,
+              (draft) => {
+                return listData;
+              }
+            )
+          );
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
+    fetchBannerDataType: builder.query({
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA002",
+            method: "POST",
+            body: { LISTCODE: "lstBannerDataType", CONDFLTR: "" },
+          })
+        );
+      },
+      providesTags: "lstBannerDataType",
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch);
+          dispatch(
+            commonApiSlice.util.updateQueryData(
+              "fetchBannerDataType",
+              undefined,
+              (draft) => {
+                return listData;
+              }
+            )
+          );
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
   }),
 });
 
@@ -624,6 +722,9 @@ export const {
   useFetchInpCustOdMtPayMthd2Query,
   useFetchQUOMQuery,
   useFetchMaktStdrQuery,
+  useFetchBannerQuery,
+  useFetchBannerDataTypeQuery,
+  useFetchBannerTypeQuery,
   useLazyFetchCUOMQuery,
   useLazyFetchDCmnSbcdQuery,
   useLazyFetchDlvrMthdQuery,

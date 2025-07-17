@@ -140,7 +140,7 @@ const ProductCatalog = () => {
                                     dispatch(closeCatalog());
                                     navigate("/products");
                                   }}
-                                  className="text-base hover:opacity-85 cursor-pointer text-slate-600"
+                                  className="text-sm hover:opacity-85 cursor-pointer text-slate-600"
                                 >
                                   {i.title}
                                 </div>

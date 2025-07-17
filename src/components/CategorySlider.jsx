@@ -17,7 +17,7 @@ const CategorySlider = ({ data, id, name, image }) => {
       key={id}
       // install Swiper modules
       modules={[Navigation, Pagination, Scrollbar, A11y]}
-      spaceBetween={50}
+      spaceBetween={20}
       slidesPerView={1}
       autoplay="true"
       navigation={{
@@ -62,7 +62,7 @@ const CategorySlider = ({ data, id, name, image }) => {
           slidesPerGroup: 1,
         },
         1336: {
-          slidesPerView: 10,
+          slidesPerView: 9,
           spaceBetween: 10,
         },
       }}

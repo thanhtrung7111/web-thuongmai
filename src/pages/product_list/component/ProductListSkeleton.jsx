@@ -6,8 +6,8 @@ const ProductListSkeleton = ({ search }) => {
   return (
     <>
       <div className="product-list">
-        <AnimateSkeleton className={"w-20 h-9  xl:container mx-auto mb-3"} />
-        <div className="xl:container xl:mx-auto mx-5 mb-5">
+        <AnimateSkeleton className={"w-20 h-9 max-w-7xl mx-auto mb-3"} />
+        <div className="max-w-7xl mx-auto mb-5">
           <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] lg:grid-cols-[1fr_3fr] xl:grid-cols-[1fr_4fr] gap-x-2 gap-y-2">
             {/* FILTER  */}
             <Wrapper>

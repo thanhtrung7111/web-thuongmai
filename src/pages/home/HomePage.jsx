@@ -8,6 +8,9 @@ import Asus from "../../assets/img/asus.jpg";
 import { useSelector } from "react-redux";
 import HomeSkeleton from "./component/HomeSkeleton";
 import {
+  useFetchBannerDataTypeQuery,
+  useFetchBannerQuery,
+  useFetchBannerTypeQuery,
   useFetchProductsQuery,
   useLazyFetchProductsQuery,
 } from "../../redux/query/commonQuery";
@@ -16,6 +19,7 @@ import ProductSlider from "../../components/ProductSlider";
 import CategorySlider from "../../components/CategorySlider";
 import Wrapper from "../../components/Wrapper";
 import ProductCatalog from "../../components/menu/ProductCatalog";
+import ImageFetch from "../../components/ImageFetch";
 const dataBanner = [Banner1, Banner2, Banner3];
 const HomePage = () => {
   const tokenLocation = sessionStorage.getItem("tokenLocation");
@@ -28,6 +32,10 @@ const HomePage = () => {
     isFetching,
     isLoading,
   } = useFetchProductsQuery();
+
+  const getBanners = useFetchBannerQuery();
+  const getBannerType = useFetchBannerTypeQuery();
+  const getBannerDataType = useFetchBannerDataTypeQuery();
   // const [getProducts, { isLoading: loadingProducts, isError }] =
   //   useGetProductsMutation();
 
@@ -44,6 +52,9 @@ const HomePage = () => {
       console.log(`Tổng quota: ${totalMB} MB`);
     });
   }, []);
+
+  useEffect(() => {}, [getBanners.data]);
+
   return isFetching ? (
     <HomeSkeleton />
   ) : (
@@ -58,7 +69,23 @@ const HomePage = () => {
               <div className="flex-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3 py-1">
                 <BannerSlider data={dataBanner}></BannerSlider>
                 <div className="grid lg:grid-rows-2 gap-3 grid-cols-2 grid-rows-1 lg:grid-cols-1">
-                  <img
+                  {getBanners.data &&
+                    getBanners.data
+                      .filter(
+                        (item) => item.BANRTYPE == "002" && item.BANR_RUN == 1
+                      )
+                      .slice(0, 2)
+                      .map((item) => {
+                        return (
+                          <ImageFetch
+                            key={item?.DCMNFILE?.[0]?.KKKK0001}
+                            url={item?.DCMNFILE?.[0]?.FILE_URL ?? ""}
+                            id={item?.DCMNFILE?.[0]?.KKKK0001 ?? ""}
+                            className="w-full h-full object-cover object-center rounded-md"
+                          />
+                        );
+                      })}
+                  {/* <img
                     src={BannerSmall1}
                     className="w-full h-full object-cover object-center rounded-md"
                     alt=""
@@ -67,11 +94,11 @@ const HomePage = () => {
                     src={BannerSmall2}
                     className="w-full h-full object-cover object-center  rounded-md"
                     alt=""
-                  />
+                  /> */}
                 </div>
               </div>
               <div className="flex-auto grid grid-cols-1 lg:grid-cols-3 gap-3 py-1 rounded-md">
-                <img
+                {/* <img
                   src={BannerSmall1}
                   className="w-full h-full object-cover object-center rounded-md"
                   alt=""
@@ -85,7 +112,23 @@ const HomePage = () => {
                   src={BannerSmall2}
                   className="w-full h-full object-cover object-center rounded-md"
                   alt=""
-                />
+                /> */}
+                {getBanners.data &&
+                  getBanners.data
+                    .filter(
+                      (item) => item.BANRTYPE == "002" && item.BANR_RUN == 1
+                    )
+                    .slice(0, 3)
+                    .map((item) => {
+                      return (
+                        <ImageFetch
+                          key={item?.DCMNFILE?.[0]?.KKKK0001}
+                          url={item?.DCMNFILE?.[0]?.FILE_URL ?? ""}
+                          id={item?.DCMNFILE?.[0]?.KKKK0001 ?? ""}
+                          className="w-full h-full object-cover object-center rounded-md"
+                        />
+                      );
+                    })}
               </div>
             </div>
           </div>
@@ -94,10 +137,10 @@ const HomePage = () => {
               <div className="flex items-center gap-x-3 justify-center py-5">
                 <i className="ri-refresh-line text-second text-4xl"></i>
                 <div>
-                  <h6 className="font-semibold text-sm">
+                  <h6 className="font-semibold text-sm text-slate-700">
                     7 ngày miễn phí trả hàng
                   </h6>
-                  <span className="text-xs font-thin text-gray tracking-wider">
+                  <span className="text-xs font-thin text-slate-500 tracking-wider">
                     Trả hàng miễn phí trong 7 ngày
                   </span>
                 </div>
@@ -107,10 +150,10 @@ const HomePage = () => {
               <div className="flex items-center gap-x-3 justify-center py-5">
                 <i className="ri-shield-cross-fill text-second text-4xl"></i>
                 <div>
-                  <h6 className="font-semibold text-sm">
+                  <h6 className="font-semibold text-sm text-slate-700">
                     Hàng chính hãng 100%
                   </h6>
-                  <span className="text-xs font-thin text-gray tracking-wider">
+                  <span className="text-xs font-thin text-slate-500 tracking-wider">
                     Trả hàng miễn phí trong 7 ngày
                   </span>
                 </div>
@@ -120,8 +163,10 @@ const HomePage = () => {
               <div className="flex items-center gap-x-3 justify-center py-5">
                 <i className="ri-caravan-fill text-second text-4xl"></i>
                 <div>
-                  <h6 className="font-semibold text-sm">Miễn phí vận chuyển</h6>
-                  <span className="text-xs font-thin text-gray tracking-wider">
+                  <h6 className="font-semibold text-sm text-slate-700">
+                    Miễn phí vận chuyển
+                  </h6>
+                  <span className="text-xs font-thin text-slate-500 tracking-wider">
                     Trả hàng miễn phí trong 7 ngày
                   </span>
                 </div>
