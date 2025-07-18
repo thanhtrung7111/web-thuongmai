@@ -55,12 +55,12 @@ const ImageFetch = ({ url, id, className, imageDefault = "" }) => {
 
   // console.log(dataImage);
   return isLoading ? (
-    <AnimateSkeleton className={`size-36  ${className}`}></AnimateSkeleton>
+    <AnimateSkeleton className={`${className}`}></AnimateSkeleton>
   ) : (
     <img
       rel="prefetch"
       src={isSuccess && image != "" ? image : imageDefault}
-      className={`size-36 object-top object-cover ${className}`}
+      className={`${className}`}
     />
   );
 };

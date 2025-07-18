@@ -128,7 +128,7 @@ const ProductDetailEvaluate = ({ item }) => {
         <div className="p-5">
           <div className="mb-5">
             <div className="flex items-center justify-between">
-              <h4 className="text-2xl text-gray-dark font-semibold">
+              <h4 className="text-xl text-slate-700 font-semibold">
                 Đánh giá sản phẩm
               </h4>
 

@@ -14,6 +14,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import ImageFetch from "./ImageFetch";
 const BannerSlider = ({ data }) => {
   const navigationPrevRef = React.useRef(null);
   const navigationNextRef = React.useRef(null);
@@ -37,7 +38,7 @@ const BannerSlider = ({ data }) => {
       // onSwiper={(swiper) => console.log(swiper)}
       // onSlideChange={() => console.log("slide change")}
       loop={true}
-      className="h-full w-full"
+      className="h-[400px] w-full"
       onInit={(swiper) => {
         swiper.params.navigation.prevEl = navigationPrevRef.current;
         swiper.params.navigation.nextEl = navigationNextRef.current;
@@ -49,10 +50,11 @@ const BannerSlider = ({ data }) => {
         data.map((item) => {
           return (
             <SwiperSlide>
-              <img
-                src={item}
-                alt=""
-                className="w-full h-full object-cover object-center"
+              <ImageFetch
+                key={item?.DCMNFILE?.[0]?.KKKK0001}
+                url={item?.DCMNFILE?.[0]?.FILE_URL ?? ""}
+                id={item?.DCMNFILE?.[0]?.KKKK0001 ?? ""}
+                className="w-full h-full object-cover object-top rounded-md"
               />
             </SwiperSlide>
           );

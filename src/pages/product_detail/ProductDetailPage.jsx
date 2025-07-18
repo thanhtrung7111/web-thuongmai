@@ -27,6 +27,7 @@ import ProductDetailSkeleton from "./component/ProductDetailSkeleton";
 import ImageMagnifier from "../../components/ImageMagnifier";
 import { useFetchDetailProductMutation } from "../../redux/query/detailQuery";
 import ButtonForm from "../../components/commonForm/ButtonForm";
+import ProductSlider from "../../components/ProductSlider";
 const images = [
   {
     id: 1,
@@ -310,26 +311,29 @@ const ProductDetailPage = () => {
               {/* THÔNG TIN SẢN PHẨM  */}
               <div className="flex flex-col gap-y-5">
                 <div className="flex flex-col gap-y-2">
-                  <h2 className="text-2xl text-gray-dark font-bold">
+                  <h2 className="text-2xl text-slate-700 font-bold">
                     {productDetail?.PRDCNAME}
                   </h2>
 
-                  {/* PRICE  */}
                   <div className="flex gap-x-2">
-                    <div className="text-second text-3xl font-bold flex justify-start">
-                      {productDetail?.PRCEDSCN?.toLocaleString("vi", {
-                        style: "currency",
-                        currency: "VND",
-                      })}
-                    </div>
                     <div className="text-gray-light line-through flex justify-start text-lg">
                       {productDetail?.PRCESALE?.toLocaleString("vi", {
                         style: "currency",
                         currency: "VND",
                       })}
                     </div>
-                    <div className="text-white bg-second w-fit h-fit px-1 text-sm py-1">
+                    <div className="text-white bg-yellow-400 rounded-sm w-fit h-fit px-2 text-sm py-1">
                       Giảm {productDetail?.DSCNRATE}%
+                    </div>
+                  </div>
+
+                  {/* PRICE  */}
+                  <div className="flex gap-x-2">
+                    <div className="text-red-500 text-4xl font-bold flex justify-start">
+                      {productDetail?.PRCEDSCN?.toLocaleString("vi", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
                     </div>
                   </div>
 
@@ -357,7 +361,12 @@ const ProductDetailPage = () => {
                       }
                     </div>
                     <span className="text-sm text-gray-dark">
-                      ({productDetail?.DETAIL_3?.length} đánh giá)
+                      <i className="ri-star-fill text-yellow-400 text-xl"></i>{" "}
+                      <i className="ri-star-fill text-yellow-400 text-xl"></i>{" "}
+                      <i className="ri-star-fill text-yellow-400 text-xl"></i>{" "}
+                      <i className="ri-star-fill text-yellow-400 text-xl"></i>{" "}
+                      <i class="ri-star-line text-yellow-400 text-xl"></i> (
+                      {productDetail?.DETAIL_3?.length} đánh giá)
                     </span>
                   </div>
 
@@ -398,7 +407,7 @@ const ProductDetailPage = () => {
                 {/* ACTION  */}
                 <div className="flex flex-col gap-y-5">
                   <div className="flex items-center gap-x-3">
-                    <span className="font-semibold text-gray-dark text-sm">
+                    <span className="font-medium text-gray-darked text-sm">
                       Số lượng:
                     </span>
                     <div className="flex items-center justify-start gap-x-1">
@@ -409,7 +418,7 @@ const ProductDetailPage = () => {
                           }
                           setQty(qty - 1);
                         }}
-                        className="text-gray-darked w-8 h-8 text-lg border flex items-center justify-center"
+                        className="text-slate-700 w-8 h-8 text-lg border flex items-center justify-center rounded-md"
                       >
                         -
                       </button>
@@ -420,22 +429,21 @@ const ProductDetailPage = () => {
                         min={1}
                         value={qty}
                         onChange={(e) => setQty(Number(e.target.value))}
-                        className="w-24 text-center outline-none border h-8"
+                        className="w-16 text-center outline-none border h-8 rounded-md text-slate-700"
                       />
                       {/* </div> */}
 
                       <button
                         onClick={() => setQty(qty + 1)}
-                        className="text-gray-darked w-8 h-8 text-lg border flex items-center justify-center"
+                        className="text-slate-700 w-8 h-8 text-lg border flex items-center justify-center rounded-md"
                       >
                         +
                       </button>
                     </div>
-                    <span className="text-gray-dark">
+                    <span className="text-gray-dark text-sm">
                       (265 sản phẩm có sẵn)
                     </span>
                   </div>
-
                   <div className="flex items-center gap-x-2">
                     <ButtonForm
                       onClick={() => addCart(productDetail)}
@@ -450,6 +458,25 @@ const ProductDetailPage = () => {
                       onClick={() => handlePay(productDetail)}
                     ></ButtonForm>
                   </div>
+                  <div className="flex gap-x-1">
+                    <span className="text-slate-700 text-sm">Tags:</span>
+                    <ul className="text-sm text-slate-500 flex items-center gap-x-1">
+                      <li className="cursor-pointer">#Tấm trần,</li>
+                      <li className="cursor-pointer">#603mm,</li>
+                      <li className="cursor-pointer">#PC-09</li>
+                    </ul>
+                  </div>{" "}
+                  <div className="flex gap-x-1 items-center">
+                    <span className="text-slate-700 text-sm">Chia sẻ:</span>
+                    <ul className="text-sm text-slate-500 flex items-center gap-x-2">
+                      <li className="cursor-pointer">
+                        <i className="ri-facebook-box-fill text-2xl text-blue-700"></i>
+                      </li>
+                      <li className="cursor-pointer">
+                        <i className="ri-twitter-fill text-2xl text-blue-400"></i>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -459,10 +486,10 @@ const ProductDetailPage = () => {
             <div className="flex items-center gap-x-3 justify-center">
               <i className="ri-refresh-line text-second text-4xl"></i>
               <div>
-                <h6 className="font-semibold text-base">
+                <h6 className="font-semibold text-sm text-slate-700">
                   7 ngày miễn phí trả hàng
                 </h6>
-                <span className="text-xs text-gray-light tracking-wider">
+                <span className="text-xs text-gray-light">
                   Trả hàng miễn phí trong 7 ngày
                 </span>
               </div>
@@ -470,10 +497,10 @@ const ProductDetailPage = () => {
             <div className="flex items-center gap-x-3 justify-center">
               <i className="ri-shield-cross-fill text-second text-4xl"></i>
               <div>
-                <h6 className="font-semibold  text-base">
+                <h6 className="font-semibold  text-sm text-slate-700">
                   Hàng chính hãng 100%
                 </h6>
-                <span className="text-xs text-gray-light tracking-wider">
+                <span className="text-xs text-gray-light">
                   Trả hàng miễn phí trong 7 ngày
                 </span>
               </div>
@@ -481,10 +508,10 @@ const ProductDetailPage = () => {
             <div className="flex items-center gap-x-3 justify-center">
               <i className="ri-caravan-fill text-second text-4xl"></i>
               <div>
-                <h6 className="font-semibold  text-base">
+                <h6 className="font-semibold  text-sm text-slate-700">
                   Miễn phí vận chuyển
                 </h6>
-                <span className="text-xs text-gray-light tracking-wider">
+                <span className="text-xs text-gray-light">
                   Trả hàng miễn phí trong 7 ngày
                 </span>
               </div>
@@ -492,14 +519,14 @@ const ProductDetailPage = () => {
           </div>
         </Wrapper>
       </div>
-      <div className="hidden">
+      <div className="block">
         <div className="max-w-7xl mx-auto mb-5">
           <Wrapper>
             <div className="p-5 px-5">
               <div className="grid lg:grid-cols-[2fr_1fr] gap-12">
                 <div className="flex flex-col gap-y-3">
                   <div>
-                    <h4 className="text-gray-dark font-semibold text-2xl mb-2">
+                    <h4 className="text-slate-700 font-semibold text-xl mb-2">
                       Mô tả sản phẩm
                     </h4>
                     <p className=" text-gray-dark leading-7">
@@ -705,11 +732,11 @@ const ProductDetailPage = () => {
       </div>
       <ProductDetailEvaluate item={productDetail}></ProductDetailEvaluate>
 
-      {/* <div className="max-w-7xl mx-auto mb-5">
+      <div className="max-w-7xl mx-auto mb-5">
         <Wrapper>
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
-              <h4 className="font-semibold text-2xl text-first">
+              <h4 className="font-semibold text-xl text-slate-700">
                 Sản phẩm liên quan
               </h4>
               <a href="#" className="text-gray-light">
@@ -730,7 +757,7 @@ const ProductDetailPage = () => {
             ></ProductSlider>
           </div>
         </Wrapper>
-      </div> */}
+      </div>
     </div>
   );
 };

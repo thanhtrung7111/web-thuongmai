@@ -79,7 +79,7 @@ const Menu = () => {
                       onClick={() => dispatch(closeCatalog())}
                     ></div>
                     <div className="max-w-7xl mx-auto pt-1">
-                      <div className="w-64">
+                      <div className="w-72">
                         <ProductCatalog></ProductCatalog>
                       </div>
                     </div>

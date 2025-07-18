@@ -14,11 +14,17 @@ import { toast } from "react-toastify";
 import { useReactToPrint } from "react-to-print";
 import { useGenerateQRMutation } from "../../../redux/query/qrQuery";
 import SpinnerLoading from "../../../components/commonAnimtaion/SpinnerLoading";
+import {
+  useExtractInvoiceMutation,
+  useGetInvoiceMutation,
+  useLoginInvoiceMutation,
+} from "../../../redux/query/invoiceQuery";
 
 const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const [imageQr, setImageQr] = useState(null);
+  const [infoInvoice, setInfoInvoice] = useState(null);
   const componentRef = useRef();
   const [successPay, setSuccessPay] = useState({
     loading: false,
@@ -46,6 +52,34 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
       isSuccess: isSuccessNewReceipt,
     },
   ] = usePostNewReceiptMutation();
+  const [
+    loginInvoice,
+    {
+      data: dataLoginInvoice,
+      isLoading: isLoadingLoginInvoice,
+      isError: isErrorLoginInvoice,
+      isSuccess: isSuccessLoginInvoice,
+    },
+  ] = useLoginInvoiceMutation();
+
+  const [
+    extractInvoice,
+    {
+      data: dataExtractInvoice,
+      isLoading: isLoadingExtractInvoice,
+      isError: isErrorExtractInvoice,
+      isSuccess: isSuccessExtractInvoice,
+    },
+  ] = useExtractInvoiceMutation();
+  const [
+    getInvoice,
+    {
+      data: dataGetInvoice,
+      isLoading: isLoadingGetInvoice,
+      isError: isErrorGetInvoice,
+      isSuccess: isSuccessGetInvoice,
+    },
+  ] = useGetInvoiceMutation();
   const [
     deleteOrder,
     {
@@ -216,6 +250,131 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
     try {
       await postNewReceipt(body);
     } catch (error) {}
+  };
+
+  const handleExtractInvocie = async () => {
+    console.log(detailPayment);
+    return;
+    const bodyLogin = {
+      username: "0100109106-712",
+      password: "123456a@A",
+    };
+    const result = await loginInvoice(bodyLogin).unwrap();
+    const dataExtract = {
+      generalInvoiceInfo: {
+        invoiceType: "1",
+        templateCode: "1/552",
+        invoiceSeries: "C25MFI",
+        currencyCode: "VND",
+        adjustmentType: "1",
+        paymentStatus: true,
+        cusGetInvoiceRight: true,
+      },
+      sellerInfo: {
+        sellerLegalName: "Cửa hàng bán lẻ",
+        sellerTaxCode: "0100109106-712",
+        sellerAddressLine: "Thành Phố Hà Nội - Việt Nam",
+        sellerPhoneNumber: "0123456789",
+        sellerFaxNumber: "0123456789",
+        sellerEmail: "email@gmail.com",
+        sellerBankName: "Ngân hàng ",
+        sellerBankAccount: "012345678901",
+        sellerDistrictName: "",
+        sellerCityName: "Thành Phố Hà Nội",
+        sellerCountryCode: "84",
+        sellerWebsite: "sinvoice.viettel.vn",
+      },
+      buyerInfo: {
+        buyerName: "Tên khách hàng",
+        buyerLegalName: "Tên đơn vị",
+        //   "buyerTaxCode": "0100109106",
+        buyerAddressLine: "An Khánh Hoài Đức Hà Nội",
+        buyerPostalCode: "2342324323",
+        buyerDistrictName: "Số 9, đường 11, VSIP Bắc Ninh, Thị xã Từ Sơn, Tỉnh",
+        buyerCityName: "Thành Phố Hà Nội",
+        buyerCountryCode: "84",
+        buyerPhoneNumber: "987999999",
+        buyerFaxNumber: "0458954",
+        buyerEmail: "abc@gmail.com",
+        buyerBankName: "Ngân hàng Quân đội MB",
+        buyerBankAccount: "01578987871236547",
+        buyerIdType: "3",
+        buyerIdNo: "8888899999",
+        buyerCode: "832472343b_b",
+        buyerBirthDay: "",
+      },
+      payments: [
+        {
+          paymentMethodName: "Chuyển khoản",
+        },
+      ],
+      taxBreakdowns: [
+        {
+          taxPercentage: 10,
+          taxableAmount: 3952730,
+          taxAmount: 395273,
+        },
+      ],
+      itemInfo: [
+        {
+          lineNumber: 1,
+          itemCode: "HH0001",
+          itemName: "Hàng hóa 01",
+          unitName: "Chiếc",
+          unitPrice: 150450,
+          quantity: 10,
+          selection: 1,
+          itemTotalAmountWithoutTax: 1504500,
+          taxPercentage: 10,
+          taxAmount: 150450,
+          discount: null,
+          discount2: null,
+          itemDiscount: 0,
+          itemNote: null,
+          batchNo: null,
+          expDate: null,
+        },
+        {
+          lineNumber: 2,
+          itemCode: "HH00002",
+          itemName: "Hàng hóa 02",
+          unitName: "Cái",
+          unitPrice: 244823,
+          quantity: 10,
+          selection: 1,
+          itemTotalAmountWithoutTax: 2448230,
+          taxPercentage: 10,
+          taxAmount: 244823,
+          discount: null,
+          discount2: null,
+          itemDiscount: 0,
+          itemNote: null,
+          batchNo: null,
+          expDate: null,
+        },
+      ],
+      summarizeInfo: {
+        extraName: "{ Tiền phí đặc biệt, Tiền phí,  } ",
+        extraValue: "{ 00 ,00,}",
+      },
+    };
+
+    const rsltExtractInvoice = await extractInvoice({
+      data: { ...dataExtract },
+      taxCode: "0100109106-712",
+      token: result?.access_token,
+    }).unwrap();
+
+    const resltGetInvoice = await getInvoice({
+      data: {
+        supplierTaxCode: "0100109106-712",
+        invoiceNo: rsltExtractInvoice?.result?.invoiceNo,
+        templateCode: "1/552",
+        fileType: "PDF",
+      },
+      token: result?.access_token,
+    });
+    console.log(resltGetInvoice);
   };
 
   // const shareImage = async () => {
@@ -441,7 +600,8 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
                   label={"Hủy thanh toán"}
                   className="!bg-red-500 !w-fit ml-auto"
                   type="button"
-                  onClick={() => handleCancel()}
+                  // onClick={() => handleCancel()}
+                  onClick={() => handleExtractInvocie()}
                 ></ButtonForm>
               </div>
             </>

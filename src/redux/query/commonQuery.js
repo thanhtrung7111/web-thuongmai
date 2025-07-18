@@ -62,6 +62,7 @@ export const commonApiSlice = createApi({
     "inpBanner",
     "lstBannerType",
     "lstBannerDataType",
+    "inpSalePost",
   ],
   keepUnusedDataFor: 7200,
   refetchOnFocus: true,
@@ -703,6 +704,39 @@ export const commonApiSlice = createApi({
         }
       },
     }),
+    fetchPost: builder.query({
+      queryFn: async (_arg, _api, _extraOptions, fetchWithBQ) => {
+        return apiQueue.add(() =>
+          fetchWithBQ({
+            url: "/Api/data/runApi_Data?run_Code=DTA004",
+            method: "POST",
+            body: {
+              DCMNCODE: "inpSalePost",
+              PAGELINE: "0",
+              PAGENUMB: "1",
+            },
+          })
+        );
+      },
+      providesTags: "inpSalePost",
+      onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          const listData = await response(data, dispatch);
+          dispatch(
+            commonApiSlice.util.updateQueryData(
+              "fetchPost",
+              undefined,
+              (draft) => {
+                return listData;
+              }
+            )
+          );
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    }),
   }),
 });
 
@@ -725,6 +759,7 @@ export const {
   useFetchBannerQuery,
   useFetchBannerDataTypeQuery,
   useFetchBannerTypeQuery,
+  useFetchPostQuery,
   useLazyFetchCUOMQuery,
   useLazyFetchDCmnSbcdQuery,
   useLazyFetchDlvrMthdQuery,

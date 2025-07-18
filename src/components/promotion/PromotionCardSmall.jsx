@@ -3,13 +3,21 @@ import Asus from "../../assets/img/asus.jpg";
 import Wrapper from "../Wrapper";
 import moment from "moment";
 import ImageFetch from "../ImageFetch";
-const PromotionCard = ({ item, title, desc, beginDate, endDate, tag, url }) => {
+const PromotionCardSmall = ({
+  item,
+  title,
+  desc,
+  beginDate,
+  endDate,
+  tag,
+  url,
+}) => {
   console.log(url);
   return (
     <div className="group/promotion cursor-pointer shadow-md rounded-md overflow-hidden">
       <Wrapper>
         <div className="flex">
-          <div className="h-56 w-72 overflow-hidden">
+          <div className="h-36 w-36 overflow-hidden shrink-0">
             <ImageFetch
               url={url}
               id={url}
@@ -30,12 +38,12 @@ const PromotionCard = ({ item, title, desc, beginDate, endDate, tag, url }) => {
                 {moment(item[endDate]).format("DD/MM/yyyy")}
               </span>
             </p>
-            <a
+            {/* <a
               href="#"
               className="text-sm py-1 text-second inline-block hover:translate-x-2 transition-transform"
             >
               Xem chi tiết <i className="ri-arrow-right-s-line"></i>
-            </a>
+            </a> */}
             <div>
               <span className="text-sm text-slate-700">Tags:</span>
             </div>
@@ -46,4 +54,4 @@ const PromotionCard = ({ item, title, desc, beginDate, endDate, tag, url }) => {
   );
 };
 
-export default PromotionCard;
+export default PromotionCardSmall;

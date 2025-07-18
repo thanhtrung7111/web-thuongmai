@@ -32,6 +32,7 @@ import { evaluateApiSlice } from "../query/evaluateQuery";
 import { imageApiSlice } from "../query/imageQuery";
 import { orderApiSlice } from "../query/orderQuery";
 import { qrApiSlice } from "../query/qrQuery";
+import { invoiceApiSlice } from "../query/invoiceQuery";
 // import { GetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 
 const rootPersistConfig = {
@@ -88,6 +89,7 @@ const rootReducer = combineReducers({
   [imageApiSlice.reducerPath]: imageApiSlice.reducer,
   [orderApiSlice.reducerPath]: orderApiSlice.reducer,
   [qrApiSlice.reducerPath]: qrApiSlice.reducer,
+  [invoiceApiSlice.reducerPath]: invoiceApiSlice.reducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
@@ -135,6 +137,7 @@ const store = configureStore({
       imageApiSlice.middleware,
       orderApiSlice.middleware,
       qrApiSlice.middleware,
+      invoiceApiSlice.middleware,
       listenerMiddleWare.middleware
     ),
 });

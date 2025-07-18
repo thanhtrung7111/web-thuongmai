@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Banner3 from "../../assets/img/banner3.png";
 import Banner1 from "../../assets/img/banner1.jpg";
 import Banner2 from "../../assets/img/banner2.jpg";
@@ -55,6 +55,20 @@ const HomePage = () => {
 
   useEffect(() => {}, [getBanners.data]);
 
+  const getMainBanner = useMemo(() => {
+    if (!getBanners.data) return [];
+    return getBanners.data.filter(
+      (item) => item.BANRTYPE == "001" && item.BANR_RUN == 1
+    );
+  }, [getBanners.data]);
+
+  const getMainBannerChild = useMemo(() => {
+    if (!getBanners.data) return [];
+    return getBanners.data.filter(
+      (item) => item.BANRTYPE == "004" && item.BANR_RUN == 1
+    );
+  }, [getBanners.data]);
+
   return isFetching ? (
     <HomeSkeleton />
   ) : (
@@ -62,29 +76,25 @@ const HomePage = () => {
       <div className="max-w-7xl mx-auto mb-5">
         <div className="mb-5">
           <div className="flex gap-x-2">
-            <div className="w-64 shrink-0">
+            <div className="w-72 shrink-0">
               <ProductCatalog></ProductCatalog>
             </div>
-            <div>
-              <div className="flex-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3 py-1">
-                <BannerSlider data={dataBanner}></BannerSlider>
-                <div className="grid lg:grid-rows-2 gap-3 grid-cols-2 grid-rows-1 lg:grid-cols-1">
-                  {getBanners.data &&
-                    getBanners.data
-                      .filter(
-                        (item) => item.BANRTYPE == "002" && item.BANR_RUN == 1
-                      )
-                      .slice(0, 2)
-                      .map((item) => {
-                        return (
-                          <ImageFetch
-                            key={item?.DCMNFILE?.[0]?.KKKK0001}
-                            url={item?.DCMNFILE?.[0]?.FILE_URL ?? ""}
-                            id={item?.DCMNFILE?.[0]?.KKKK0001 ?? ""}
-                            className="w-full h-full object-cover object-center rounded-md"
-                          />
-                        );
-                      })}
+            <div className="flex flex-col">
+              <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3 py-1">
+                <BannerSlider data={getMainBanner}></BannerSlider>
+                <div className="grid lg:grid-rows-2 gap-3 grid-cols-2 grid-rows-1 lg:grid-cols-1 h-[400px]">
+                  {getMainBannerChild.slice(0, 2).map((item) => {
+                    return (
+                      <div>
+                        <ImageFetch
+                          key={item?.DCMNFILE?.[0]?.KKKK0001}
+                          url={item?.DCMNFILE?.[0]?.FILE_URL ?? ""}
+                          id={item?.DCMNFILE?.[0]?.KKKK0001 ?? ""}
+                          className="w-full h-full object-cover object-top rounded-md"
+                        />
+                      </div>
+                    );
+                  })}
                   {/* <img
                     src={BannerSmall1}
                     className="w-full h-full object-cover object-center rounded-md"
@@ -97,7 +107,7 @@ const HomePage = () => {
                   /> */}
                 </div>
               </div>
-              <div className="flex-auto grid grid-cols-1 lg:grid-cols-3 gap-3 py-1 rounded-md">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 py-1 rounded-md h-[200px]">
                 {/* <img
                   src={BannerSmall1}
                   className="w-full h-full object-cover object-center rounded-md"
@@ -113,22 +123,18 @@ const HomePage = () => {
                   className="w-full h-full object-cover object-center rounded-md"
                   alt=""
                 /> */}
-                {getBanners.data &&
-                  getBanners.data
-                    .filter(
-                      (item) => item.BANRTYPE == "002" && item.BANR_RUN == 1
-                    )
-                    .slice(0, 3)
-                    .map((item) => {
-                      return (
-                        <ImageFetch
-                          key={item?.DCMNFILE?.[0]?.KKKK0001}
-                          url={item?.DCMNFILE?.[0]?.FILE_URL ?? ""}
-                          id={item?.DCMNFILE?.[0]?.KKKK0001 ?? ""}
-                          className="w-full h-full object-cover object-center rounded-md"
-                        />
-                      );
-                    })}
+                {getMainBannerChild.slice(2, 5).map((item) => {
+                  return (
+                    <div className="h-full w-full block overflow-hidden rounded-md">
+                      <ImageFetch
+                        key={item?.DCMNFILE?.[0]?.KKKK0001}
+                        url={item?.DCMNFILE?.[0]?.FILE_URL ?? ""}
+                        id={item?.DCMNFILE?.[0]?.KKKK0001 ?? ""}
+                        className="rounded-md w-full object-contain"
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -140,7 +146,7 @@ const HomePage = () => {
                   <h6 className="font-semibold text-sm text-slate-700">
                     7 ngày miễn phí trả hàng
                   </h6>
-                  <span className="text-xs font-thin text-slate-500 tracking-wider">
+                  <span className="text-xs font-thin text-slate-500">
                     Trả hàng miễn phí trong 7 ngày
                   </span>
                 </div>
@@ -153,7 +159,7 @@ const HomePage = () => {
                   <h6 className="font-semibold text-sm text-slate-700">
                     Hàng chính hãng 100%
                   </h6>
-                  <span className="text-xs font-thin text-slate-500 tracking-wider">
+                  <span className="text-xs font-thin text-slate-500">
                     Trả hàng miễn phí trong 7 ngày
                   </span>
                 </div>
@@ -166,7 +172,7 @@ const HomePage = () => {
                   <h6 className="font-semibold text-sm text-slate-700">
                     Miễn phí vận chuyển
                   </h6>
-                  <span className="text-xs font-thin text-slate-500 tracking-wider">
+                  <span className="text-xs font-thin text-slate-500">
                     Trả hàng miễn phí trong 7 ngày
                   </span>
                 </div>
