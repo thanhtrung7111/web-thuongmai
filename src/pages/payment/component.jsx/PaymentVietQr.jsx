@@ -19,12 +19,26 @@ import {
   useGetInvoiceMutation,
   useLoginInvoiceMutation,
 } from "../../../redux/query/invoiceQuery";
+function base64ToBlob(base64, mimeType = "") {
+  const byteCharacters = atob(base64);
+  const byteArrays = [];
 
+  for (let i = 0; i < byteCharacters.length; i += 512) {
+    const slice = byteCharacters.slice(i, i + 512);
+    const byteNumbers = new Array(slice.length)
+      .fill(0)
+      .map((_, j) => slice.charCodeAt(j));
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  return new Blob(byteArrays, { type: mimeType });
+}
 const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const [imageQr, setImageQr] = useState(null);
-  const [infoInvoice, setInfoInvoice] = useState(null);
+  const [infoInvoicePDF, setInfoInvoicePDF] = useState(null);
   const componentRef = useRef();
   const [successPay, setSuccessPay] = useState({
     loading: false,
@@ -248,13 +262,12 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
       ],
     };
     try {
-      await postNewReceipt(body);
+      await postNewReceipt(body).unwrap();
     } catch (error) {}
   };
 
   const handleExtractInvocie = async () => {
     console.log(detailPayment);
-    return;
     const bodyLogin = {
       username: "0100109106-712",
       password: "123456a@A",
@@ -373,7 +386,8 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
         fileType: "PDF",
       },
       token: result?.access_token,
-    });
+    }).unwrap();
+    const resultFileToBytes = resltGetInvoice.fileToBytes;
     console.log(resltGetInvoice);
   };
 
