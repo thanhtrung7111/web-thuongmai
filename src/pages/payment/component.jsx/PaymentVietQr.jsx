@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ButtonForm from "../../../components/commonForm/ButtonForm";
 import { usePayOS } from "payos-checkout";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,7 @@ import {
   useGetInvoiceMutation,
   useLoginInvoiceMutation,
 } from "../../../redux/query/invoiceQuery";
-function base64ToBlob(base64, mimeType = "") {
+function base64ToBlob(base64, mimeType = "application/pdf") {
   const byteCharacters = atob(base64);
   const byteArrays = [];
 
@@ -39,6 +39,7 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [imageQr, setImageQr] = useState(null);
   const [infoInvoicePDF, setInfoInvoicePDF] = useState(null);
+  const [openInfoInvoicePDF, setOpenInfoInvoicePDF] = useState(true);
   const componentRef = useRef();
   const [successPay, setSuccessPay] = useState({
     loading: false,
@@ -104,25 +105,27 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
     },
   ] = useDeleteOrderMutation();
   const navigate = useNavigate();
-  const payOsConfig = {
-    RETURN_URL: "https://web-thuongmai.vercel.app/", // required
-    ELEMENT_ID: "info_vietqr", // required
-    CHECKOUT_URL: infoPayemnt?.checkoutUrl, // required
-    embedded: false, // Nếu dùng giao diện nhúng
-    onSuccess: (event) => {
-      console.log(event);
-      setSuccessPay(event);
-      handlePaymentSuccess();
-      dispatch(unCheckAllProduct());
-    },
-    onCancel: (event) => {
-      // deleteOrder()
-      console.log("Payment cancel: ", event);
-    },
-    onExit: (event) => {
-      console.log("Payment exit: ", event);
-    },
-  };
+  const payOsConfig = useMemo(
+    () => ({
+      RETURN_URL: "http://localhost:5173/",
+      ELEMENT_ID: "info_vietqr",
+      CHECKOUT_URL: infoPayemnt?.checkoutUrl,
+      embedded: false,
+      onSuccess: (event) => {
+        console.log("Payment success", event);
+        setSuccessPay(event);
+        handlePaymentSuccess();
+        dispatch(unCheckAllProduct());
+      },
+      onCancel: (event) => {
+        console.log("Payment cancel", event);
+      },
+      onExit: (event) => {
+        console.log("Payment exit", event);
+      },
+    }),
+    [infoPayemnt, dispatch]
+  );
   const { open, exit } = usePayOS(payOsConfig);
 
   const handlePaymentSuccess = async () => {
@@ -263,11 +266,13 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
     };
     try {
       await postNewReceipt(body).unwrap();
+      await handleExtractInvocie();
     } catch (error) {}
   };
 
   const handleExtractInvocie = async () => {
     console.log(detailPayment);
+    // return;
     const bodyLogin = {
       username: "0100109106-712",
       password: "123456a@A",
@@ -284,36 +289,37 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
         cusGetInvoiceRight: true,
       },
       sellerInfo: {
-        sellerLegalName: "Cửa hàng bán lẻ",
+        sellerLegalName: "Công ty Giải pháp tin học FIRSTEMS",
         sellerTaxCode: "0100109106-712",
-        sellerAddressLine: "Thành Phố Hà Nội - Việt Nam",
+        sellerAddressLine:
+          "56 Đường số 3, Khu Trung Sơn, Bình Hưng, Tp. Hồ Chí Minh",
         sellerPhoneNumber: "0123456789",
         sellerFaxNumber: "0123456789",
         sellerEmail: "email@gmail.com",
         sellerBankName: "Ngân hàng ",
         sellerBankAccount: "012345678901",
         sellerDistrictName: "",
-        sellerCityName: "Thành Phố Hà Nội",
+        sellerCityName: "Thành Phố Hồ Chí Minh",
         sellerCountryCode: "84",
-        sellerWebsite: "sinvoice.viettel.vn",
+        sellerWebsite: "",
       },
       buyerInfo: {
-        buyerName: "Tên khách hàng",
-        buyerLegalName: "Tên đơn vị",
+        buyerName: detailPayment?.RCVREMPL,
+        buyerLegalName: detailPayment?.RCVREMPL,
         //   "buyerTaxCode": "0100109106",
-        buyerAddressLine: "An Khánh Hoài Đức Hà Nội",
+        buyerAddressLine: detailPayment?.CUSTADDR,
         buyerPostalCode: "2342324323",
-        buyerDistrictName: "Số 9, đường 11, VSIP Bắc Ninh, Thị xã Từ Sơn, Tỉnh",
-        buyerCityName: "Thành Phố Hà Nội",
+        buyerDistrictName: detailPayment?.DLVRPLCE,
+        buyerCityName: detailPayment?.DLVRPRVN,
         buyerCountryCode: "84",
-        buyerPhoneNumber: "987999999",
-        buyerFaxNumber: "0458954",
-        buyerEmail: "abc@gmail.com",
-        buyerBankName: "Ngân hàng Quân đội MB",
-        buyerBankAccount: "01578987871236547",
-        buyerIdType: "3",
-        buyerIdNo: "8888899999",
-        buyerCode: "832472343b_b",
+        buyerPhoneNumber: detailPayment?.RCVR_TEL,
+        buyerFaxNumber: "",
+        buyerEmail: "",
+        buyerBankName: "",
+        buyerBankAccount: "",
+        buyerIdType: "",
+        buyerIdNo: "",
+        buyerCode: "",
         buyerBirthDay: "",
       },
       payments: [
@@ -328,43 +334,73 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
           taxAmount: 395273,
         },
       ],
+
       itemInfo: [
-        {
-          lineNumber: 1,
-          itemCode: "HH0001",
-          itemName: "Hàng hóa 01",
+        ...detailPayment?.DETAIL.map((item, index) => ({
+          // SRSLCODE: 1,
+          // PRDCQTTY: item?.QUOMQTTY,
+          // PRDCCRPR: item?.SALEPRCE, //== Đơn giá chưa có VAT,
+          // MEXLNNTE: item?.NOTETEXT_DT,
+          // MNEYCRAM: item?.MNEYCRAM, //== Thành tiền,
+          // DISCRATE: item?.DISCRATE,
+          // DCPRCRAM: item?.DCPRCRAM,
+          // PRCECRAM: item?.PRCECRAM,
+          // PRDCNAME: item?.PRDCNAME,
+          // PRDCCODE: item?.PRDCCODE,
+          // SORTCODE: item?.SORTCODE,
+          // QUOMCODE: item?.QUOMCODE,
+          // //== Nhóm không thể hiện - Mã nhóm: 02
+          // COMPCODE: "PMC",
+          // DCPVATAM: item?.DCPRCRAM, //== DcpVATCr*CUOMRate,
+          // PRCVATAM: item?.MNEYCRAM, //== PrcVATCr*CUOMRate,
+          // VAT_AMNT: detailPayment?.VAT_AMNT, //== VAT_CrAm_D*CUOMRate,
+          // MNAM_VAT: item?.MNEYAMNT * detailPayment?.CUOMRATE, //== MnCr_VAT*CUOMRate,
+          // PRDCPRCE: detailPayment?.CUOMRATE * item?.SALEPRCE, //== PrdcCrPr*CUOMRate(Đơn giá chưa có VAT(VNĐ)),
+          // LCTNCODE: "001",
+          // MNEYAMNT: item?.MNEYAMNT, //== MneyCrAm*CUOMRate,
+          // DCPRAMNT: item?.DCPRCRAM * detailPayment?.CUOMRATE, //== DcPrCrAm*CUOMRate,
+          // PRCEAMNT: item?.PRCECRAM * detailPayment?.CUOMRATE, //== PrceCrAm*CUOMRate,
+          // MAINCODE: "",
+          // MAINDATE: moment(new Date()).format("yyyy-MM-DD"),
+          // //== Nhóm tùy chọn detail 1 - Mã nhóm: 31
+          // PRCE_VAT:
+          //   item?.SALEPRCE + (item?.SALEPRCE * detailPayment?.VAT_RATE) / 100, //== Đơn giá có VAT,
+          // //== Nhóm tùy chọn detail 2 - Mã nhóm: 32
+          // PRCVATCR:
+          //   item?.SALEPRCE +
+          //   (item?.SALEPRCE * detailPayment?.VAT_RATE) / 100 -
+          //   (item?.SALEPRCE * item?.DISCRATE) / 100, //== Giá sau chiết khấu (2),
+          // MNCR_VAT:
+          //   item?.MNEYCRAM + (item?.MNEYCRAM * detailPayment?.VAT_RATE) / 100, //== Thành tiền (2),
+          // DCPVATCR: item?.DCPRCRAM - item?.DCPRCRAM * detailPayment?.VAT_RATE, //== Tiền chiết khấu (2),
+          // //== Nhóm tùy chọn detail 3 - Mã nhóm: 33
+          // VAT_CRAM:
+          //   ((item?.MNEYCRAM * detailPayment?.VAT_RATE) / 100) *
+          //   item.QUOMQTTY,
+          // VAT_RATE: detailPayment?.VAT_RATE,
+          // //== Nhóm tùy chọn detail 4 - Mã nhóm: 34
+          // //== Nhóm tùy chọn detail 5 - Mã nhóm: 35
+
+          lineNumber: index + 1,
+          itemCode: item?.PRDCCODE,
+          itemName: item?.PRDCNAME,
           unitName: "Chiếc",
-          unitPrice: 150450,
-          quantity: 10,
+          unitPrice: item?.SALEPRCE,
+          quantity: item?.QUOMQTTY,
           selection: 1,
-          itemTotalAmountWithoutTax: 1504500,
-          taxPercentage: 10,
-          taxAmount: 150450,
+          itemTotalAmountWithoutTax: item?.SALEPRCE * item?.QUOMQTTY,
+          taxPercentage: detailPayment?.VAT_RATE,
+          taxAmount:
+            ((item?.MNEYCRAM * detailPayment?.VAT_RATE) / 100) * item.QUOMQTTY,
           discount: null,
           discount2: null,
           itemDiscount: 0,
           itemNote: null,
           batchNo: null,
           expDate: null,
-        },
-        {
-          lineNumber: 2,
-          itemCode: "HH00002",
-          itemName: "Hàng hóa 02",
-          unitName: "Cái",
-          unitPrice: 244823,
-          quantity: 10,
-          selection: 1,
-          itemTotalAmountWithoutTax: 2448230,
-          taxPercentage: 10,
-          taxAmount: 244823,
-          discount: null,
-          discount2: null,
-          itemDiscount: 0,
-          itemNote: null,
-          batchNo: null,
-          expDate: null,
-        },
+        })),
+
+        //== Nhóm chính thể hiện - Mã nhóm: 01
       ],
       summarizeInfo: {
         extraName: "{ Tiền phí đặc biệt, Tiền phí,  } ",
@@ -381,14 +417,31 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
     const resltGetInvoice = await getInvoice({
       data: {
         supplierTaxCode: "0100109106-712",
-        invoiceNo: rsltExtractInvoice?.result?.invoiceNo,
+        // invoiceNo: rsltExtractInvoice?.result?.invoiceNo,
+        invoiceNo: "C25MFI72",
         templateCode: "1/552",
         fileType: "PDF",
       },
       token: result?.access_token,
     }).unwrap();
     const resultFileToBytes = resltGetInvoice.fileToBytes;
-    console.log(resltGetInvoice);
+    setInfoInvoicePDF({
+      supplierTaxCode: "0100109106-712",
+      invoiceNo: rsltExtractInvoice?.result?.invoiceNo,
+      // invoiceNo: "C25MFI72",
+      templateCode: "1/552",
+      fileType: "PDF",
+      fileToBytes: resltGetInvoice?.fileToBytes,
+      fileName: resltGetInvoice?.fileName,
+    });
+    if (resultFileToBytes == null) {
+      toast.warning("Không thể lấy file hóa đơn. Vui lòng thử lại!", {
+        autoClose: 1500,
+        position: "top-center",
+        hideProgressBar: true,
+      });
+    }
+    setSuccessPay({ ...successPay, status: "success" });
   };
 
   // const shareImage = async () => {
@@ -525,6 +578,49 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
     }
   }, [isSuccessGenerateQR]);
 
+  const handleDownloadInvoice = () => {
+    const byteCharacters = atob(infoInvoicePDF?.fileToBytes);
+    const byteNumbers = new Array(byteCharacters.length)
+      .fill()
+      .map((_, i) => byteCharacters.charCodeAt(i));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+
+    // Tạo link tải
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = infoInvoicePDF?.fileName;
+    link.click();
+    // Giải phóng bộ nhớ
+    URL.revokeObjectURL(link.href);
+  };
+
+  const handleRefreshInvoice = async () => {
+    const bodyLogin = {
+      username: "0100109106-712",
+      password: "123456a@A",
+    };
+    const result = await loginInvoice(bodyLogin).unwrap();
+    const resltGetInvoice = await getInvoice({
+      data: {
+        supplierTaxCode: infoInvoicePDF.supplierTaxCode,
+        // invoiceNo: rsltExtractInvoice?.result?.invoiceNo,
+        invoiceNo: infoInvoicePDF.invoiceNo,
+        templateCode: infoInvoicePDF.templateCode,
+        fileType: "PDF",
+      },
+      token: result?.access_token,
+    }).unwrap();
+    const resultFileToBytes = resltGetInvoice.fileToBytes;
+    setInfoInvoicePDF({
+      supplierTaxCode: "0100109106-712",
+      invoiceNo: infoInvoicePDF.invoiceNo,
+      templateCode: infoInvoicePDF.templateCode,
+      fileType: "PDF",
+      fileToBytes: resltGetInvoice?.fileToBytes,
+      fileName: resltGetInvoice?.fileName,
+    });
+  };
   return (
     <div className="w-full h-full">
       <div id="info_vietqr" hidden></div>
@@ -615,7 +711,7 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
                   className="!bg-red-500 !w-fit ml-auto"
                   type="button"
                   // onClick={() => handleCancel()}
-                  onClick={() => handleExtractInvocie()}
+                  onClick={() => handlePaymentSuccess()}
                 ></ButtonForm>
               </div>
             </>
@@ -649,9 +745,30 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
                 onClick={() => navigate("/personal?tab=order")}
               ></ButtonForm>
             )}
+          </div>{" "}
+          {/* {infoInvoicePDF && ( */}
+          <div
+            className="text-slate-500 mx-auto mt-3 italic cursor-pointer hover:border-b"
+            // onClick={() => handleDownloadInvoice()}
+          >
+            Thông tin hóa đơn điện tử
+            <i
+              className="ri-download-2-line"
+              onClick={handleDownloadInvoice}
+            ></i>
+            {infoInvoicePDF?.fileToBytes == null && (
+              <i
+                className="ri-loop-left-fill"
+                onClick={handleRefreshInvoice}
+              ></i>
+            )}
           </div>
+          {/* )} */}
         </div>
-      </div>
+      </div>{" "}
+      {/* {openInfoInvoicePDF && (
+        <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-90 z-50"></div>
+      )} */}
     </div>
   );
 };

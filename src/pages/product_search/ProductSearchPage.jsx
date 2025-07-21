@@ -43,7 +43,7 @@ const ProductSearchPage = () => {
   ) : (
     <>
       <InfoPage data={["Sản phẩm", searchName]} />
-      <div className="xl:container xl:mx-auto mx-5 mb-5" id="product-search">
+      <div className="max-w-7xl mx-auto mb-5" id="product-search">
         <Wrapper>
           <div className="p-5 min-h-96">
             {productList.data?.length <= 0 ? (

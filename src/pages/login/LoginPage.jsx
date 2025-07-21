@@ -54,7 +54,7 @@ const LoginPage = () => {
   const handleLogin = async (values) => {
     try {
       login({
-        APP_CODE: "AER",
+        APP_CODE: "WER",
         LGGECODE: "V",
         CUSTLGIN: values.username,
         PASSWORD: values.password,
@@ -116,7 +116,7 @@ const LoginPage = () => {
   console.log(compList);
   return (
     <div className="relative">
-      <div className="xl:container xl:mx-auto mx-5">
+      <div className="max-w-7xl mx-auto">
         <div className="bg-white shadow-md py-14 px-10 flex flex-col gap-y-3 w-[450px] text-sm ml-auto rounded-md border-t border-t-gray-100">
           <h2 className="font-semibold text-3xl text-second text-center mb-8">
             Đăng nhập

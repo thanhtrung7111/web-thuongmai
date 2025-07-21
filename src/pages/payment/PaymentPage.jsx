@@ -222,8 +222,8 @@ const PaymentPage = () => {
         description: "Thanh toan HD",
         buyerAddress: "số nhà, đường, phường, tỉnh hoặc thành phố",
         items: [],
-        cancelUrl: "https://web-thuongmai.vercel.app/",
-        returnUrl: "https://web-thuongmai.vercel.app/",
+        cancelUrl: "http://localhost:5173/",
+        returnUrl: "http://localhost:5173/",
         expiredAt: Math.floor(
           (new Date(Date.now()).getTime() + 15 * 60000) / 1000
         ),
@@ -328,18 +328,48 @@ const PaymentPage = () => {
     if (typePayment == "money") {
       setElement(
         <div className="flex items-center flex-col pt-20">
-          <h5 className="mb-5 text-2xl">Đặt hàng thành công</h5>
+          <i className="ri-check-double-line text-green-500 text-5xl"></i>
+          <h5 className="mb-5 text-2xl text-green-500">Đặt hàng thành công</h5>
+          <p>
+            <span className="text-slate-700 font-medium">
+              Mã đơn hàng của bạn:
+            </span>{" "}
+            <span className="font-medium text-second">#10010209029</span>
+          </p>
+          <div className="mb-3 flex flex-col gap-y-2 items-center">
+            <p className="text-slate-700">
+              Cám ơn Quý khách đã mua hàng tại{" "}
+              <a href="#" className="border-b border-b-second text-second">
+                firstems-ecommere.com
+              </a>
+            </p>
+            <p className="text-slate-700">
+              Chúng tôi đã tiếp nhận đơn hàng của bạn và sẽ giao trong thời gian
+              sớm nhất.
+            </p>
+            <p className="text-slate-700">
+              Mọi thông tin chi tiết vui lòng liên hệ qua số Hotline{" "}
+              <span className="text-red-500">1900 5252</span>
+            </p>
+            <p className="text-slate-700">
+              Hoặc gửi về email theo địa chỉ{" "}
+              <a href="#" className="border-b border-b-second text-second">
+                {" "}
+                ecommere@firstems.com
+              </a>
+            </p>
+          </div>
           <div className="flex gap-x-2">
             <ButtonForm
               className="!w-fit !bg-slate-500"
-              label={"Quay về trang chủ"}
+              label={"Trang chủ"}
               type="button"
               onClick={() => navigate("/")}
             ></ButtonForm>
             <ButtonForm
               type="button"
               className="!w-fit"
-              label={"Tiếp tục mua sắm"}
+              label={"Mua sắm"}
               onClick={() => navigate("/products")}
             ></ButtonForm>
           </div>
@@ -514,7 +544,9 @@ const PaymentPage = () => {
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <span className="italic text-sm text-slate-600">Tổng giảm:</span>
+                          <span className="italic text-sm text-slate-600">
+                            Tổng giảm:
+                          </span>
                           <span className="text-gray-600 font-semibold text-base">
                             -
                             {values.RDTNCRAM.toLocaleString("vi", {
@@ -524,7 +556,9 @@ const PaymentPage = () => {
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="italic text-slate-600 text-sm">Tổng tiền:</span>
+                          <span className="italic text-slate-600 text-sm">
+                            Tổng tiền:
+                          </span>
                           <span className="text-red-500 font-bold text-2xl">
                             {values.SUM_AMNT.toLocaleString("vi", {
                               style: "currency",

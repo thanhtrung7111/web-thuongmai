@@ -105,7 +105,7 @@ const Cart = () => {
               onClick={handleCloseCart}
             ></i>
           </div>
-          <h3 className="text-lg text-gray-500 font-normal text-start relative pb-2">
+          <h3 className="text-base font-medium text-slate-700 text-start relative pb-2">
             Sản phẩm
           </h3>
           {productCarts != null && productCarts?.length != 0 ? (

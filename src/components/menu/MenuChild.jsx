@@ -8,6 +8,7 @@ import Apple from "../../assets/img/appple.png";
 import Android from "../../assets/img/android.png";
 import { useDispatch, useSelector } from "react-redux";
 import { closePopup } from "../../redux/reducer/popupReducer";
+import { useNavigate } from "react-router-dom";
 const data = [
   {
     name: "Danh mục",
@@ -48,6 +49,7 @@ const data = [
 ];
 const MenuChild = () => {
   const [openOverlay, setOpenOverlay] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleOpenShowMenu = () => {
     document.getElementById("menu-child").classList.add("show-men-child");
@@ -107,11 +109,17 @@ const MenuChild = () => {
                   <i className="ri-headphone-line"></i>
                   <span className="text-xs">Hotline: 1900 5252</span>
                 </div>{" "}
-                <div className="text-white flex gap-x-1 items-center cursor-pointer">
+                <div
+                  onClick={() => navigate("/promotion")}
+                  className="text-white flex gap-x-1 items-center cursor-pointer"
+                >
                   <i className="ri-discount-percent-line"></i>
                   <span className="text-xs">Tin tức và Khuyến mãi</span>
                 </div>{" "}
-                <div className="text-white flex gap-x-1 items-center cursor-pointer">
+                <div
+                  onClick={() => navigate("/orders/lookup")}
+                  className="text-white flex gap-x-1 items-center cursor-pointer"
+                >
                   <i className="ri-file-search-line"></i>
                   <span className="text-xs">Tra cứu đơn hàng</span>
                 </div>

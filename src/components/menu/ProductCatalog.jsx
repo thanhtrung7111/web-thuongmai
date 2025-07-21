@@ -102,7 +102,7 @@ const ProductCatalog = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   return (
-    <div className="border border-slate-400 w-full rounded-md h-full relative bg-gray-100 min-h-[500px]">
+    <div className="border border-slate-300 w-full rounded-md h-full relative bg-gray-50 min-h-[500px]">
       {menu.map((item) => {
         return (
           <div className="menuParent">

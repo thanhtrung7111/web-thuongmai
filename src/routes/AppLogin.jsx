@@ -5,7 +5,7 @@ const AppLogin = () => {
   return (
     <>
       <div className="header shadow-lg sticky top-0 right-0 z-50 bg-white">
-        <div className="xl:container xl:mx-auto mx-5 flex items-center justify-between">
+        <div className="mx-auto max-w-7xl flex items-center justify-between">
           <div className="w-40">
             <img src={Logo} alt="" className="w-full" />
           </div>

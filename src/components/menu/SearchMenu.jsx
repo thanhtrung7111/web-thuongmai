@@ -166,19 +166,19 @@ const SearchMenu = () => {
           className="ri-search-line cursor-pointer text-gray-dark"
         ></i>
       )}
-      {isLoadingProduct && (
+      {!isLoadingProduct && (
         <div
           className={`${
             (keyWord != "" || productSearchs?.length > 0) &&
             focus &&
             "h-56 !border"
-          } h-0 overflow-hidden transition-[height] ease-in-out duration-200 delay-100  border-gray-200 absolute w-full bg-white top-[100%] left-0 shadow-md rounded-sm`}
+          } h-0 overflow-hidden transition-[height] ease-in-out duration-200 delay-100  border-gray-200 absolute w-full bg-white top-[100%] left-0 shadow-md rounded-md`}
         >
           {dataFind?.length > 0 ? (
             <div className="overflow-y-scroll h-full">
               {productSearchs?.length > 0 && keyWord == "" && (
                 <div>
-                  <h5 className="text-sm font-medium px-2 py-1 sticky top-0 bg-white">
+                  <h5 className="text-sm font-medium px-2 py-1 sticky top-0 bg-white italic text-slate-700">
                     Lịch sử tìm kiếm
                   </h5>
                   <div className="flex flex-col">
@@ -198,7 +198,7 @@ const SearchMenu = () => {
                               e.stopPropagation();
                               removeSearch(item);
                             }}
-                            class={`opacity-0 group-hover:opacity-100 ri-close-line closeSearch cursor-pointer ${
+                            class={`opacity-0 text-slate-700 group-hover:opacity-100 ri-close-line closeSearch cursor-pointer ${
                               indexMove == index ? "opacity-100" : "opacity-0"
                             }`}
                           ></i>

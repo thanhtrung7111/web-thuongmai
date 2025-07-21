@@ -21,7 +21,9 @@ const PromotionComponent = () => {
       <div className="min-h-[600px]">
         <div>
           <div className="grid grid-cols-2 gap-3">
-            {lstPost.length == 0 ? (
+            {getPosts.isLoading ? (
+              "Đang tải dữ liệu..."
+            ) : lstPost.length == 0 ? (
               <div className="text-sm text-gray-400">
                 Hiện tại không có bài viết...
               </div>

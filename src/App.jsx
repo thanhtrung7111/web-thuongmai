@@ -28,6 +28,7 @@ import LoginPage from "./pages/login/LoginPage";
 import ProductSearchPage from "./pages/product_search/ProductSearchPage";
 import PersonalInfomationPage from "./pages/personal_infomation/PersonalInfomationPage";
 import PaymentPage from "./pages/payment/PaymentPage";
+import LookupOrder from "./pages/lookup_orders/LookupOrder";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -89,6 +90,10 @@ function App() {
             <Route
               path="/product/:id"
               element={<ProductDetailPage></ProductDetailPage>}
+            ></Route>
+            <Route
+              path="/orders/lookup"
+              element={<LookupOrder></LookupOrder>}
             ></Route>
             <Route
               path="/products/search"

@@ -53,7 +53,7 @@ export const authApiSlice = createApi({
             method: "POST",
             body: {
               COMPCODE: "PMC",
-              APP_CODE: "AER",
+              APP_CODE: "WER",
               SYSTCODE: 4,
             },
           })
