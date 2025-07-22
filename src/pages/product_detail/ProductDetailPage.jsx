@@ -101,7 +101,15 @@ const ProductDetailPage = () => {
   };
 
   const addCart = async (value) => {
-    const productFind = productCarts.find(
+    if (!currentUser) {
+      toast.warning("Đăng nhập để thêm sản phẩm vào giỏ hàng!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: true,
+      });
+      return;
+    }
+    const productFind = productCarts?.find(
       (item) => item.PRDCCODE == productDetail.PRDCCODE
     );
     console.log(productFind);

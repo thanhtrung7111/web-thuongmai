@@ -10,8 +10,8 @@ const axiosBaseQuery = fetchBaseQuery({
     headers.set(
       "token",
       sessionStorage.getItem("tokenLocation") ||
-        session.getItem("tokenUser") ||
-        session.getItem("tokenInitial")
+        sessionStorage.getItem("tokenUser") ||
+        sessionStorage.getItem("tokenInitial")
     );
     return headers;
   },

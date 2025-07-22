@@ -106,7 +106,7 @@ const ProductDetailEvaluate = ({ item }) => {
       setEvaluate(dataEvaluate.RETNDATA);
       setDataFilter({ ...dataFilter, listFilter: [...dataEvaluate.RETNDATA] });
       const findEvaluate = dataEvaluate.RETNDATA.find(
-        (item) => item.USERLGIN == currentUser.USERLGIN
+        (item) => item.USERLGIN == currentUser?.USERLGIN
       );
       if (findEvaluate) {
         setDisabled(true);

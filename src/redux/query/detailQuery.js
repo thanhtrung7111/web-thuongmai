@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import session from "redux-persist/lib/storage/session";
 import { errorServerOn } from "../reducer/exceptionReducer";
 import { toast } from "react-toastify";
 import { apiQueue } from "./commonQuery";
@@ -12,8 +11,8 @@ const axiosBaseQuery = fetchBaseQuery({
     headers.set(
       "token",
       sessionStorage.getItem("tokenLocation") ||
-        session.getItem("tokenUser") ||
-        session.getItem("tokenInitial")
+        sessionStorage.getItem("tokenUser") ||
+        sessionStorage.getItem("tokenInitial")
     );
     return headers;
   },
