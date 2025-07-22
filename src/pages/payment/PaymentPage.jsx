@@ -36,6 +36,7 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [successPayment, setSuccessPayment] = useState(false);
+  const [rsltNewOrder, setRsltNewOrder] = useState(null);
   const [element, setElement] = useState(null);
   const { errorServer } = useSelector((state) => state.exception);
   const [typePayment, setTypePayment] = useState("");
@@ -298,7 +299,8 @@ const PaymentPage = () => {
       }),
     };
     try {
-      await postNewOrder(body).unwrap();
+      const result = await postNewOrder(body).unwrap();
+      setRsltNewOrder(result);
     } catch (error) {
       console.log(error);
     }
@@ -323,7 +325,7 @@ const PaymentPage = () => {
       dispatch(unCheckAllProduct());
     }
   }, [isSuccessNewOrder, infoVietQR]);
-  console.log(infoVietQR);
+  console.log(rsltNewOrder?.RETNDATA?.[0]?.ODERCODE);
   useEffect(() => {
     if (typePayment == "money") {
       setElement(
@@ -334,7 +336,9 @@ const PaymentPage = () => {
             <span className="text-slate-700 font-medium">
               Mã đơn hàng của bạn:
             </span>{" "}
-            <span className="font-medium text-second">#10010209029</span>
+            <span className="font-medium text-second">
+              #{rsltNewOrder?.RETNDATA?.[0]?.ODERCODE}
+            </span>
           </p>
           <div className="mb-3 flex flex-col gap-y-2 items-center">
             <p className="text-slate-700">
@@ -408,7 +412,7 @@ const PaymentPage = () => {
         ></PaymentVietQr>
       );
     }
-  }, [typePayment, infoVietQR]);
+  }, [typePayment, infoVietQR, rsltNewOrder]);
   return (
     <div className="product-detail">
       <InfoPage data={(["Giỏ hàng"], ["Thanh toán"])} />

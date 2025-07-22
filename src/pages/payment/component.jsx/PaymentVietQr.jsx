@@ -748,7 +748,7 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
                       Mã đơn hàng của bạn:
                     </span>
                     <span className="font-medium text-second">
-                      #{dataNewReceipt?.MAINCODE}
+                      #{detailPayment?.ODERCODE}
                     </span>
                   </p>
                   <p className="text-slate-700">
