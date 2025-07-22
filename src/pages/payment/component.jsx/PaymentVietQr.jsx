@@ -107,7 +107,7 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
   const navigate = useNavigate();
   const payOsConfig = useMemo(
     () => ({
-      RETURN_URL: "http://localhost:5173/",
+      RETURN_URL: "https://web-thuongmai.vercel.app/",
       ELEMENT_ID: "info_vietqr",
       CHECKOUT_URL: infoPayemnt?.checkoutUrl,
       embedded: false,
@@ -296,7 +296,7 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
         sellerPhoneNumber: "0123456789",
         sellerFaxNumber: "0123456789",
         sellerEmail: "email@gmail.com",
-        sellerBankName: "Ngân hàng ",
+        sellerBankName: "",
         sellerBankAccount: "012345678901",
         sellerDistrictName: "",
         sellerCityName: "Thành Phố Hồ Chí Minh",
@@ -441,7 +441,6 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
         hideProgressBar: true,
       });
     }
-    setSuccessPay({ ...successPay, status: "success" });
   };
 
   // const shareImage = async () => {
@@ -612,6 +611,7 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
       token: result?.access_token,
     }).unwrap();
     const resultFileToBytes = resltGetInvoice.fileToBytes;
+    if (resultFileToBytes == null) return;
     setInfoInvoicePDF({
       supplierTaxCode: "0100109106-712",
       invoiceNo: infoInvoicePDF.invoiceNo,
@@ -710,8 +710,8 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
                   label={"Hủy thanh toán"}
                   className="!bg-red-500 !w-fit ml-auto"
                   type="button"
-                  // onClick={() => handleCancel()}
-                  onClick={() => handlePaymentSuccess()}
+                  onClick={() => handleCancel()}
+                  // onClick={() => handlePaymentSuccess()}
                 ></ButtonForm>
               </div>
             </>
@@ -719,7 +719,16 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
         </div>
 
         <div className="w-full h-full flex flex-col pt-20">
-          <h5 className="text-gray-500 italic mx-auto mb-5 text-2xl">
+          {isSuccessNewReceipt && (
+            <div className="flex justify-center">
+              <i className="text-green-500 ri-check-double-line text-4xl"></i>
+            </div>
+          )}
+          <h5
+            className={`${
+              isSuccessNewReceipt ? "text-green-500" : "text-gray-500"
+            } italic mx-auto mb-5 text-2xl`}
+          >
             {successPay.status == "PAID"
               ? isLoadingNewReceipt
                 ? "Đang xử lí thanh toán..."
@@ -730,22 +739,62 @@ const PaymentVietQr = ({ infoPayemnt, openPayment, detailPayment }) => {
               ? "Đã hủy thanh toán..."
               : "Thanh toán không thành công"}
           </h5>
-          <div className="flex justify-center gap-x-5">
-            <ButtonForm
-              label={"Tiếp tục mua sắm"}
-              className="!bg-red-400 !w-fit"
-              type="button"
-              onClick={() => navigate("/products")}
-            ></ButtonForm>
+          <div className="flex justify-center gap-x-5 flex-col">
             {successPay.status == "PAID" && (
+              <>
+                <div className="mb-3 flex flex-col gap-y-2 items-center">
+                  <p>
+                    <span className="text-slate-700 font-medium">
+                      Mã đơn hàng của bạn:
+                    </span>
+                    <span className="font-medium text-second">
+                      #{dataNewReceipt?.MAINCODE}
+                    </span>
+                  </p>
+                  <p className="text-slate-700">
+                    Cám ơn Quý khách đã mua hàng tại{" "}
+                    <a
+                      href="#"
+                      className="border-b border-b-second text-second"
+                    >
+                      firstems-ecommere.com
+                    </a>
+                  </p>
+                  <p className="text-slate-700">
+                    Chúng tôi đã tiếp nhận đơn hàng của bạn và sẽ giao trong
+                    thời gian sớm nhất.
+                  </p>
+                  <p className="text-slate-700">
+                    Mọi thông tin chi tiết vui lòng liên hệ qua số Hotline{" "}
+                    <span className="text-red-500">1900 5252</span>
+                  </p>
+                  <p className="text-slate-700">
+                    Hoặc gửi về email theo địa chỉ{" "}
+                    <a
+                      href="#"
+                      className="border-b border-b-second text-second"
+                    >
+                      ecommere@firstems.com
+                    </a>
+                  </p>
+                </div>
+              </>
+            )}
+            <div className="flex gap-x-2 justify-center">
+              <ButtonForm
+                label={"Tiếp tục mua sắm"}
+                className="!bg-red-400 !w-fit"
+                type="button"
+                onClick={() => navigate("/products")}
+              ></ButtonForm>{" "}
               <ButtonForm
                 label={"Xem thông tin đơn hàng"}
                 className="!bg-second !w-fit"
                 type="button"
                 onClick={() => navigate("/personal?tab=order")}
               ></ButtonForm>
-            )}
-          </div>{" "}
+            </div>
+          </div>
           {/* {infoInvoicePDF && ( */}
           <div
             className="text-slate-500 mx-auto mt-3 italic cursor-pointer hover:border-b"
