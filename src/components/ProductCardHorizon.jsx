@@ -87,7 +87,7 @@ const ProductCardHorizon = ({
     <div
       onClick={() => {
         window.scroll(0, 0);
-        navigate(`/products/${item[id]}`);
+        navigate(`/product/${item[id]}`);
       }}
       className={`group/product cursor-pointer relative bg-white shadow-sm w-full rounded-lg border overflow-hidden h-48 border-gray-200 flex flex-row items-start`}
     >

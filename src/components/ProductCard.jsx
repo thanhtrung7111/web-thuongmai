@@ -87,7 +87,7 @@ const ProductCard = ({
         window.scroll(0, 0);
         navigate(`/product/${item[id]}`);
       }}
-      className={`group/product cursor-pointer relative bg-white shadow-sm w-full rounded-lg border overflow-hidden border-gray-200 flex flex-col items-center`}
+      className={`group/product cursor-pointer relative bg-white shadow-sm w-full rounded-lg border overflow-hidden border-slate-300 flex flex-col items-center`}
     >
       <div className="relative w-full h-48 object-contain mb-3 overflow-hidden">
         {/* <div className="opacity-0 group-hover/product:opacity-100 transition-opacity duration-300 absolute top-0 right-0 h-full w-full bg-black bg-opacity-20 flex items-center justify-center">
@@ -106,7 +106,7 @@ const ProductCard = ({
       </div>
       <div className="flex flex-col gap-y-1 w-full px-5 pb-3">
         <h5
-          className="line-clamp-2 font-semibold text-base text-gray-600 max-h-12"
+          className="line-clamp-2 font-semibold text-base text-slate-700 max-h-12"
           title={item[name]}
         >
           {item[name]}
@@ -136,7 +136,7 @@ const ProductCard = ({
         </div>
         <div className="flex items-end justify-between w-full">
           <div className="flex flex-col gap-y-1 curso">
-            <p className="text-xs font-medium text-gray-dark flex items-center gap-x-1">
+            <p className="text-xs font-medium text-slate-700 flex items-center gap-x-1">
               <span className="italic">Đánh giá:</span>
               <span className="rounded-md px-1 py-[1px] flex items-center justify-between text-white bg-second text-[10px] gap-x-[1px]">
                 {item[stars] ? item[stars] : 5} <i class="ri-star-fill"></i>
@@ -150,7 +150,7 @@ const ProductCard = ({
               </span>
             </p>
 
-            <p className="text-xs font-medium text-gray-dark flex items-center gap-x-1">
+            <p className="text-xs font-medium text-slate-700 flex items-center gap-x-1">
               <span className="italic"> Đã bán:</span>
               <span className="font-thin text-xs">
                 {item[sold] ? item[sold] : Math.round(Math.random() * 100)}

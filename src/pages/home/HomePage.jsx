@@ -146,7 +146,7 @@ const HomePage = () => {
                   <h6 className="font-semibold text-sm text-slate-700">
                     7 ngày miễn phí trả hàng
                   </h6>
-                  <span className="text-xs font-thin text-slate-500">
+                  <span className="text-xs font-thin text-slate-600">
                     Trả hàng miễn phí trong 7 ngày
                   </span>
                 </div>
@@ -159,7 +159,7 @@ const HomePage = () => {
                   <h6 className="font-semibold text-sm text-slate-700">
                     Hàng chính hãng 100%
                   </h6>
-                  <span className="text-xs font-thin text-slate-500">
+                  <span className="text-xs font-thin text-slate-600">
                     Trả hàng miễn phí trong 7 ngày
                   </span>
                 </div>
@@ -172,7 +172,7 @@ const HomePage = () => {
                   <h6 className="font-semibold text-sm text-slate-700">
                     Miễn phí vận chuyển
                   </h6>
-                  <span className="text-xs font-thin text-slate-500">
+                  <span className="text-xs font-thin text-slate-600">
                     Trả hàng miễn phí trong 7 ngày
                   </span>
                 </div>

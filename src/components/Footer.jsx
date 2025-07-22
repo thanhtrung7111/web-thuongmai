@@ -23,7 +23,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Trung tâm trợ giúp
                   </a>
@@ -31,7 +31,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Thanh toán
                   </a>
@@ -39,7 +39,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Hướng dẫn mua hàng
                   </a>
@@ -47,7 +47,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Trả hàng và hoàn tiền
                   </a>
@@ -55,7 +55,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Chăm sóc khách hàng
                   </a>
@@ -63,7 +63,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Chính sách bảo hành
                   </a>
@@ -79,7 +79,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Giới thiệu về FirstEMS
                   </a>
@@ -87,7 +87,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Tuyển dụng
                   </a>
@@ -95,7 +95,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Điều khoản
                   </a>
@@ -103,7 +103,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Chính sách bảo mật
                   </a>
@@ -111,7 +111,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Chương trình khuyến mãi
                   </a>
@@ -119,7 +119,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-light text-xs hover:text-second transition-all duration-200"
+                    className="text-slate-600 text-xs hover:text-second transition-all duration-200"
                   >
                     Liên hệ với truyền thông
                   </a>
@@ -151,21 +151,21 @@ const Footer = () => {
               <div className="flex gap-x-3 flex-wrap flex-col gap-y-3">
                 <a
                   href="#"
-                  className="text-xs text-gray-light flex items-center gap-x-2"
+                  className="text-xs text-slate-600 flex items-center gap-x-2"
                 >
                   <img src={Facebook} alt="" className="w-5" />{" "}
                   <span>Facebook</span>
                 </a>
                 <a
                   href="#"
-                  className="text-xs text-gray-light flex items-center gap-x-2"
+                  className="text-xs text-slate-600 flex items-center gap-x-2"
                 >
                   <img src={Gmail} alt="" className="w-5" />
                   Gmail
                 </a>
                 <a
                   href="#"
-                  className="text-xs text-gray-light flex items-center gap-x-2"
+                  className="text-xs text-slate-600 flex items-center gap-x-2"
                 >
                   <img src={WhatApp} alt="" className="w-5" />
                   09091887555
@@ -180,11 +180,11 @@ const Footer = () => {
               <div className="flex items-center justify-center">
                 <img src={QrCode} alt="" className="w-28" />
                 <div className="w-full flex flex-col gap-y-2">
-                  <button className="flex text-gray-light border  px-3 py-2 rounded-md w-full items-center justify-center text-sm">
+                  <button className="flex text-slate-600 border  px-3 py-2 rounded-md w-full items-center justify-center text-sm">
                     <img src={Android} alt="" className="w-5" />
                     Android
                   </button>
-                  <button className="flex text-gray-light border  px-3 py-2 rounded-md w-full items-center justify-center text-sm">
+                  <button className="flex text-slate-600 border  px-3 py-2 rounded-md w-full items-center justify-center text-sm">
                     <img src={Apple} alt="" className="w-5" />
                     Apple
                   </button>
@@ -195,7 +195,7 @@ const Footer = () => {
         </div>
       </div>
       <div>
-        <h5 className="block text-center py-3 text-sm bg-gray-200 text-gray-400">
+        <h5 className="block text-center py-2 text-sm bg-gray-200 text-slate-700">
           Sản phẩm được phát triển bởi FirstEMS - 2024
           <i class="ri-copyright-line"></i>
         </h5>

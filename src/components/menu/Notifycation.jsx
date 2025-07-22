@@ -8,7 +8,7 @@ const Notifycation = () => {
     dispatch(openEvaluateProduct({ productID: "00056" }));
   };
   return (
-    <div className="group/notify  flex items-center justify-center gap-x-1 text-gray relative text-sm cursor-pointer">
+    <div className="group/notify  flex items-center justify-center gap-x-1 text-slate-700 relative text-sm cursor-pointer">
       <div className="relative">
         <i className="ri-notification-line text-xl"></i>
         <div className="absolute -top-3 -right-3 bg-second w-5 h-5 text-[11px] text-white rounded-full flex items-center justify-center">
@@ -21,7 +21,7 @@ const Notifycation = () => {
           <img src={Triangle} className="w-4 h-2" alt="" />
         </div>
         <div className="flex flex-col">
-          <h5 className="p-3 pb-1 text-slate-700">Thông báo mới</h5>
+          <h5 className="p-3 pb-1 text-slate-700 text-base">Thông báo mới</h5>
           <div className="flex flex-col gap-y-2 px-3">
             <div
               className="flex gap-x-2 items-start border-b py-2"

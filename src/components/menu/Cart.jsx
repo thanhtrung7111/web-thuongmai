@@ -77,7 +77,7 @@ const Cart = () => {
 
       <div className="group/cart relative">
         <div
-          className="flex items-center justify-center gap-x-1 text-gray cursor-pointer"
+          className="flex items-center justify-center gap-x-1 text-slate-700 cursor-pointer"
           onClick={openCart}
         >
           <div className="relative">
@@ -131,12 +131,12 @@ const Cart = () => {
           ) : (
             <div className="flex items-center flex-col mt-4">
               <img src={Box} alt="" className="w-20 mb-2" />
-              <span className="text-sm text-gray-dark">
+              <span className="text-sm text-slate-700">
                 Bạn chưa có sản phẩm nào trong giỏ hàng
               </span>
               <NavLink
                 to={"/products"}
-                className="bg-second text-white text-sm py-2 px-3 mt-2 hover:opacity-90"
+                className="bg-second text-white text-sm py-2 px-3 mt-2 hover:opacity-90 rounded-md"
               >
                 Tới cửa hàng
               </NavLink>

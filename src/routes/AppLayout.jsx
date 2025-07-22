@@ -11,11 +11,11 @@ const AppLayout = () => {
   return (
     <div className="h-full">
       <Menu></Menu>{" "}
-      <div className="py-3 bg-[#ffffff] relative">
+      <div className="py-3 bg-[#f1f1f1] relative">
         <Outlet></Outlet>
       </div>
     </div>
   );
 };
-
+  
 export default AppLayout;

@@ -5,7 +5,7 @@ const Wrapper = ({ children, style, id }) => {
     <div
       id={id}
       style={style}
-      className={`bg-[#ffffff] rounded-lg shadow-lg border border-gray-200 h-fit`}
+      className={`bg-[#ffffff] rounded-lg shadow-lg border border-slate-200 h-fit`}
     >
       {Children.map(children, (child) => child)}
     </div>

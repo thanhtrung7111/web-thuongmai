@@ -28,7 +28,7 @@ const Menu = () => {
     sessionStorage.removeItem("tokenUser");
     sessionStorage.removeItem("tokenLocation");
     window.scroll(0, 0);
-    navigate("/login");
+    navigate("/");
   };
 
   useEffect(() => {
@@ -50,42 +50,42 @@ const Menu = () => {
           <div className="flex items-center gap-x-3">
             {/* logo  */}
             <div className="flex items-center">
-              {!location.pathname.includes("products") && (
-                <div className="">
-                  <button
-                    onClick={() => {
-                      if (catalog) {
-                        dispatch(closeCatalog());
-                      } else {
-                        dispatch(openCatalog());
-                      }
-                    }}
-                    className={`text-sm flex gap-x-1.5 border ${
-                      catalog
-                        ? "text-white bg-second border-second"
-                        : "text-slate-500 border-slate-500 bg-white"
-                    }  rounded-md px-2 py-1 transition-colors`}
-                  >
-                    <i className="ri-menu-line"></i>
-                    {/* <span>Danh mục sản phẩm</span> */}
-                  </button>
+              {/* {!location.pathname.includes("products") && ( */}
+              <div className="">
+                <button
+                  onClick={() => {
+                    if (catalog) {
+                      dispatch(closeCatalog());
+                    } else {
+                      dispatch(openCatalog());
+                    }
+                  }}
+                  className={`text-sm flex gap-x-1.5 border ${
+                    catalog
+                      ? "text-white bg-second border-second"
+                      : "text-slate-500 border-slate-500 bg-white"
+                  }  rounded-md px-2 py-1 transition-colors`}
+                >
+                  <i className="ri-menu-line"></i>
+                  {/* <span>Danh mục sản phẩm</span> */}
+                </button>
+                <div
+                  className={`absolute top-[100%] w-screen h-screen left-0 z-10 ${
+                    catalog ? "visible opacity-100" : "invisible opacity-0"
+                  } transition-all`}
+                >
                   <div
-                    className={`absolute top-[100%] w-screen h-screen left-0 z-10 ${
-                      catalog ? "visible opacity-100" : "invisible opacity-0"
-                    } transition-all`}
-                  >
-                    <div
-                      className="absolute top-0 right-0 bg-black bg-opacity-70 w-full h-full"
-                      onClick={() => dispatch(closeCatalog())}
-                    ></div>
-                    <div className="max-w-7xl mx-auto pt-1">
-                      <div className="w-72">
-                        <ProductCatalog></ProductCatalog>
-                      </div>
+                    className="absolute top-0 right-0 bg-black bg-opacity-70 w-full h-full"
+                    onClick={() => dispatch(closeCatalog())}
+                  ></div>
+                  <div className="max-w-7xl mx-auto pt-1">
+                    <div className="w-72">
+                      <ProductCatalog></ProductCatalog>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
+              {/* )} */}
               <div
                 onClick={() => {
                   window.scroll(0, 0);
@@ -102,7 +102,7 @@ const Menu = () => {
               <div className="flex items-center gap-x-8">
                 <Cart></Cart>
                 <Notifycation></Notifycation>
-                <div className="group/cart flex items-center justify-center gap-x-1 text-gray relative text-sm cursor-pointer">
+                <div className="group/cart flex items-center justify-center gap-x-1 text-slate-700 relative text-sm cursor-pointer">
                   {currentUser ? (
                     <img
                       src="https://picsum.photos/seed/picsum/200/300"
