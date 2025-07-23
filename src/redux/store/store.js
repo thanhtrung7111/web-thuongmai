@@ -16,6 +16,7 @@ import cartReducer from "../reducer/cartReducer";
 import userReducer from "../reducer/userReducer";
 import popupReducer from "../reducer/popupReducer";
 import orderReducer from "../reducer/orderReducer";
+import categoryReducer from "../reducer/categoryReducer";
 import {
   combineReducers,
   configureStore,
@@ -81,6 +82,7 @@ const rootReducer = combineReducers({
   cart: cartReducer,
   popup: popupReducer,
   order: orderReducer,
+  category: categoryReducer,
   [commonApiSlice.reducerPath]: commonApiSlice.reducer,
   [authApiSlice.reducerPath]: authApiSlice.reducer,
   [cartApiSlice.reducerPath]: cartApiSlice.reducer,

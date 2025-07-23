@@ -45,7 +45,7 @@ const Menu = () => {
   return (
     <>
       <MenuChild></MenuChild>
-      <div className="py-2 border-b sticky top-0 bg-white z-40 shadow-md">
+      <div className="py-5 border-b sticky top-0 bg-white z-40 shadow-md">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-x-3">
             {/* logo  */}
@@ -129,7 +129,7 @@ const Menu = () => {
                         </div>
                       )}
 
-                      {currentUser && <i className="ri-arrow-down-s-line"></i>}
+                      {/* {currentUser && <i className="ri-arrow-down-s-line"></i>} */}
                     </div>
                   </div>
                   {currentUser && (

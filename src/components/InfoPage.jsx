@@ -9,7 +9,7 @@ const InfoPage = ({ data }) => {
         return (
           <div key={item} className="flex items-center">
             <i className="ri-arrow-right-s-line leading-none h-fit text-slate-500"></i>
-            <span className="text-slate-500">{item}</span>
+            <span className="text-slate-500 text-sm">{item}</span>
           </div>
         );
       })}

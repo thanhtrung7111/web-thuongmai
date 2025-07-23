@@ -50,11 +50,11 @@ function App() {
     }
   }, [popup]);
 
-  useEffect(() => {
-    if (token?.ERROCODE == 21 || token?.RETNCODE == false) {
-      refetch();
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   if (token?.ERROCODE == 21 || token?.RETNCODE == false) {
+  //     refetch();
+  //   }
+  // }, [token]);
   console.log(token);
   return isFetching ? (
     <div>

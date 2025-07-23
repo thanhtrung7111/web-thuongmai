@@ -83,7 +83,7 @@ const Cart = () => {
           <div className="relative">
             <i className="ri-shopping-cart-line text-xl"></i>
             {productCarts?.length > 0 && (
-              <div className="absolute -top-3 -right-3 bg-second w-5 h-5 text-[11px] text-white rounded-full flex items-center justify-center">
+              <div className="absolute -top-3 -right-3 bg-second w-6 h-6 border-2 border-white text-[11px] text-white rounded-full flex items-center justify-center">
                 {productCarts?.length}
               </div>
             )}

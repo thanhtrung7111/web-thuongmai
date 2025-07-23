@@ -21,19 +21,28 @@ let pageSize = 20;
 const tagsSort = [
   {
     id: 3,
-    name: "Tất cả",
+    name: "Giá tăng dần",
   },
   {
     id: 1,
-    name: "Sắp xếp theo tên",
+    name: "Giá giảm dần",
   },
   {
     id: 2,
-    name: "Sắp xếp theo giá",
+    name: "Sản phẩm mới nhất",
   },
+  {
+    id: 4,
+    name: "Sản phẩm bán chạy nhất",
+  },
+  // {
+  //   id: 5,
+  //   name: "Đã bán nhiều nhất",
+  // },
 ];
 const ProductListPage = () => {
   const { errorServer } = useSelector((state) => state.exception);
+  const { selectedCategory } = useSelector((state) => state.category);
   const {
     data: products,
     refetch,
@@ -199,7 +208,13 @@ const ProductListPage = () => {
         id="overlay"
       ></div>
       <div className="product-list">
-        <InfoPage data={["Danh mục sản phẩm"]} />
+        <InfoPage
+          data={
+            selectedCategory?.breadcrumb
+              ? selectedCategory?.breadcrumb
+              : ["Danh mục sản phẩm"]
+          }
+        />
         <div className="max-w-7xl mx-auto mb-5">
           <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] lg:grid-cols-[1fr_3fr] xl:grid-cols-[1fr_4fr] gap-x-2 gap-y-2">
             {/* MENU  */}
@@ -214,7 +229,7 @@ const ProductListPage = () => {
             {/* FILTER  */}
             <Wrapper>
               <div
-                className="fixed md:z-0 z-50 top-0 -left-full h-screen overflow-y-scroll md:overflow-y-hidden md:static px-5  md:py-5 py-10 flex flex-col gap-y-3 md:h-fit transition-all duration-200 bg-white"
+                className="fixed md:z-0 z-50 top-0 rounded-md -left-full h-screen overflow-y-scroll md:overflow-y-hidden md:static px-5  md:py-5 py-10 flex flex-col gap-y-3 md:h-fit transition-all duration-200 bg-white"
                 id="filter-menu"
               >
                 {/* CLose filter menu  */}
@@ -222,7 +237,7 @@ const ProductListPage = () => {
                   className="absolute top-2 right-2 text-end block md:hidden"
                   onClick={closeMenu}
                 >
-                  <i class="ri-arrow-left-double-line text-2xl text-gray-dark block cursor-pointer px-2 hover:-translate-x-2 transition-transform duration-200"></i>
+                  <i class="ri-arrow-left-double-line text-2xl text-slate-700 block cursor-pointer px-2 hover:-translate-x-2 transition-transform duration-200"></i>
                 </div>
 
                 <div className="flex gap-x-2 items-center">
@@ -230,7 +245,7 @@ const ProductListPage = () => {
                     type="text"
                     name=""
                     id=""
-                    className="outline-none border w-full text-sm px-2 py-1 text-gray-dark"
+                    className="outline-none border w-full text-sm px-4 py-1 text-slate-700 rounded-md"
                     placeholder="Tìm kiếm..."
                     value={listSearch.nameSearch}
                     onChange={(e) => searchNameProduct(e)}
@@ -318,23 +333,45 @@ const ProductListPage = () => {
             </Wrapper>
             {/* DANH MỤC  */}
             <div className="flex flex-col gap-y-2" id="product-list">
+              {selectedCategory?.breadcrumb && (
+                <Wrapper>
+                  <div className="text-slate-600 px-5 py-4 font-medium text-xl">
+                    {selectedCategory?.breadcrumb.join(" - ")} (
+                    {productList?.length ? productList.length : "0"} Sản phẩm)
+                  </div>{" "}
+                  {/* <div className="px-5 pb-4">
+                    <h5 className="flex items-center text-xl italic mb-2 text-white bg-slate-700 px-2 py-3 font-semibold">
+                      Sản phẩm nổi bật
+                    </h5>
+                    <div className="grid grid-cols-4 gap-x-2">
+                      {productList?.slice(0, 4).map((item) => {
+                        return (
+                          <ProductCard
+                            item={item}
+                            unit={"QUOMNAME"}
+                            id={"PRDCCODE"}
+                            name={"PRDCNAME"}
+                            // reviews={""}
+                            image={"PRDCIMGE"}
+                            price={"PRCESALE"}
+                            discount={"DSCNRATE"}
+                            // stars={item.rating.rate}
+                            saleOff={"PRCEDSCN"}
+                            sold={0}
+                          ></ProductCard>
+                        );
+                      })}
+                    </div>
+                  </div> */}
+                </Wrapper>
+              )}
+
               <Wrapper>
                 <div className="px-5 py-4">
                   <div className="grid grid-cols-1 gap-y-5 md:flex items-center justify-between">
                     <div className="flex items-center gap-x-3 flex-wrap">
-                      <button
-                        className="text-gray-dark text-sm cursor-pointer"
-                        onClick={() => {
-                          setDesc(!desc);
-                        }}
-                      >
-                        Sắp xếp
-                        {desc ? (
-                          <i class="ri-arrow-down-line"></i>
-                        ) : (
-                          <i class="ri-arrow-up-line"></i>
-                        )}
-                        :
+                      <button className="text-slate-700 text-sm cursor-pointer">
+                        Sắp xếp theo
                       </button>
                       <TagList
                         data={tagsSort}
@@ -343,50 +380,48 @@ const ProductListPage = () => {
                         onChange={onChangeTag}
                       ></TagList>
                     </div>
-
-                    <div className="flex items-center gap-x-4">
-                      <div className="text-sm text-gray-dark">
-                        <span>Sản phẩm trên trang </span>
-                        {(currentPage - 1) * pageSize + 1} -{" "}
-                        {(currentPage - 1) * pageSize + pageSize}
-                      </div>
-                      <div className="flex items-center">
-                        <div
-                          onClick={() => setDisplayVertical(true)}
-                          className={`cursor-pointer py-1 px-2 rounded-md border  ${
-                            displayVertical
-                              ? "border-second"
-                              : "border-transparent"
-                          }`}
-                        >
-                          <i
-                            class={`ri-grid-line text-lg ${
-                              displayVertical ? "text-second" : "text-gray-600"
-                            }`}
-                          ></i>
-                        </div>
-                        <div
-                          onClick={() => setDisplayVertical(false)}
-                          className={`cursor-pointer py-1 px-2 rounded-md border  ${
-                            !displayVertical
-                              ? "border-second"
-                              : "border-transparent"
-                          }`}
-                        >
-                          <i
-                            class={`ri-list-check text-lg ${
-                              !displayVertical ? "text-second" : "text-gray-600"
-                            }`}
-                          ></i>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </Wrapper>
-
               <Wrapper>
-                <div className="p-5 min-h-96">
+                <div className="p-5 pt-2 min-h-96">
+                  <div className="flex items-center gap-x-4 justify-end mb-2">
+                    <div className="text-sm text-slate-700">
+                      <span>Sản phẩm trên trang </span>
+                      {(currentPage - 1) * pageSize + 1} -{" "}
+                      {(currentPage - 1) * pageSize + pageSize}
+                    </div>
+                    <div className="flex items-center">
+                      <div
+                        onClick={() => setDisplayVertical(true)}
+                        className={`cursor-pointer px-2 rounded-md border  ${
+                          displayVertical
+                            ? "border-second"
+                            : "border-transparent"
+                        }`}
+                      >
+                        <i
+                          class={`ri-grid-line text-lg ${
+                            displayVertical ? "text-second" : "text-gray-600"
+                          }`}
+                        ></i>
+                      </div>
+                      <div
+                        onClick={() => setDisplayVertical(false)}
+                        className={`cursor-pointer px-2 rounded-md border  ${
+                          !displayVertical
+                            ? "border-second"
+                            : "border-transparent"
+                        }`}
+                      >
+                        <i
+                          class={`ri-list-check text-lg ${
+                            !displayVertical ? "text-second" : "text-slate-600"
+                          }`}
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
                   {productList?.length <= 0 ? (
                     <p className="text-gray-500">
                       {" "}

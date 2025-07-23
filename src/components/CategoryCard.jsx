@@ -10,7 +10,7 @@ const CategoryCard = ({ id, name, image }) => {
           className="w-20 h-20 object-contain object-center rounded-full"
         />
       </div>
-      <h4 className="text-gray-dark text-sm font-medium">
+      <h4 className="text-slate-700 text-sm font-medium">
         {name ? name : "None"}
       </h4>
     </div>

@@ -11,7 +11,7 @@ const Notifycation = () => {
     <div className="group/notify  flex items-center justify-center gap-x-1 text-slate-700 relative text-sm cursor-pointer">
       <div className="relative">
         <i className="ri-notification-line text-xl"></i>
-        <div className="absolute -top-3 -right-3 bg-second w-5 h-5 text-[11px] text-white rounded-full flex items-center justify-center">
+        <div className="absolute -top-3 -right-3 bg-second w-6 h-6 border-2 border-white text-[11px] text-white rounded-full flex items-center justify-center">
           {7}
         </div>
       </div>

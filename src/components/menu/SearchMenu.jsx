@@ -130,7 +130,7 @@ const SearchMenu = () => {
     <div className="relative w-[550px] items-center border rounded-md justify-between px-0 pr-4 pl-3 h-10 hidden lg:flex">
       <input
         type="text"
-        className="outline-none flex-auto text-sm text-gray-dark placeholder:font-medium"
+        className="outline-none flex-auto text-sm text-slate-700 placeholder:font-medium placeholder:text-slate-400"
         placeholder="Tìm sản phẩm, thương hiệu..."
         onChange={handleChangeSearch}
         onFocus={() => setFocus(true)}
@@ -141,6 +141,7 @@ const SearchMenu = () => {
         value={keyWord}
         disabled={isLoadingProduct}
       />
+
       {isLoadingProduct ? (
         <div role="status">
           <svg
@@ -172,7 +173,7 @@ const SearchMenu = () => {
             (keyWord != "" || productSearchs?.length > 0) &&
             focus &&
             "h-56 !border"
-          } h-0 overflow-hidden transition-[height] ease-in-out duration-200 delay-100  border-gray-200 absolute w-full bg-white top-[100%] left-0 shadow-md rounded-md`}
+          } h-0 overflow-hidden transition-[height] bg-white z-10 ease-in-out duration-200 delay-100  border-gray-200 absolute w-full top-[100%] left-0 shadow-md rounded-md`}
         >
           {dataFind?.length > 0 ? (
             <div className="overflow-y-scroll h-full">
@@ -238,6 +239,23 @@ const SearchMenu = () => {
           )}
         </div>
       )}
+      <div className="absolute top-full left-0 flex pt-2 gap-x-4 pl-2">
+        <div className="text-slate-500 text-xs cursor-pointer hover:text-second transition-colors">
+          Laptop MSI
+        </div>
+        <div className="text-slate-500 text-xs cursor-pointer hover:text-second transition-colors">
+          GTX 2500
+        </div>
+        <div className="text-slate-500 text-xs cursor-pointer hover:text-second transition-colors">
+          Màn hình LG
+        </div>
+        <div className="text-slate-500 text-xs cursor-pointer hover:text-second transition-colors">
+          Ultra Gear
+        </div>
+        <div className="text-slate-500 text-xs cursor-pointer hover:text-second transition-colors">
+          Iphone 16 Promax
+        </div>
+      </div>
     </div>
   );
 };

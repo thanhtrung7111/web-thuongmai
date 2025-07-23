@@ -106,14 +106,14 @@ const ProductCard = ({
       </div>
       <div className="flex flex-col gap-y-1 w-full px-5 pb-3">
         <h5
-          className="line-clamp-2 font-semibold text-base text-slate-700 max-h-12"
+          className="line-clamp-2 font-semibold text-base text-slate-600 max-h-12"
           title={item[name]}
         >
           {item[name]}
         </h5>{" "}
-        <div className="text-xs bg-slate-200 px-3 py-2 text-slate-500 rounded-md">
+        {/* <div className="text-xs bg-slate-200 px-3 py-2 text-slate-500 rounded-md">
           Loại: {item[unit]}
-        </div>
+        </div> */}
         <div className="flex gap-x-1 flex-col">
           <div className="flex items-center gap-x-1">
             <span className="text-gray-light font-thin text-sm  line-through flex items-start">

@@ -2,47 +2,120 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { closeCatalog } from "../../redux/reducer/popupReducer";
+import { setSelectedCategory } from "../../redux/reducer/categoryReducer";
 
 const menu = [
   {
     title: "Lap top",
     icon: <i className="ri-macbook-line"></i>,
-    link: "/products",
+    id: "laptop",
+    breadcrumb: ["Laptop"],
     child: [
       {
         title: "Thương hiệu",
+        breadcrumb: ["Laptop", "Thương hiệu"],
+        id: "brand",
         child: [
-          { title: "ASUS", link: "/products" },
-          { title: "MSI", link: "/products" },
-          { title: "LENOVO", link: "/products" },
-          { title: "DELL", link: "/products" },
-          { title: "HP", link: "/products" },
-          { title: "LG", link: "/products" },
+          {
+            title: "ASUS",
+            id: "ASUS",
+            breadcrumb: ["Laptop", "Thương hiệu", "ASUS"],
+          },
+          {
+            title: "MSI",
+            id: "MSI",
+            breadcrumb: ["Laptop", "Thương hiệu", "MSI"],
+          },
+          {
+            title: "LENOVO",
+            id: "LENOVO",
+            breadcrumb: ["Laptop", "Thương hiệu", "LENOVO"],
+          },
+          {
+            title: "DELL",
+            id: "DELL",
+            breadcrumb: ["Laptop", "Thương hiệu", "DELL"],
+          },
+          {
+            title: "HP",
+            id: "HP",
+            breadcrumb: ["Laptop", "Thương hiệu", "HP"],
+          },
+          {
+            title: "LG",
+            id: "LG",
+            breadcrumb: ["Laptop", "Thương hiệu", "LG"],
+          },
         ],
       },
       {
         title: "Giá bán",
+        id: "price",
+        breadcrumb: ["Laptop", "Giá bán"],
         child: [
-          { title: "Dưới 15 triệu", link: "/products" },
-          { title: "Từ 15 đến 20 triệu", link: "/products" },
-          { title: "Trên 20 triệu", link: "/products" },
+          {
+            title: "Dưới 15 triệu",
+            id: "below",
+            breadcrumb: ["Laptop", "Giá bán", "Dưới 15 triệu"],
+          },
+          {
+            title: "Từ 15 đến 20 triệu",
+            id: "upper",
+            breadcrumb: ["Laptop", "Giá bán", "Từ 15 đến 20 trieu"],
+          },
+          {
+            title: "Trên 20 triệu",
+            id: "above",
+            breadcrumb: ["Laptop", "Giá bán", "Trên 20 triệu 15 triệu"],
+          },
         ],
       },
       {
         title: "CPU",
+        id: "CPU",
+        breadcrumb: ["Laptop", "CPU"],
         child: [
-          { title: "Intel Core i3", link: "/products" },
-          { title: "Intel Core i5", link: "/products" },
-          { title: "Intel Core i7", link: "/products" },
-          { title: "AMD Ryzen", link: "/products" },
+          {
+            title: "Intel Core i3",
+            id: "i3",
+            breadcrumb: ["Laptop", "CPU", "Intel Core i3"],
+          },
+          {
+            title: "Intel Core i5",
+            id: "i5",
+            breadcrumb: ["Laptop", "CPU", "Intel Core i5"],
+          },
+          {
+            title: "Intel Core i7",
+            id: "i7",
+            breadcrumb: ["Laptop", "CPU", "Intel Core i7"],
+          },
+          {
+            title: "AMD Ryzen",
+            id: "ryzen",
+            breadcrumb: ["Laptop", "CPU", "AMD Ryzen"],
+          },
         ],
       },
       {
         title: "Nhu cầu sử dụng",
+        id: "CPU",
+        breadcrumb: ["Laptop", "Nhu cầu sử dụng"],
         child: [
-          { title: "Đồ họa", link: "/products" },
-          { title: "Gamming", link: "/products" },
-          { title: "Văn phòng", link: "/products" },
+          {
+            title: "Đồ họa",
+
+            breadcrumb: ["Laptop", "Nhu cầu sử dụng", "Đồ họa"],
+          },
+          {
+            title: "Gamming",
+
+            breadcrumb: ["Laptop", "Nhu cầu sử dụng", "Gamming"],
+          },
+          {
+            title: "Văn phòng",
+            breadcrumb: ["Laptop", "Nhu cầu sử dụng", "Văn phòng"],
+          },
         ],
       },
     ],
@@ -50,52 +123,123 @@ const menu = [
   {
     title: "Màn hình",
     icon: <i className="ri-tv-2-line"></i>,
-    link: "/products",
+    breadcrumb: ["Màn hình"],
     child: [
       {
         title: "Thương hiệu",
+        breadcrumb: ["Màn hình", "Thương hiệu"],
+        id: "brand",
         child: [
-          { title: "ASUS", link: "/products" },
-          { title: "MSI", link: "/products" },
-          { title: "LENOVO", link: "/products" },
-          { title: "DELL", link: "/products" },
-          { title: "HP", link: "/products" },
-          { title: "LG", link: "/products" },
+          {
+            title: "ASUS",
+            id: "ASUS",
+            breadcrumb: ["Màn hình", "Thương hiệu", "ASUS"],
+          },
+          {
+            title: "MSI",
+            id: "MSI",
+            breadcrumb: ["Màn hình", "Thương hiệu", "MSI"],
+          },
+          {
+            title: "LENOVO",
+            id: "LENOVO",
+            breadcrumb: ["Màn hình", "Thương hiệu", "LENOVO"],
+          },
+          {
+            title: "DELL",
+            id: "DELL",
+            breadcrumb: ["Màn hình", "Thương hiệu", "DELL"],
+          },
+          {
+            title: "HP",
+            id: "HP",
+            breadcrumb: ["Màn hình", "Thương hiệu", "HP"],
+          },
+          {
+            title: "LG",
+            id: "LG",
+            breadcrumb: ["Màn hình", "Thương hiệu", "LG"],
+          },
         ],
       },
       {
         title: "Giá bán",
+        id: "price",
+        breadcrumb: ["Màn hình", "Giá bán"],
         child: [
-          { title: "Dưới 15 triệu", link: "/products" },
-          { title: "Từ 15 đến 20 triệu", link: "/products" },
-          { title: "Trên 20 triệu", link: "/products" },
+          {
+            title: "Dưới 15 triệu",
+            id: "below",
+            breadcrumb: ["Màn hình", "Giá bán", "Dưới 15 triệu"],
+          },
+          {
+            title: "Từ 15 đến 20 triệu",
+            id: "upper",
+            breadcrumb: ["Màn hình", "Giá bán", "Từ 15 đến 20 trieu"],
+          },
+          {
+            title: "Trên 20 triệu",
+            id: "above",
+            breadcrumb: ["Màn hình", "Giá bán", "Trên 20 triệu 15 triệu"],
+          },
         ],
       },
       {
         title: "CPU",
+        id: "CPU",
+        breadcrumb: ["Màn hình", "CPU"],
         child: [
-          { title: "Intel Core i3", link: "/products" },
-          { title: "Intel Core i5", link: "/products" },
-          { title: "Intel Core i7", link: "/products" },
-          { title: "AMD Ryzen", link: "/products" },
+          {
+            title: "Intel Core i3",
+            id: "i3",
+            breadcrumb: ["Màn hình", "CPU", "Intel Core i3"],
+          },
+          {
+            title: "Intel Core i5",
+            id: "i5",
+            breadcrumb: ["Màn hình", "CPU", "Intel Core i5"],
+          },
+          {
+            title: "Intel Core i7",
+            id: "i7",
+            breadcrumb: ["Màn hình", "CPU", "Intel Core i7"],
+          },
+          {
+            title: "AMD Ryzen",
+            id: "ryzen",
+            breadcrumb: ["Màn hình", "CPU", "AMD Ryzen"],
+          },
         ],
       },
       {
         title: "Nhu cầu sử dụng",
+        id: "CPU",
+        breadcrumb: ["Màn hình", "Nhu cầu sử dụng"],
         child: [
-          { title: "Đồ họa", link: "/products" },
-          { title: "Gamming", link: "/products" },
-          { title: "Văn phòng", link: "/products" },
+          {
+            title: "Đồ họa",
+
+            breadcrumb: ["Màn hình", "Nhu cầu sử dụng", "Đồ họa"],
+          },
+          {
+            title: "Gamming",
+
+            breadcrumb: ["Màn hình", "Nhu cầu sử dụng", "Gamming"],
+          },
+          {
+            title: "Văn phòng",
+            breadcrumb: ["Màn hình", "Nhu cầu sử dụng", "Văn phòng"],
+          },
         ],
       },
     ],
   },
-  {
-    title: "Sản phẩm",
-    link: "/products",
-    icon: <i className="ri-instance-line"></i>,
-    child: [],
-  },
+  // {
+  //   title: "Sản phẩm",
+  //   link: "/products",
+  //   icon: <i className="ri-instance-line"></i>,
+  //   child: [],
+  // },
 ];
 
 const ProductCatalog = () => {
@@ -137,6 +281,7 @@ const ProductCatalog = () => {
                               return (
                                 <div
                                   onClick={() => {
+                                    dispatch(setSelectedCategory(i));
                                     dispatch(closeCatalog());
                                     navigate("/products");
                                   }}
